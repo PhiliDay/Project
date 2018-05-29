@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">RUNWALKRUN</string>
+    <string name="button_login">Login</string>
+    <string name="button_signup">Sign Up</string>
+    <string name="HomeScreenPic">HomeScreenPic</string>
+    <string name="email_name">Enter your email</string>
+    <string name="email_display">Email: </string>
+    <string name="password_display">Password: </string>
+    <string name="password_name">Enter your password</string>
+    <string name="record_run">Lets Go!</string>
+    <string name="walk_run">WALK</string>
+    <string name="run_run">RUN</string>
+    <string name="end_run">End</string>
+    <string name="pause_run">Pause</string>
+
+
+
+
+
+
+</resources>
