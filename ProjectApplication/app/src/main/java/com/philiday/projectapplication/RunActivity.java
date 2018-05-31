@@ -33,7 +33,7 @@ public class RunActivity extends AppCompatActivity implements OnMapReadyCallback
     LocationListener listener;
     final static int PERMISSION_ALL = 1;
     final static String[] PERMISSIONS = {Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION};
+            Manifest.permission.ACCESS_FINE_LOCATION};
     MarkerOptions mo;
     Marker marker;
 
@@ -54,7 +54,7 @@ public class RunActivity extends AppCompatActivity implements OnMapReadyCallback
         } else requestLocation();
         if (!isLocationEnabled())
             Log.v("mytag","No location");
-            //showAlert(1);
+        //showAlert(1);
     }
 
     @Override

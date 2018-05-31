@@ -14,6 +14,11 @@ public class timelineActivity extends AppCompatActivity {
     }
 
     public void startRun(View view) {
+        Intent intent = new Intent(this, RecordingActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToMap(View view) {
         Intent intent = new Intent(this, RunActivity.class);
         startActivity(intent);
     }

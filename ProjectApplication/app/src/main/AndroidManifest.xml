@@ -4,6 +4,11 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.javapapers.android.androidlocationmaps.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <application
         android:allowBackup="true"
@@ -22,12 +27,13 @@
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".timelineActivity" />
-        <activity android:name=".RunActivity"/>
+        <activity android:name=".RunActivity" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBSW3uwct-jd844nPPaiQpONDHAYy2ZCSw"/>
+            android:value="AIzaSyBSW3uwct-jd844nPPaiQpONDHAYy2ZCSw" />
 
-
+        <activity android:name=".RecordingActivity"></activity>
     </application>
 
 </manifest>

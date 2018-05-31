@@ -10,14 +10,11 @@
     <string name="record_run">Lets Go!</string>
     <string name="walk_run">WALK</string>
     <string name="run_run">RUN</string>
-    <string name="end_run">End</string>
+    <string name="end_run">Stop</string>
     <string name="pause_run">Pause</string>
+    <string name="save_run">Save</string>
+
     <string name="password_display2">Re-enter your password:</string>
-
-
-
-
-
 
 
 </resources>
