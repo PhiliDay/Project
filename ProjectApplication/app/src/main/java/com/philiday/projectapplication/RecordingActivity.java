@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class RecordingActivity extends AppCompatActivity implements LocationListener {
@@ -36,7 +38,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     private LocationManager locationManager;
 
     Button start, stop, save;
-    TextView startime, timetaken, startlocation, endlocation, currentLoc,  maxspeed, endtime, distance;
+    TextView startime, timetaken, startlocation, endlocation, currentLoc,  pace, endtime, distance, currentPace, tv;
     String interimlocation;
     Spinner mode;
     String db_mode;
@@ -60,7 +62,11 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
     Location startLocation;
     Location latestLocation;
-    Location interimLocation;
+
+    Timer t = new Timer();
+    public int seconds = 0;
+    public int minutes = 0;
+    public int hour = 0;
 
 
     @Override
@@ -68,14 +74,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
         setUpLocation();
-
-
-        Bundle bundle = getIntent().getExtras();
-
-        //   db = new MyDBManager(this);
-
-        mode = (Spinner) findViewById(R.id.mode);
-        db_mode = "Walking"; // To store default mode
 
         startime = (TextView) findViewById(R.id.startime);
         distance = (TextView) findViewById(R.id.distance);
@@ -87,42 +85,15 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         startlocation = (TextView) findViewById(R.id.starting);
         endlocation = (TextView) findViewById(R.id.endLocation);
         currentLoc = (TextView) findViewById(R.id.updating);
+        pace = (TextView) findViewById(R.id.pace);
+        currentPace = (TextView) findViewById(R.id.currentPace);
+        tv = (TextView) findViewById(R.id.timer);
 
 
 
 
         stop.setEnabled(false); // stop button is disabled
 
-        // Create a list of strings for the Spinner
-        List<String> list = new ArrayList<String>();
-        list.add("Walking");
-
-
-        ArrayAdapter<String> dataadapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list);
-
-        dataadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        mode.setAdapter(dataadapter);
-
-        mode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            private boolean isSpinnerInitial = true;
-
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                db_mode = mode.getSelectedItem().toString();
-
-                Toast.makeText(parent.getContext(),
-                        parent.getItemAtPosition(pos).toString(),
-                        Toast.LENGTH_LONG).show();
-
-
-            }
-
-            public void onNothingSelected(AdapterView<?> paren) {
-
-            }
-
-        });
 
         // Click and start journey
         start.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +108,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 startlocation.setText("");
                 endlocation.setText("");
                 currentLoc.setText("");
+                pace.setText("pace");
+                currentPace.setText("currentPace");
 
 
                 //Get start time
@@ -145,8 +118,34 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                 startime.setText(sdf.format(cl.getTime()));
 
+                //Clock to see
+                t.scheduleAtFixedRate(new TimerTask(){
+                    @Override
+                            public void run(){
+                        runOnUiThread(new Runnable(){
+                            @Override
+                            public void run(){
+                                if(seconds == 60){
+                                    tv.setText(String.format("%02d", hour) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
+                                    minutes = seconds / 60;
+                                    seconds = seconds % 60;
+                                    hour = minutes / 60;
+                                }
+                                seconds += 1;
+                                tv.setText(String.format("%02d", hour) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
+
+                            }
+                        });
+                    }
+
+
+                }, 0, 1000);
+
+                Log.i("myTag", ":" + startLocationString);
                 if (startLocationString != null) {
                     startlocation.setText(startLocationString);
+                    Log.i("myTag", ":" + startLocationString);
+
                 }
 
 
@@ -159,6 +158,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             public void onClick(View v) {
                 stop.setEnabled(false);
                 start.setEnabled(true);
+
+                tv.setText("0:00:00");
 
                 // Get end time
                 Calendar cl = Calendar.getInstance();
@@ -173,80 +174,87 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 long s = TimeUnit.MILLISECONDS.toSeconds(dtime) - hh *60 * 60 - mn * 60;
                 timetaken.setText(hh+" h(s), " + mn +" mn(s) " + s + "s");
 
+
+                //Get end location
                 if(latestLocationString!=null) {
                     endlocation.setText(latestLocationString);
 
-                    //dist = latestLocation.distanceTo(startLocation);
+                 //   dist = latestLocation.distanceTo(startLocation);
                 }
                 else{
                     dist = 0;
                 }
 
+                distance.setText(getDistance(dist));
+
             }
         });
 
+
+
     }
 
-    private Double toRad(Double value) {
+
+    //Converts numeric degrees to radians
+    private Double toRadians(Double value) {
         return value * Math.PI / 180;
     }
 
     public void onLocationChanged(Location location) {
 
-//        LatLng myCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
-//        startLocationString = "Coordinate" + myCoordinates;
-//        startlocation.setText(startLocationString);
-
-        double oldDist =0;
         if (location != null) {
             if (startLocation == null && stop.isEnabled()) {
                 Log.v("mytag", "LOCATION NULL");
                 startLocation = location;
                 latestLocation = location;
-//                interimLocation = location;
                 LatLng myCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
-                startLocationString = "Coordinate" + myCoordinates;
+                startLocationString = "Coordinate: " + myCoordinates;
                 startlocation.setText(startLocationString);
+                //Puts in my start location as current loc -- this is later updated
+                currentLoc.setText(startLocationString);
                 dist = 0;
             }
-        }
 
-//            //if the stop button is not enabled ==> the user is still doing his journey, then update the location and the max speed.
-//            if(stop.isEnabled()) {
-//                double dlong = toRad(location.getLongitude() - latestLocation.getLongitude());
-//                double dlat = toRad(location.getLatitude() - latestLocation.getLatitude());
-//                double a =
-//                        Math.pow(Math.sin(toRad(dlat) / 2.0), 2)
-//                                + Math.cos(toRad(latestLocation.getLatitude()))
-//                                * Math.cos(toRad(location.getLatitude()))
-//                                * Math.pow(Math.sin(toRad(dlong) / 2.0), 2);
-//                double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-//                double d = 6367 * c;
-//                dist = dist + d;
-//                distance.setText((int)dist);
-//
-//                latestLocation = location;
-//                latestLocationString =  "\n" + "Long: "+ location.getLongitude() + "\n" + "Lat: "+location.getLatitude();
-//                currentLoc.setText(latestLocationString);
-//
-//                if(oldDist < dist + 0.005){
-//                    oldDist = dist;
-//                    interimLocation = location;
-//                    if(interimlocation==null){
-//                        interimlocation= "{"+ "Long:"+ location.getLongitude() + "," + "Lat:"+location.getLatitude()+"}";
-//
-//                    }else {
-//                        interimlocation = interimlocation + "{" + "Long:" + location.getLongitude() + "," + "Lat:" + location.getLatitude() + "}";
-//                    }
-//                }
-//                //updating the max speed
-////                double newSpeed = location.getSpeed();
-////                if (newSpeed > speed) {
-////                    speed = newSpeed;
-////                    DecimalFormat df = new DecimalFormat("#.##");
-////                    maxspeed.setText(df.format(speed) + " m/s");
-////                }
-//            }
+
+            //While the user is still running get the distance
+            if(stop.isEnabled()) {
+
+                //Radius of the earth in km: 6367km
+                double Rad = 6368;
+                //Find the distance between two points (lang & long) - Haversine formula
+                double dlong = toRadians(location.getLongitude() - latestLocation.getLongitude());
+                double dlat = toRadians(location.getLatitude() - latestLocation.getLatitude());
+                double a =
+                        Math.pow(Math.sin(toRadians(dlat) / 2.0), 2)
+                                + Math.cos(toRadians(latestLocation.getLatitude()))
+                                * Math.cos(toRadians(location.getLatitude()))
+                                * Math.pow(Math.sin(toRadians(dlong) / 2.0), 2);
+                double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                double d = Rad * c;
+                dist = dist + d;
+                distance.setText(getDistance(dist));
+
+                latestLocation = location;
+                LatLng latestCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
+                latestLocationString = "Latest coordinate: " + latestCoordinates;
+                currentLoc.setText(latestLocationString);
+
+
+                // updating the max speed
+                double newSpeed = location.getSpeed();
+                if (newSpeed > speed) {
+                    speed = newSpeed;
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    pace.setText(df.format(speed) + " m/s");
+                }
+
+                //just the speed
+                double currentSpeed = location.getSpeed();
+                speed = currentSpeed * 26.8224;
+                DecimalFormat df = new DecimalFormat("#.##");
+                currentPace.setText(df.format(speed) + "min/mile");
+            }
+        }
 //
 //        }
 
@@ -307,6 +315,24 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             return;
         }
         locationManager.removeUpdates(this);
+    }
+
+    public String getDistance(double dist){
+        String finalDistance = "";
+        double d = 0;
+        String unit = "miles";
+
+        d = dist * 0.6214; //Conversion of m to miles
+
+        DecimalFormat df = new DecimalFormat("#.###");
+        finalDistance = df.format(d) + " " + unit;
+
+        return finalDistance;
+    }
+
+    public void goToSummaryPage(View view) {
+        Intent intent = new Intent(this, SummaryActivity.class);
+        startActivity(intent);
     }
 
 }

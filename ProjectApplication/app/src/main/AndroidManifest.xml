@@ -33,7 +33,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBSW3uwct-jd844nPPaiQpONDHAYy2ZCSw" />
 
-        <activity android:name=".RecordingActivity"></activity>
+        <activity android:name=".RecordingActivity" />
+        <activity android:name=".SummaryActivity"></activity>
     </application>
 
 </manifest>
