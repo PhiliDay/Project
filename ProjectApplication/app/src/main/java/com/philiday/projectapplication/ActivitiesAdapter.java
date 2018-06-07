@@ -45,28 +45,28 @@ class ActivitiesAdapter extends ArrayAdapter<DetectedActivity> {
         return view;
     }
     //Process the list of detected activities//
-    void updateActivities(ArrayList<DetectedActivity> detectedActivities) {
-        HashMap<Integer, Integer> detectedActivitiesMap = new HashMap<>();
-        for (DetectedActivity activity : detectedActivities) {
-            detectedActivitiesMap.put(activity.getType(), activity.getConfidence());
-        }
-
-        ArrayList<DetectedActivity> temporaryList = new ArrayList<>();
-        for (int i = 0; i < ActivityIntentService.POSSIBLE_ACTIVITIES.length; i++) {
-            int confidence = detectedActivitiesMap.containsKey(ActivityIntentService.POSSIBLE_ACTIVITIES[i]) ?
-                    detectedActivitiesMap.get(ActivityIntentService.POSSIBLE_ACTIVITIES[i]) : 0;
-
-//Add the object to a temporaryList//
-            temporaryList.add(new
-                    DetectedActivity(ActivityIntentService.POSSIBLE_ACTIVITIES[i],
-                    confidence));
-        }
-//Remove all elements from the temporaryList//
-        this.clear();
-//Refresh the View//
-
-        for (DetectedActivity detectedActivity: temporaryList) {
-            this.add(detectedActivity);
-        }
-    }
+//    void updateActivities(ArrayList<DetectedActivity> detectedActivities) {
+//        HashMap<Integer, Integer> detectedActivitiesMap = new HashMap<>();
+//        for (DetectedActivity activity : detectedActivities) {
+//            detectedActivitiesMap.put(activity.getType(), activity.getConfidence());
+//        }
+//
+//        ArrayList<DetectedActivity> temporaryList = new ArrayList<>();
+//        for (int i = 0; i < ActivityIntentService.POSSIBLE_ACTIVITIES.length; i++) {
+//            int confidence = detectedActivitiesMap.containsKey(ActivityIntentService.POSSIBLE_ACTIVITIES[i]) ?
+//                    detectedActivitiesMap.get(ActivityIntentService.POSSIBLE_ACTIVITIES[i]) : 0;
+//
+////Add the object to a temporaryList//
+//            temporaryList.add(new
+//                    DetectedActivity(ActivityIntentService.POSSIBLE_ACTIVITIES[i],
+//                    confidence));
+//        }
+////Remove all elements from the temporaryList//
+//        this.clear();
+////Refresh the View//
+//
+//        for (DetectedActivity detectedActivity: temporaryList) {
+//            this.add(detectedActivity);
+//        }
+ //   }
 }

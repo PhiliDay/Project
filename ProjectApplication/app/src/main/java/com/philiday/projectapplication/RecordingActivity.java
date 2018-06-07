@@ -59,8 +59,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     double runningDist = 0;
     double walkPace = 0;
     double runPace = 0;
-    String latestLocationString;
-    String startLocationString;
+     String latestLocationString;
+    static String startLocationString;
+    String walkingDistanceHolder;
 
     Location startLocation;
     Location latestLocation;
@@ -99,6 +100,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         distance = (TextView) findViewById(R.id.distance);
         start = (Button) findViewById(R.id.start);
         stop = (Button) findViewById(R.id.stop);
+        save = (Button) findViewById(R.id.save);
         endtime = (TextView) findViewById(R.id.endtime);
         timetaken = (TextView) findViewById(R.id.timetaken);
         distance = (TextView) findViewById(R.id.distance);
@@ -114,7 +116,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
 
         stop.setEnabled(false); // stop button is disabled
-
+        save.setEnabled(false);
 
         // Click and start journey
         start.setOnClickListener(new View.OnClickListener() {
@@ -122,13 +124,13 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             public void onClick(View v) {
                 start.setEnabled(false);
                 stop.setEnabled(true);
-                startime.setText("");
-                endtime.setText("");
-                timetaken.setText("");
-                distance.setText("");
-                startlocation.setText("");
-                endlocation.setText("");
-                currentLoc.setText("");
+                startime.setText("starttime");
+                endtime.setText("endtime");
+                timetaken.setText("timetaken");
+                distance.setText("distance");
+                startlocation.setText("startlocation");
+                endlocation.setText("endlocation");
+                currentLoc.setText("currentlocation");
                 pace.setText("pace");
                 currentPace.setText("currentPace");
 //                walkingPace.setText("walkingPace");
@@ -142,7 +144,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                 startime.setText(sdf.format(cl.getTime()));
 
-                Log.i("myTag", ":" + startLocationString);
+                Log.i("myTag", "startLocationString" + startLocationString);
                 if (startLocationString != null) {
                     startlocation.setText(startLocationString);
                     Log.i("myTag", ":" + startLocationString);
@@ -159,6 +161,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             public void onClick(View v) {
                 stop.setEnabled(false);
                 start.setEnabled(true);
+                save.setEnabled(true);
 
                 tv.setText("0:00:00");
 
@@ -190,11 +193,24 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
                 //Finding out the pace that you completed your walk. Need to do 0 otherwise you get infinity
                 if(walkingDist == 0){
-                    walkingPace.setText("");
+                    walkingPace.setText("distanceiszero");
                 }else {
-                    walkPace = dtime / walkingDist;
+                    long h = TimeUnit.MILLISECONDS.toHours(dtime);
+                    long n = TimeUnit.MILLISECONDS.toMinutes(dtime) - h *60;
+                    long ss = TimeUnit.MILLISECONDS.toSeconds(dtime) - h *60 * 60 - n * 60;
+
+                    double seconds = ss*0.016667;
+
+                    ///Need to add here what happens if i get to the hour mark? - * 60 cause otherwise it just adds 2
+                    double total = h+(n*60)+seconds;
+
+                    double mileage = getMiles(walkingDist);
+
+                    walkPace = total / walkingDist;
                     Log.e("Result a: ", String.valueOf(dtime));
-                    Log.e("Result b: ", String.valueOf(walkingDist));
+                    Log.e("Result s: ", String.valueOf(ss));
+                    Log.e("Result t: ", String.valueOf(total));
+                    Log.e("Result b: ", String.valueOf(mileage));
                     Log.e("Result c: ", String.valueOf(walkPace));
 
                     walkingPace.setText("" + walkPace);
@@ -211,9 +227,17 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
         });
 
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecordingActivity.this, SummaryActivity.class);
 
+                intent.putExtra(startLocationString, walkingDistanceHolder);
+                startActivity(intent);
+            }
+        });
 
-    }
+        }
 
 
     //Converts numeric degrees to radians
@@ -351,7 +375,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
 //        PreferenceManager.getDefaultSharedPreferences(this)
 //                .registerOnSharedPreferenceChangeListener(this);
-        updateDetectedActivitiesList();
+     //   updateDetectedActivitiesList();
     }
 
 
@@ -384,37 +408,49 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         return finalDistance;
     }
 
+    public double getMiles(double dist){
+        //dist - convert from m to miles.
+        double d = 0;
+       // String unit = "miles";
+
+        d = dist * 0.6214; //Conversion of m to miles
+
+      //  DecimalFormat df = new DecimalFormat("#.###");
+
+        return d;
+    }
+
     public void goToSummaryPage(View view) {
         Intent intent = new Intent(this, SummaryActivity.class);
         startActivity(intent);
     }
 
-    public void requestUpdatesHandler(View view) {
-//Set the activity detection interval. I’m using 3 seconds//
-        Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
-                3000,
-                getActivityDetectionPendingIntent());
-        task.addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void result) {
-                updateDetectedActivitiesList();
-            }
-        });
-    }
+//    public void requestUpdatesHandler(View view) {
+////Set the activity detection interval. I’m using 3 seconds//
+//        Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
+//                3000,
+//                getActivityDetectionPendingIntent());
+//        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void result) {
+//                updateDetectedActivitiesList();
+//            }
+//        });
+//    }
     //Get a PendingIntent//
-    private PendingIntent getActivityDetectionPendingIntent() {
-//Send the activity data to our DetectedActivitiesIntentService class//
-        Intent intent = new Intent(this, ActivityIntentService.class);
-        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-    }
+//    private PendingIntent getActivityDetectionPendingIntent() {
+////Send the activity data to our DetectedActivitiesIntentService class//
+//        Intent intent = new Intent(this, ActivityIntentService.class);
+//        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//    }
     //Process the list of activities//
-    protected void updateDetectedActivitiesList() {
-        ArrayList<DetectedActivity> detectedActivities = ActivityIntentService.detectedActivitiesFromJson(
-                PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getString(DETECTED_ACTIVITY, ""));
-
-        mAdapter.updateActivities(detectedActivities);
-    }
+//    protected void updateDetectedActivitiesList() {
+//        ArrayList<DetectedActivity> detectedActivities = ActivityIntentService.detectedActivitiesFromJson(
+//                PreferenceManager.getDefaultSharedPreferences(mContext)
+//                        .getString(DETECTED_ACTIVITY, ""));
+//
+//        mAdapter.updateActivities(detectedActivities);
+//    }
 
 }

@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText13"
+        android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="44dp"
@@ -57,7 +57,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText14"
+        android:id="@+id/password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -70,7 +70,7 @@
         />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/sign_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="160dp"

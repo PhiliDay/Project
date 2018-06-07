@@ -35,6 +35,8 @@ public class ActivityIntentService extends IntentService {
 //If data is available, then extract the ActivityRecognitionResult from the Intent//
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
 
+            Log.i("mylog", "result: " + result);
+
 //Get an array of DetectedActivity objects//
             ArrayList<DetectedActivity> detectedActivities = (ArrayList) result.getProbableActivities();
             PreferenceManager.getDefaultSharedPreferences(this)
@@ -62,7 +64,7 @@ public class ActivityIntentService extends IntentService {
     }
     static final int[] POSSIBLE_ACTIVITIES = {
             DetectedActivity.WALKING,
-            DetectedActivity.RUNNING,
+            DetectedActivity.RUNNING
     };
 
     static String detectedActivitiesToJson(ArrayList<DetectedActivity> detectedActivitiesList) {
