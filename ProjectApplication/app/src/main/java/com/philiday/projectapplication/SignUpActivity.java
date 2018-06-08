@@ -42,7 +42,7 @@ public class SignUpActivity extends AppCompatActivity {
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+          //  SQLiteDatabase mydb = sqLiteHelper.getWritableDatabase();
                 SQLiteDataBaseBuild();
                 SQLiteTableBuild();
                 compareEditText();
@@ -119,7 +119,15 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Adding search email query to cursor.
         cursor = sqLiteDatabaseObj.query(SQLiteHelper.TABLE_NAME, null, " " + SQLiteHelper.Table_Column_2_Email + "=?", new String[]{EmailHolder}, null, null, null);
+        Log.v("MYDB","Table TABLE_NAME has " +
+                Integer.toString(cursor.getCount()) +
+                " rows");
 
+        for (int i=0; i < cursor.getColumnCount(); i++) {
+            Log.v("MYDB", "Table TABLE_NAME has a column named " +
+                    cursor.getColumnName(i)
+            );
+        }
         while (cursor.moveToNext()) {
 
             if (cursor.isFirst()) {

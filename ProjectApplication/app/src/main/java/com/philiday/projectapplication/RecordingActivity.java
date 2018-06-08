@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +54,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     long etime; // end time in milliseconds
     long dtime; // duration in milliseconds
 
+    double total = 0;
+    double totalTime=0;
+
     double speed=0;
     double dist = 0;
     double walkingDist = 0;
@@ -63,6 +67,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     static String startLocationString;
     String walkingDistanceHolder;
 
+    String finalDistance;
+    String formattedDate;
+    String ymd;
     Location startLocation;
     Location latestLocation;
 
@@ -176,7 +183,11 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 long hh = TimeUnit.MILLISECONDS.toHours(dtime);
                 long mn = TimeUnit.MILLISECONDS.toMinutes(dtime) - hh *60;
                 long s = TimeUnit.MILLISECONDS.toSeconds(dtime) - hh *60 * 60 - mn * 60;
+                totalTime = hh+mn+s;
                 timetaken.setText(hh+" h(s), " + mn +" mn(s) " + s + "s");
+
+                //Get the date
+                 ymd = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss", Locale.getDefault()).format(new Date());
 
 
                 //Get end location
@@ -202,7 +213,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                     double seconds = ss*0.016667;
 
                     ///Need to add here what happens if i get to the hour mark? - * 60 cause otherwise it just adds 2
-                    double total = h+(n*60)+seconds;
+                     total = h+(n*60)+seconds;
 
                     double mileage = getMiles(walkingDist);
 
@@ -231,8 +242,15 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(RecordingActivity.this, SummaryActivity.class);
+                String distanc = String.valueOf(dist);
+                String totalTime2 = String.valueOf(totalTime);
+                String calendarDate = String.valueOf(ymd);
+                Log.v("mytag", "totalTime"+ totalTime2);
+                Log.v("mytag", "distanc"+ distanc);
+                intent.putExtra("distance", distanc);
+                intent.putExtra("time", totalTime2);
+                intent.putExtra("timeOfRun", calendarDate);
 
-                intent.putExtra(startLocationString, walkingDistanceHolder);
                 startActivity(intent);
             }
         });

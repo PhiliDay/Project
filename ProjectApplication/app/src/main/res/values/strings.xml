@@ -14,6 +14,8 @@
     <string name="pause_run">Pause</string>
     <string name="save_run">Save</string>
     <string name="unknown_activity">Unknown Activity</string>
+    <string name="overall_run">Run Summary</string>
+
 
 
     <string name="password_display2">Re-enter your password:</string>
