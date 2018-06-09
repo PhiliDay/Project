@@ -1,10 +1,8 @@
 package com.philiday.projectapplication;
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,31 +13,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.google.android.gms.location.ActivityRecognitionClient;
-import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.Task;
-
-import org.w3c.dom.Text;
-
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class RecordingActivity extends AppCompatActivity implements LocationListener {
@@ -47,7 +35,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     private LocationManager locationManager;
 
     Button start, stop, save;
-    TextView startime, timetaken, startlocation, endlocation, currentLoc,  pace, endtime, distance, currentPace, tv, walkingPace, runningPace;
+    TextView startime, timetaken, startlocation, endlocation, currentLoc,  pace, endtime, distance, currentPace, tv, walkingPace, username;
     TextView walkingDis, runningDis;
 
     long stime; // start time in milliseconds
@@ -65,9 +53,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     double runPace = 0;
      String latestLocationString;
     static String startLocationString;
-    String walkingDistanceHolder;
 
-    String finalDistance;
     String formattedDate;
     String ymd;
     Location startLocation;
@@ -82,6 +68,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     private ActivityRecognitionClient mActivityRecognitionClient;
     private ActivitiesAdapter mAdapter;
     private Context mContext;
+
+    String db_username;
+    SQLiteHelper db;
 
 
 
@@ -103,6 +92,12 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         detectedActivitiesListView.setAdapter(mAdapter);
         mActivityRecognitionClient = new ActivityRecognitionClient(this);
 
+            //This gets the username from the login and puts it in the db_username
+        Intent in = getIntent();
+        db_username = in.getStringExtra("Username");
+        Log.i("mytag", "username" + db_username);
+        db = new SQLiteHelper(this);
+
         startime = (TextView) findViewById(R.id.startime);
         distance = (TextView) findViewById(R.id.distance);
         start = (Button) findViewById(R.id.start);
@@ -120,7 +115,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         walkingPace = (TextView) findViewById(R.id.walkingPace);
         walkingDis = (TextView) findViewById(R.id.walkingDis);
         runningDis = (TextView) findViewById(R.id.runningDis);
-
+        username = (TextView) findViewById(R.id.username);
 
         stop.setEnabled(false); // stop button is disabled
         save.setEnabled(false);
@@ -143,6 +138,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 //                walkingPace.setText("walkingPace");
                 walkingDis.setText("walkingDis");
                 runningDis.setText("runningDis");
+
 
 
                 //Get start time
@@ -201,6 +197,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 }
 
                 distance.setText(getDistance(dist));
+               // walkingDist = 1609.34;
 
                 //Finding out the pace that you completed your walk. Need to do 0 otherwise you get infinity
                 if(walkingDist == 0){
@@ -210,14 +207,14 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                     long n = TimeUnit.MILLISECONDS.toMinutes(dtime) - h *60;
                     long ss = TimeUnit.MILLISECONDS.toSeconds(dtime) - h *60 * 60 - n * 60;
 
-                    double seconds = ss*0.016667;
+           //         double seconds = ss*0.016667;
 
                     ///Need to add here what happens if i get to the hour mark? - * 60 cause otherwise it just adds 2
-                     total = h+(n*60)+seconds;
+                     total = h+n+ss;
 
                     double mileage = getMiles(walkingDist);
-
-                    walkPace = total / walkingDist;
+                    walkPace = (total / mileage)/60;
+                   // walkPace = walkPace/60;
                     Log.e("Result a: ", String.valueOf(dtime));
                     Log.e("Result s: ", String.valueOf(ss));
                     Log.e("Result t: ", String.valueOf(total));
@@ -250,7 +247,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 intent.putExtra("distance", distanc);
                 intent.putExtra("time", totalTime2);
                 intent.putExtra("timeOfRun", calendarDate);
-
+                intent.putExtra("Username", db_username);
                 startActivity(intent);
             }
         });
@@ -432,8 +429,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
        // String unit = "miles";
 
         d = dist * 0.6214; //Conversion of m to miles
-
-      //  DecimalFormat df = new DecimalFormat("#.###");
+        Log.i("distance", "d" + d);
 
         return d;
     }

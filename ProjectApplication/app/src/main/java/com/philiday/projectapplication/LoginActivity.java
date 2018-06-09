@@ -123,8 +123,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, timelineActivity.class);
 
             // Sending Email to Dashboard Activity using intent.
-            intent.putExtra(UserEmail, EmailHolder);
-
+            intent.putExtra("Useremail", EmailHolder);
             startActivity(intent);
         }
         else {

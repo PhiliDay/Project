@@ -52,9 +52,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                +Table1_Column_ID+" INTEGER PRIMARY KEY,"
                 +Table1_Column_1_date+"TIMESTAMP,"
                 +Table1_Column_2_distance+"INTEGER,"
-                +Table1_Column_3_time+"INTEGER)";
+                +Table1_Column_3_time+"INTEGER,"
              //   +Table1_Column_4_pace+"INTEGER NOT NULL,"
-             //   +Table1_Column_5_userId+"INTEGER NOT NULL, FOREIGN KEY" +Table1_Column_5_userId+ "REFERENCES" + TABLE_NAME + "(" + Table_Column_ID + ");";
+                +Table1_Column_5_userId+"INTEGER NOT NULL, FOREIGN KEY (" +Table1_Column_5_userId+ ") REFERENCES " + TABLE_NAME + "(" + Table_Column_ID + "));";
 
         database.execSQL(CREATE_TABLE);
 //Need to create a different function to create the table when you are in the app? Maybe for now make all not null?
@@ -93,6 +93,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         long a=dataBase.insert(table,col,cv);
         return a;
     }
+
+
 
 
 }

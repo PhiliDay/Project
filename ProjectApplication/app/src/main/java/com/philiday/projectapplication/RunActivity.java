@@ -2,18 +2,12 @@ package com.philiday.projectapplication;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -124,34 +118,4 @@ public class RunActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-//    private void showAlert(final int status){
-//        String message, title, btnText;
-//        if(status = 1) {
-//            message = "Turn on location settings";
-//            title = "Enable location";
-//            btnText = "Location Settings";
-//        }
-//        else{
-//            message = "Please allow access";
-//            title = "Permission access";
-//            btnText = "Grant";
-//        }
-//
-//        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-//        dialog.setCancelable(false);
-//        dialog.setTitle(title)
-//                .setMessage(message)
-//                .setPositiveButton(btnText, onClick(paramDialogInterface, paramInt) -> {
-//            if (status == 1) {
-//                Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                startActivity(myIntent);
-//            } else
-//                requestPermissions(PERMISSIONS, PERMISSION_ALL);
-//
-//        })
-//        .setNegativeButton("Cancel", onClick(paramDialogInterface, paramInt) -> {
-//            finish();
-//        });
-//        dialog.show();
-//    }
 }

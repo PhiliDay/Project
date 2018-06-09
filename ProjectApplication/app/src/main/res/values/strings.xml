@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">RUNWALKRUN</string>
+    <string name="app_name2">OSCILLATE</string>
+
     <string name="button_login">Login</string>
     <string name="button_signup">Sign Up</string>
     <string name="HomeScreenPic">HomeScreenPic</string>
@@ -15,6 +17,17 @@
     <string name="save_run">Save</string>
     <string name="unknown_activity">Unknown Activity</string>
     <string name="overall_run">Run Summary</string>
+    <string name="welcome">Welcome </string>
+    <string name="distance">Distance </string>
+    <string name="time">Time </string>
+    <string name="day">Date </string>
+    <string name="pace">Pace </string>
+    <string name="finish">Finish </string>
+
+
+
+
+
 
 
 

@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,10 +20,10 @@ import static com.philiday.projectapplication.SQLiteHelper.TABLE_NAME_1;
 public class SummaryActivity extends AppCompatActivity {
 
     String walkingDistanceHolder;
-    String timeHolder, dista, time1, timeOfRun;
+    String timeHolder, dista, time1, timeOfRun, userId, runId;
 
 
-    TextView distance, time, date;
+    TextView distance, time, date, username;
     TextView startLocation;
     SQLiteHelper sqLiteHelper;
     SQLiteDatabase sqLiteDatabaseObj;
@@ -39,6 +40,7 @@ public class SummaryActivity extends AppCompatActivity {
         distance = (TextView)findViewById(R.id.distance);
         time = (TextView)findViewById(R.id.time);
         date = (TextView)findViewById(R.id.date);
+        username = (TextView)findViewById(R.id.username);
 
         Intent intent = getIntent();
         Bundle b = intent.getExtras();
@@ -48,14 +50,20 @@ public class SummaryActivity extends AppCompatActivity {
          dista = (String)b.get("distance");
          time1 = (String)b.get("time");
          timeOfRun = (String)b.get("timeOfRun");
+         userId = (String)b.get("Username");
+         Log.i("username1", "username1" + userId);
+
 
          date.setText(timeOfRun);
         distance.setText(dista);
         time.setText(time1);
+        username.setText(userId);
       //  startLocation.setText(startLocation.getText().toString() + walkingDistanceHolder);
         SQLiteDataBaseBuild();
         SQLiteTableBuild();
-        columnExistsInTable(sqLiteDatabaseObj, TABLE_NAME_1, timeOfRun);
+        columnExistsInTable(sqLiteDatabaseObj, TABLE_NAME_1, SQLiteHelper.Table1_Column_1_date);
+//        columnExistsInTable(sqLiteDatabaseObj, TABLE_NAME_1, SQLiteHelper.Table1_Column_ID);
+
         InsertDataIntoSQLiteDatabase();
 
     }
@@ -71,7 +79,8 @@ public class SummaryActivity extends AppCompatActivity {
     public void SQLiteTableBuild() {
         sqLiteDatabaseObj.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_1);
 
-        sqLiteDatabaseObj.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME_1 + "(" + SQLiteHelper.Table1_Column_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + SQLiteHelper.Table1_Column_1_date + " VARCHAR(100) NOT NULL, " + SQLiteHelper.Table1_Column_2_distance + " INTEGER NOT NULL, " + SQLiteHelper.Table1_Column_3_time + " INTEGER NOT NULL)");
+        sqLiteDatabaseObj.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME_1 + "(" + SQLiteHelper.Table1_Column_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + SQLiteHelper.Table1_Column_1_date + " VARCHAR(100) NOT NULL UNIQUE, " + SQLiteHelper.Table1_Column_2_distance + " INTEGER NOT NULL, " + SQLiteHelper.Table1_Column_3_time + " INTEGER NOT NULL," +
+                SQLiteHelper.Table1_Column_5_userId+" INTEGER NOT NULL, FOREIGN KEY (" + SQLiteHelper.Table1_Column_5_userId+ ") REFERENCES " + SQLiteHelper.TABLE_NAME + "(" + SQLiteHelper.Table_Column_ID + "));");
 
     }
 
@@ -85,7 +94,8 @@ public class SummaryActivity extends AppCompatActivity {
     //Need to make total time insert into the database - managed to get it to display on the screen * SUCCESSFULLY TRANSFERRED*
 
             ContentValues contentValues = new ContentValues();
-            //contentValues.put("runId", 1);
+       //     contentValues.put("runId", runId);
+        contentValues.put("userId", userId);
         contentValues.put("timeOfRun", timeOfRun);
         contentValues.put("distance", dista);
             contentValues.put("time", time1);
@@ -130,6 +140,10 @@ public class SummaryActivity extends AppCompatActivity {
     }
 
     //HERE I NEED TO TAKE THE DISTANCE AND TIME TAKEN FROM THE ACTIVITY RECORDING AND CALCULATE THE PACE OVERALL. USE BUNDLE 2 DO THIS
-
+    public void goToTimeline(View view) {
+        Intent intent = new Intent(this, timelineActivity.class);
+        intent.putExtra("Username", userId);
+        startActivity(intent);
+    }
 
 }
