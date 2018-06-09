@@ -10,6 +10,7 @@ import android.widget.TextView;
 public class timelineActivity extends AppCompatActivity {
 
     String EmailHolder;
+    String username;
     TextView Email;
 
 
@@ -22,8 +23,9 @@ public class timelineActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        EmailHolder = intent.getStringExtra("Useremail");
+        EmailHolder = intent.getStringExtra("Username");
         Email.setText(Email.getText().toString() + " " + EmailHolder);
+        Email.setText(getUsername());
     }
 
     public void startRun(View view) {
@@ -36,5 +38,12 @@ public class timelineActivity extends AppCompatActivity {
     public void goToMap(View view) {
         Intent intent = new Intent(this, RunActivity.class);
         startActivity(intent);
+    }
+
+    public String getUsername(){
+        Intent intent = getIntent();
+        username = intent.getStringExtra("Username");
+        return username;
+
     }
 }

@@ -87,6 +87,8 @@ public class SignUpActivity extends AppCompatActivity {
             a = sqLiteHelper.insert(SQLiteHelper.TABLE_NAME, contentValues, SQLiteHelper.Table_Column_ID);
             if (a > 0) {
                 Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
             }
             sqLiteDatabaseObj.close();
 
