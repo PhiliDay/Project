@@ -43,8 +43,8 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
           //  SQLiteDatabase mydb = sqLiteHelper.getWritableDatabase();
-                SQLiteDataBaseBuild();
-                SQLiteTableBuild();
+               // SQLiteDataBaseBuild();
+               // SQLiteTableBuild();
                 compareEditText();
 
                 CheckingEmailAlreadyExistsOrNot();
@@ -62,22 +62,22 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    // SQLite database build method.
-    public void SQLiteDataBaseBuild(){
-
-        sqLiteDatabaseObj = openOrCreateDatabase(SQLiteHelper.DATABASE_NAME, Context.MODE_PRIVATE, null);
-
-    }
-
-    // SQLite table build method.
-    public void SQLiteTableBuild() {
-
-        sqLiteDatabaseObj.execSQL("CREATE TABLE IF NOT EXISTS " + SQLiteHelper.TABLE_NAME + "(" + SQLiteHelper.Table_Column_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + SQLiteHelper.Table_Column_2_Email + " VARCHAR, " + SQLiteHelper.Table_Column_3_Password + " VARCHAR);");
-
-    }
+//    // SQLite database build method.
+//    public void SQLiteDataBaseBuild(){
+//
+//        sqLiteDatabaseObj = openOrCreateDatabase(SQLiteHelper.DATABASE_NAME, Context.MODE_PRIVATE, null);
+//
+//    }
+//
+//    // SQLite table build method.
+//    public void SQLiteTableBuild() {
+//
+//        sqLiteDatabaseObj.execSQL("CREATE TABLE IF NOT EXISTS " + SQLiteHelper.TABLE_NAME + "(" + SQLiteHelper.Table_Column_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + SQLiteHelper.Table_Column_2_Email + " VARCHAR, " + SQLiteHelper.Table_Column_3_Password + " VARCHAR);");
+//
+//    }
 
     // Insert data into SQLite database method.
-    public void InsertDataIntoSQLiteDatabase() {
+    public void createUserInDatabase() {
         long a;
         // If editText is not empty then this block will executed.
         if (EditTextHolder == true) {
@@ -160,10 +160,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         }
         else {
-
-            // If email already dose n't exists then user registration details will entered to SQLite database.
-            InsertDataIntoSQLiteDatabase();
-
+            // If email already doesn't exists then user registration details will entered to SQLite database.
+            createUserInDatabase();
         }
 
         Email_find = "Not_Found" ;

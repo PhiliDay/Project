@@ -11,7 +11,6 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -39,12 +38,12 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".RecordingActivity" />
-        <activity android:name=".SummaryActivity"></activity>
+        <activity android:name=".SummaryActivity" />
 
         <service
             android:name=".ActivityIntentService"
             android:exported="false" />
-
+        <service android:name=".BackgroundDetectedActivitiesService" />
 
     </application>
 

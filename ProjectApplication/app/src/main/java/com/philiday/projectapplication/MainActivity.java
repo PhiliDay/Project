@@ -13,6 +13,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
+
+    //Sets the content of activity main in layouts!
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

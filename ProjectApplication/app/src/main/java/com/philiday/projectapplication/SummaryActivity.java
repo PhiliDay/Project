@@ -10,12 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
 import static com.philiday.projectapplication.SQLiteHelper.TABLE_NAME_1;
+import static com.philiday.projectapplication.SQLiteHelper.Table1_Column_5_userId;
 
 public class SummaryActivity extends AppCompatActivity {
 
@@ -27,6 +29,8 @@ public class SummaryActivity extends AppCompatActivity {
     TextView startLocation;
     SQLiteHelper sqLiteHelper;
     SQLiteDatabase sqLiteDatabaseObj;
+    Cursor cursor;
+
 
 
 
@@ -53,15 +57,14 @@ public class SummaryActivity extends AppCompatActivity {
          userId = (String)b.get("Username");
          Log.i("username1", "username1" + userId);
 
-
          date.setText(timeOfRun);
         distance.setText(dista);
         time.setText(time1);
         username.setText(userId);
       //  startLocation.setText(startLocation.getText().toString() + walkingDistanceHolder);
-        SQLiteDataBaseBuild();
-        SQLiteTableBuild();
-        columnExistsInTable(sqLiteDatabaseObj, TABLE_NAME_1, SQLiteHelper.Table1_Column_1_date);
+      //  SQLiteDataBaseBuild();
+      //  SQLiteTableBuild();
+//        columnExistsInTable(sqLiteDatabaseObj, TABLE_NAME_1, SQLiteHelper.Table1_Column_1_date);
 //        columnExistsInTable(sqLiteDatabaseObj, TABLE_NAME_1, SQLiteHelper.Table1_Column_ID);
 
         InsertDataIntoSQLiteDatabase();

@@ -116,7 +116,18 @@
         android:layout_marginLeft="56dp"
         android:layout_marginStart="56dp"
         android:layout_marginTop="300dp"
-        android:text="@string/overall_run"
+        android:textSize="45sp"
+        app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/username2"
+        android:layout_width="333dp"
+        android:layout_height="68dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="384dp"
         android:textSize="45sp"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"

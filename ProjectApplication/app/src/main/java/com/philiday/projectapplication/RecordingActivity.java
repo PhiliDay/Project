@@ -1,12 +1,14 @@
 package com.philiday.projectapplication;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -35,7 +37,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     private LocationManager locationManager;
 
     Button start, stop, save;
-    TextView startime, timetaken, startlocation, endlocation, currentLoc,  pace, endtime, distance, currentPace, tv, walkingPace, username;
+    TextView startime, timetaken, startlocation, endlocation, currentLoc,  pace, endtime, distance, currentPace, tv, walkingPace, username, runningPace, txtActivity, txtConfidence;
     TextView walkingDis, runningDis;
 
     long stime; // start time in milliseconds
@@ -64,13 +66,21 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     public int minutes = 0;
     public int hour = 0;
 
-    public static final String DETECTED_ACTIVITY = ".DETECTED ACTIVITY";
-    private ActivityRecognitionClient mActivityRecognitionClient;
-    private ActivitiesAdapter mAdapter;
-    private Context mContext;
+    private String TAG = RecordingActivity.class.getSimpleName();
+
+   // public static final String DETECTED_ACTIVITY = ".DETECTED ACTIVITY";
+  //  private ActivityRecognitionClient mActivityRecognitionClient;
+  //  private ActivitiesAdapter mAdapter;
+  //  private Context mContext;
 
     String db_username;
     SQLiteHelper db;
+
+    BroadcastReceiver broadcastReceiver;
+
+    final static int PERMISSION_ALL = 1;
+    final static String[] PERMISSIONS = {Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION};
 
 
 
@@ -78,47 +88,52 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
-        setUpLocation();
 
-        mContext = this;
+        if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+        } else setUpLocation();
+     //   setUpLocation();
 
-        ListView detectedActivitiesListView = (ListView) findViewById(R.id.activities_listview);
-
-        ArrayList<DetectedActivity> detectedActivities = ActivityIntentService.detectedActivitiesFromJson(
-                PreferenceManager.getDefaultSharedPreferences(this).getString(
-                        DETECTED_ACTIVITY, ""));
-
-        mAdapter = new ActivitiesAdapter(this, detectedActivities);
-        detectedActivitiesListView.setAdapter(mAdapter);
-        mActivityRecognitionClient = new ActivityRecognitionClient(this);
-
-            //This gets the username from the login and puts it in the db_username
+        //This gets the username from the login and puts it in the db_username
         Intent in = getIntent();
         db_username = in.getStringExtra("Username");
         Log.i("mytag", "username" + db_username);
         db = new SQLiteHelper(this);
 
-        startime = (TextView) findViewById(R.id.startime);
+        //startime = (TextView) findViewById(R.id.startime);
         distance = (TextView) findViewById(R.id.distance);
         start = (Button) findViewById(R.id.start);
         stop = (Button) findViewById(R.id.stop);
         save = (Button) findViewById(R.id.save);
-        endtime = (TextView) findViewById(R.id.endtime);
+       // endtime = (TextView) findViewById(R.id.endtime);
         timetaken = (TextView) findViewById(R.id.timetaken);
         distance = (TextView) findViewById(R.id.distance);
         startlocation = (TextView) findViewById(R.id.starting);
-        endlocation = (TextView) findViewById(R.id.endLocation);
-        currentLoc = (TextView) findViewById(R.id.updating);
+       // endlocation = (TextView) findViewById(R.id.endLocation);
+       //
+        // currentLoc = (TextView) findViewById(R.id.updating);
         pace = (TextView) findViewById(R.id.pace);
         currentPace = (TextView) findViewById(R.id.currentPace);
         tv = (TextView) findViewById(R.id.timer);
         walkingPace = (TextView) findViewById(R.id.walkingPace);
+        runningPace = (TextView) findViewById(R.id.runningPace);
+
         walkingDis = (TextView) findViewById(R.id.walkingDis);
         runningDis = (TextView) findViewById(R.id.runningDis);
         username = (TextView) findViewById(R.id.username);
 
+        txtActivity = findViewById(R.id.txt_activity);
+        txtConfidence = findViewById(R.id.txt_confidence);
+
         stop.setEnabled(false); // stop button is disabled
         save.setEnabled(false);
+
+
+
+
+        if (!isLocationEnabled()){
+            Log.v("mytag", "No location");
+         }
 
         // Click and start journey
         start.setOnClickListener(new View.OnClickListener() {
@@ -126,26 +141,29 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             public void onClick(View v) {
                 start.setEnabled(false);
                 stop.setEnabled(true);
-                startime.setText("starttime");
-                endtime.setText("endtime");
+
+                //Take this away when actually delivering the application
+//                startime.setText("starttime");
+           //     endtime.setText("endtime");
                 timetaken.setText("timetaken");
                 distance.setText("distance");
                 startlocation.setText("startlocation");
-                endlocation.setText("endlocation");
-                currentLoc.setText("currentlocation");
+               // endlocation.setText("endlocation");
+              //  currentLoc.setText("currentlocation");
                 pace.setText("pace");
                 currentPace.setText("currentPace");
-//                walkingPace.setText("walkingPace");
+                walkingPace.setText("walkingPace");
+                runningPace.setText("runningPace");
                 walkingDis.setText("walkingDis");
                 runningDis.setText("runningDis");
-
-
+                txtActivity.setText("txtActivity");
+                txtConfidence.setText("txtConfidence");
 
                 //Get start time
                 Calendar cl = Calendar.getInstance();
                 stime = cl.getTimeInMillis();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                startime.setText(sdf.format(cl.getTime()));
+              //  startime.setText(sdf.format(cl.getTime()));
 
                 Log.i("myTag", "startLocationString" + startLocationString);
                 if (startLocationString != null) {
@@ -153,6 +171,20 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                     Log.i("myTag", ":" + startLocationString);
 
                 }
+
+                //SHOULD TELL ME HOW WHETHER IM RUNNING OR WALKING !!!
+                broadcastReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Log.i("mytag", "broadcast2");
+
+                        if (intent.getAction().equals(Constants.BROADCAST_DETECTED_ACTIVITY)) {
+                            int type = intent.getIntExtra("type", -1);
+                            int confidence = intent.getIntExtra("confidence", 0);
+                            handleUserActivity(type, confidence);
+                        }
+                    }
+                };
 
 
             }
@@ -172,7 +204,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 Calendar cl = Calendar.getInstance();
                 etime = cl.getTimeInMillis();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                endtime.setText(sdf.format(cl.getTime()));
+              //  endtime.setText(sdf.format(cl.getTime()));
 
                 // Get the duration
                 dtime =etime -stime;
@@ -188,7 +220,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
                 //Get end location
                 if(latestLocationString!=null) {
-                    endlocation.setText(latestLocationString);
+                //    endlocation.setText(latestLocationString);
 
                  //   dist = latestLocation.distanceTo(startLocation);
                 }
@@ -224,12 +256,12 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                     walkingPace.setText("" + walkPace);
                 }
 
-//                if(runningDist == 0){
-//                    runningPace.setText("");
-//                }else{
-//                    runPace = dtime / runningDist;
-//                    runningPace.setText("" + runningPace);
-//                }
+                if(runningDist == 0){
+                    runningPace.setText("rP");
+                }else{
+                    runPace = dtime / runningDist;
+                    runningPace.setText("" + runningPace);
+                }
 
             }
 
@@ -271,7 +303,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 startLocationString = "Coordinate: " + myCoordinates;
                 startlocation.setText(startLocationString);
                 //Puts in my start location as current loc -- this is later updated
-                currentLoc.setText(startLocationString);
+             //   currentLoc.setText(startLocationString);
                 dist = 0;
             }
 
@@ -282,7 +314,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 //Add here also if gyroscope is this then walking
 
 
-                //Radius of the earth in km: 6367km
+                //Radius of the earth in km: 6368km
                 double Rad = 6368;
                 //Find the distance between two points (lang & long) - Haversine formula
                 double dlong = toRadians(location.getLongitude() - latestLocation.getLongitude());
@@ -388,6 +420,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 5,
                 this);
 
+
+
 //        PreferenceManager.getDefaultSharedPreferences(this)
 //                .registerOnSharedPreferenceChangeListener(this);
      //   updateDetectedActivitiesList();
@@ -439,32 +473,58 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         startActivity(intent);
     }
 
-//    public void requestUpdatesHandler(View view) {
-////Set the activity detection interval. I’m using 3 seconds//
-//        Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
-//                3000,
-//                getActivityDetectionPendingIntent());
-//        task.addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void result) {
-//                updateDetectedActivitiesList();
-//            }
-//        });
-//    }
-    //Get a PendingIntent//
-//    private PendingIntent getActivityDetectionPendingIntent() {
-////Send the activity data to our DetectedActivitiesIntentService class//
-//        Intent intent = new Intent(this, ActivityIntentService.class);
-//        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//    }
-    //Process the list of activities//
-//    protected void updateDetectedActivitiesList() {
-//        ArrayList<DetectedActivity> detectedActivities = ActivityIntentService.detectedActivitiesFromJson(
-//                PreferenceManager.getDefaultSharedPreferences(mContext)
-//                        .getString(DETECTED_ACTIVITY, ""));
-//
-//        mAdapter.updateActivities(detectedActivities);
-//    }
+    private void handleUserActivity(int type, int confidence) {
+        String label = getString(R.string.activity_unknown);
+
+        switch (type) {
+            case DetectedActivity.RUNNING: {
+                label = getString(R.string.activity_running);
+                Log.v("mytag", "activityRun"+ label);
+                break;
+            }
+            case DetectedActivity.STILL: {
+                label = getString(R.string.activity_still);
+                Log.v("mytag", "activityStill"+ label);
+                break;
+            }
+
+            case DetectedActivity.WALKING: {
+                label = getString(R.string.activity_walking);
+                Log.v("mytag", "activityWalk"+ label);
+
+                break;
+            }
+            case DetectedActivity.UNKNOWN: {
+                label = getString(R.string.activity_unknown);
+                Log.v("mytag", "activityUnknown"+ label);
+
+                break;
+            }
+        }
+
+        Log.e(TAG, "User activity: " + label + ", Confidence: " + confidence);
+
+        if (confidence > Constants.CONFIDENCE) {
+            txtActivity.setText(label);
+            txtConfidence.setText("Confidence: " + confidence);
+        }
+    }
+
+    private boolean isLocationEnabled(){
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private boolean isPermissionGranted() {
+        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            Log.v("mylog", "Permission granted");
+            return true;
+        } else {
+            Log.v("mylog", "Permission not granted");
+            return false;
+        }
+    }
 
 }
