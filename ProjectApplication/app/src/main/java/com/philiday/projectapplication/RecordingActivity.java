@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.location.ActivityRecognitionClient;
 
 import java.text.NumberFormat;
@@ -46,6 +50,16 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
     double total = 0;
     double totalTime=0;
+    double h= 0;
+    double n= 0;
+    double ss = 0;
+    double hh = 0;
+    double mn = 0;
+    double s = 0;
+
+    int type;
+    int confidence;
+
 
     double speed=0;
     double dist = 0;
@@ -89,6 +103,10 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
 
+//        if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
+//            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+//        } else setUpLocation();
+       // askPermission();
         if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
         } else setUpLocation();
@@ -135,6 +153,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             Log.v("mytag", "No location");
          }
 
+
+
+
         // Click and start journey
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,8 +177,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 runningPace.setText("runningPace");
                 walkingDis.setText("walkingDis");
                 runningDis.setText("runningDis");
-                txtActivity.setText("txtActivity");
-                txtConfidence.setText("txtConfidence");
+              //  txtActivity.setText("txtActivity");
+              //  txtConfidence.setText("txtConfidence");
 
                 //Get start time
                 Calendar cl = Calendar.getInstance();
@@ -172,19 +193,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
                 }
 
-                //SHOULD TELL ME HOW WHETHER IM RUNNING OR WALKING !!!
-                broadcastReceiver = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        Log.i("mytag", "broadcast2");
 
-                        if (intent.getAction().equals(Constants.BROADCAST_DETECTED_ACTIVITY)) {
-                            int type = intent.getIntExtra("type", -1);
-                            int confidence = intent.getIntExtra("confidence", 0);
-                            handleUserActivity(type, confidence);
-                        }
-                    }
-                };
+
 
 
             }
@@ -208,10 +218,10 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
                 // Get the duration
                 dtime =etime -stime;
-                long hh = TimeUnit.MILLISECONDS.toHours(dtime);
-                long mn = TimeUnit.MILLISECONDS.toMinutes(dtime) - hh *60;
-                long s = TimeUnit.MILLISECONDS.toSeconds(dtime) - hh *60 * 60 - mn * 60;
-                totalTime = hh+mn+s;
+                 hh = TimeUnit.MILLISECONDS.toHours(dtime);
+                 mn = TimeUnit.MILLISECONDS.toMinutes(dtime) - hh *60;
+                 s = TimeUnit.MILLISECONDS.toSeconds(dtime) - hh *60 * 60 - mn * 60;
+              //  totalTime = hh+mn+s;
                 timetaken.setText(hh+" h(s), " + mn +" mn(s) " + s + "s");
 
                 //Get the date
@@ -235,14 +245,14 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 if(walkingDist == 0){
                     walkingPace.setText("distanceiszero");
                 }else {
-                    long h = TimeUnit.MILLISECONDS.toHours(dtime);
-                    long n = TimeUnit.MILLISECONDS.toMinutes(dtime) - h *60;
-                    long ss = TimeUnit.MILLISECONDS.toSeconds(dtime) - h *60 * 60 - n * 60;
+                     h = TimeUnit.MILLISECONDS.toHours(dtime);
+                     n = TimeUnit.MILLISECONDS.toMinutes(dtime) - h *60;
+                     ss = TimeUnit.MILLISECONDS.toSeconds(dtime) - h *60 * 60 - n * 60;
 
            //         double seconds = ss*0.016667;
 
                     ///Need to add here what happens if i get to the hour mark? - * 60 cause otherwise it just adds 2
-                     total = h+n+ss;
+                  //   total = h+n+ss;
 
                     double mileage = getMiles(walkingDist);
                     walkPace = (total / mileage)/60;
@@ -271,28 +281,63 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(RecordingActivity.this, SummaryActivity.class);
-                String distanc = String.valueOf(dist);
-                String totalTime2 = String.valueOf(totalTime);
-                String calendarDate = String.valueOf(ymd);
-                Log.v("mytag", "totalTime"+ totalTime2);
+
+                String distanc = getValue(dist);
+               // String totalTime2 = getValue(totalTime);
+                String hoursTaken = getValue(hh);
+                String minutesTaken = getValue(mn);
+                String secondsTaken = getValue(s);
+                String calendarDate = ymd;
+
+               // Log.v("mytag", "totalTime"+ totalTime2);
                 Log.v("mytag", "distanc"+ distanc);
                 intent.putExtra("distance", distanc);
-                intent.putExtra("time", totalTime2);
+                //intent.putExtra("time", totalTime2);
                 intent.putExtra("timeOfRun", calendarDate);
                 intent.putExtra("Username", db_username);
+                intent.putExtra("hours", hoursTaken);
+                intent.putExtra("minutes", minutesTaken);
+                intent.putExtra("seconds", secondsTaken);
                 startActivity(intent);
             }
         });
 
-        }
 
 
-    //Converts numeric degrees to radians
-    private Double toRadians(Double value) {
-        return value * Math.PI / 180;
+        //SHOULD TELL ME HOW WHETHER IM RUNNING OR WALKING !!!
+        broadcastReceiver = new BroadcastReceiver() {
+
+            @Override
+
+            public void onReceive(Context context, Intent intent) {
+                Log.i("mytag", "broadcast2");
+
+                if (intent.getAction().equals(Constants.BROADCAST_DETECTED_ACTIVITY)) {
+
+                    int type1 = intent.getIntExtra("type1", -1);
+                    int confidence1 = intent.getIntExtra("confidence1", 0);
+
+                    Log.i("mytag", "type11" + type1);
+                    Log.i("mytag", "confidence22" + confidence1);
+
+                    handleUserActivity(type1, confidence1);
+
+                }
+            }
+        };
+
+        startTracking();
+
+
+    }
+
+    public String getValue(Double value){
+        String item = String.valueOf(value);
+        return item;
     }
 
     public void onLocationChanged(Location location) {
+
 
         if (location != null) {
             if (startLocation == null && stop.isEnabled()) {
@@ -308,69 +353,35 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             }
 
 
+
+
             //While the user is still running get the distance
             if(stop.isEnabled()) {
                 double activitySpeed = location.getSpeed();
                 //Add here also if gyroscope is this then walking
 
-
-                //Radius of the earth in km: 6368km
-                double Rad = 6368;
-                //Find the distance between two points (lang & long) - Haversine formula
-                double dlong = toRadians(location.getLongitude() - latestLocation.getLongitude());
-                double dlat = toRadians(location.getLatitude() - latestLocation.getLatitude());
-                double a =
-                        Math.pow(Math.sin(toRadians(dlat) / 2.0), 2)
-                                + Math.cos(toRadians(latestLocation.getLatitude()))
-                                * Math.cos(toRadians(location.getLatitude()))
-                                * Math.pow(Math.sin(toRadians(dlong) / 2.0), 2);
-                double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                double d = Rad * c;
+                double dist = distance(location.getLatitude(), location.getLongitude(), latestLocation.getLatitude(), latestLocation.getLongitude());
 
                 if(activitySpeed < 1.4){
 
-                walkingDist = walkingDist + d;
+                walkingDist = walkingDist + dist;
                 walkingDis.setText(getDistance(walkingDist));
                 } else{
-                        runningDist = runningDist + d;
+                        runningDist = runningDist + dist;
                         runningDis.setText(getDistance(runningDist));
                 }
 
-
-//                //Radius of the earth in km: 6367km
-//                double Rad = 6368;
-//                //Find the distance between two points (lang & long) - Haversine formula
-//                double dlong = toRadians(location.getLongitude() - latestLocation.getLongitude());
-//                double dlat = toRadians(location.getLatitude() - latestLocation.getLatitude());
-//                double a =
-//                        Math.pow(Math.sin(toRadians(dlat) / 2.0), 2)
-//                                + Math.cos(toRadians(latestLocation.getLatitude()))
-//                                * Math.cos(toRadians(location.getLatitude()))
-//                                * Math.pow(Math.sin(toRadians(dlong) / 2.0), 2);
-//                double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-//                double d = Rad * c;
-//                dist = dist + d;
-//                distance.setText(getDistance(dist));
-//
-//                latestLocation = location;
-//                LatLng latestCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
-//                latestLocationString = "Latest coordinate: " + latestCoordinates;
-//             //   currentLoc.setText(latestLocationString);
-
-
                 // updating the max speed
                 double newSpeed = location.getSpeed();
-                if (newSpeed > speed) {
-                    speed = newSpeed;
-                    DecimalFormat df = new DecimalFormat("#.##");
-                    pace.setText(df.format(speed) + " m/s");
-                }
+                findSpeed(newSpeed, speed);
+                DecimalFormat df = new DecimalFormat("#.##");
+                pace.setText(df.format(speed) + " m/s");
 
                 //just the speed
                 double currentSpeed = location.getSpeed();
                 speed = currentSpeed * 26.8224;
-                DecimalFormat df = new DecimalFormat("#.##");
-                currentPace.setText(df.format(speed) + "min/mile");
+                DecimalFormat df1 = new DecimalFormat("#.##");
+                currentPace.setText(df1.format(speed) + "min/mile");
             }
         }
 //
@@ -420,11 +431,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 5,
                 this);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
+                new IntentFilter(Constants.BROADCAST_DETECTED_ACTIVITY));
 
-
-//        PreferenceManager.getDefaultSharedPreferences(this)
-//                .registerOnSharedPreferenceChangeListener(this);
-     //   updateDetectedActivitiesList();
     }
 
 
@@ -473,30 +482,47 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         startActivity(intent);
     }
 
-    private void handleUserActivity(int type, int confidence) {
+//    public void broadcastIntent(View view){
+//        Intent intent = new Intent();
+//        intent.setAction("com.tutorialspoint.CUSTOM_INTENT");
+//        sendBroadcast(intent);
+//    }
+
+    public void handleUserActivity(int type, int confidence) {
         String label = getString(R.string.activity_unknown);
+        String conLabel = "";
+    //    Log.v("mytag", "label"+ label);
 
         switch (type) {
             case DetectedActivity.RUNNING: {
                 label = getString(R.string.activity_running);
                 Log.v("mytag", "activityRun"+ label);
+             //   txtActivity.setText("Type: " + label);
+              //  txtConfidence.setText("Confidence: " + confidence);
                 break;
             }
             case DetectedActivity.STILL: {
                 label = getString(R.string.activity_still);
+                conLabel = Integer.toString(confidence);
                 Log.v("mytag", "activityStill"+ label);
+              //  txtActivity.setText("Type: " + label);
+              //  txtConfidence.setText("Confidence: " + confidence);
                 break;
             }
 
             case DetectedActivity.WALKING: {
                 label = getString(R.string.activity_walking);
                 Log.v("mytag", "activityWalk"+ label);
+           //     txtActivity.setText("Type: " + label);
+              //  txtConfidence.setText("Confidence: " + confidence);
 
                 break;
             }
             case DetectedActivity.UNKNOWN: {
                 label = getString(R.string.activity_unknown);
                 Log.v("mytag", "activityUnknown"+ label);
+            //    txtActivity.setText("Type: " + label);
+              //  txtConfidence.setText("Confidence: " + confidence);
 
                 break;
             }
@@ -506,7 +532,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
         if (confidence > Constants.CONFIDENCE) {
             txtActivity.setText(label);
-            txtConfidence.setText("Confidence: " + confidence);
+            txtConfidence.setText(conLabel);
         }
     }
 
@@ -526,5 +552,41 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             return false;
         }
     }
+
+    private static double distance(double lat1, double lon1, double lat2, double lon2) {
+        //Radius of the earth in km: 6371km
+        double earthRadius = 3958.75; // miles (or 6371.0 kilometers)
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lon2-lon1);
+        double sindLat = Math.sin(dLat / 2);
+        double sindLng = Math.sin(dLng / 2);
+        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double d = earthRadius * c;
+
+
+        return d;
+    }
+
+    private static double findSpeed(double newSpeed, double speed)
+    {
+        if (newSpeed > speed) {
+            speed = newSpeed;
+        }
+        return speed;
+    }
+
+    private void askPermission(){
+        if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+        } else setUpLocation();
+    }
+
+    private void startTracking() {
+        Intent intent1 = new Intent(RecordingActivity.this, BackgroundDetectedActivitiesService.class);
+        startService(intent1);
+    }
+
 
 }

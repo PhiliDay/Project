@@ -39,41 +39,24 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-
-
-//        String CREATE_TABLE="CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("
-//                +Table_Column_ID+" INTEGER PRIMARY KEY, "
-//                + Table_Column_1_Name+" VARCHAR, "
-//                +Table_Column_2_Email+" VARCHAR, "
-//                +Table_Column_3_Password+" VARCHAR)";
-//
-//        String CREATE_TABLE_2="CREATE TABLE IF NOT EXISTS "+ TABLE_NAME_1+" ("
-//               +Table1_Column_ID+" INTEGER PRIMARY KEY,"
-//                +Table1_Column_1_date+"TIMESTAMP,"
-//                +Table1_Column_2_distance+"INTEGER,"
-//                +Table1_Column_3_time+"INTEGER,"
-//             //   +Table1_Column_4_pace+"INTEGER NOT NULL,"
-//                +Table1_Column_5_userId+"INTEGER NOT NULL, FOREIGN KEY (" +Table1_Column_5_userId+ ") REFERENCES " + TABLE_NAME + "(" + Table_Column_ID + "));";
-
-      //  database.execSQL(CREATE_TABLE);
+     //   database.execSQL("DROP TABLE IF EXISTS "+ RunDetails.TABLE_NAME_1);
 
         database.execSQL(UserDetails.CREATE_TABLE);
-//Need to create a different function to create the table when you are in the app? Maybe for now make all not null?
-     //   database.execSQL(CREATE_TABLE_2);
+        database.execSQL(RunDetails.CREATE_TABLE_2);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
 
+        database.execSQL("DROP TABLE IF EXISTS "+ RunDetails.TABLE_NAME_1);
         database.execSQL("DROP TABLE IF EXISTS "+ UserDetails.TABLE_NAME);
-      //  database.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_1);
-
         onCreate(database);
 
     }
 
     public long insert(String table,ContentValues cv,String col)
     {
+
         SQLiteDatabase dataBase = getWritableDatabase();
         long id=dataBase.insert(table,col,cv);
         return id;

@@ -16,23 +16,19 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
+
 import static com.philiday.projectapplication.SQLiteHelper.TABLE_NAME_1;
 import static com.philiday.projectapplication.SQLiteHelper.Table1_Column_5_userId;
 
 public class SummaryActivity extends AppCompatActivity {
 
-    String walkingDistanceHolder;
-    String timeHolder, dista, time1, timeOfRun, userId, runId;
-
+    String dista, time1, timeOfRun, userId, hours, minutes, seconds;
 
     TextView distance, time, date, username;
     TextView startLocation;
     SQLiteHelper sqLiteHelper;
     SQLiteDatabase sqLiteDatabaseObj;
-    Cursor cursor;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,23 +45,42 @@ public class SummaryActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle b = intent.getExtras();
 
-
         //distance = intent.getExtras(RecordingActivity);
+        DecimalFormat distaf = new DecimalFormat("#.###");
+        //   dista1 = distaf.format(dista);
+
          dista = (String)b.get("distance");
          time1 = (String)b.get("time");
          timeOfRun = (String)b.get("timeOfRun");
          userId = (String)b.get("Username");
-         Log.i("username1", "username1" + userId);
-
+         hours = (String)b.get("hours");
+         minutes = (String)b.get("minutes");
+         seconds = (String)b.get("seconds");
          date.setText(timeOfRun);
-        distance.setText(dista);
-        time.setText(time1);
-        username.setText(userId);
+         distance.setText(dista);
+         username.setText(userId);
+
+        Log.i("username1", "username1" + userId);
+        Log.i("hours", "hours " + hours);
+        Log.i("minutes", "minutes" + minutes);
+        Log.i("seconds", "seconds" + seconds);
+
+
+        //Only displays the relevant information - maybe make different TextViews to ensure correct positioning?
+        if(hours.equals("0.0") && minutes.equals("0.0")){
+            time.setText(seconds + "s");
+        }
+        else if(hours.equals("0.0")){
+           time.setText(minutes + "mn(s)" + seconds + "s");
+        } else{
+            time.setText(hours + "h(s), " + minutes + "mn(s) " + seconds + "s");
+        }
+
       //  startLocation.setText(startLocation.getText().toString() + walkingDistanceHolder);
-      //  SQLiteDataBaseBuild();
-      //  SQLiteTableBuild();
-//        columnExistsInTable(sqLiteDatabaseObj, TABLE_NAME_1, SQLiteHelper.Table1_Column_1_date);
-//        columnExistsInTable(sqLiteDatabaseObj, TABLE_NAME_1, SQLiteHelper.Table1_Column_ID);
+        SQLiteDataBaseBuild();
+        SQLiteTableBuild();
+      //  columnExistsInTable(sqLiteDatabaseObj, RunDetails.TABLE_NAME_1, RunDetails.Table1_Column_1_date);
+       // columnExistsInTable(sqLiteDatabaseObj, RunDetails.TABLE_NAME_1, RunDetails.Table1_Column_ID);
 
         InsertDataIntoSQLiteDatabase();
 
@@ -73,44 +88,36 @@ public class SummaryActivity extends AppCompatActivity {
 
     // SQLite database build method.
     public void SQLiteDataBaseBuild(){
-
         sqLiteDatabaseObj = openOrCreateDatabase(SQLiteHelper.DATABASE_NAME, Context.MODE_PRIVATE, null);
-
     }
 
     // SQLite table build method.
     public void SQLiteTableBuild() {
-        sqLiteDatabaseObj.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_1);
-
-        sqLiteDatabaseObj.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME_1 + "(" + SQLiteHelper.Table1_Column_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + SQLiteHelper.Table1_Column_1_date + " VARCHAR(100) NOT NULL UNIQUE, " + SQLiteHelper.Table1_Column_2_distance + " INTEGER NOT NULL, " + SQLiteHelper.Table1_Column_3_time + " INTEGER NOT NULL," +
-                SQLiteHelper.Table1_Column_5_userId+" INTEGER NOT NULL, FOREIGN KEY (" + SQLiteHelper.Table1_Column_5_userId+ ") REFERENCES " + SQLiteHelper.TABLE_NAME + "(" + SQLiteHelper.Table_Column_ID + "));");
-
+        sqLiteDatabaseObj = sqLiteHelper.getWritableDatabase();
+        sqLiteDatabaseObj.execSQL(RunDetails.CREATE_TABLE_2);
     }
 
     // Insert data into SQLite database method.
     public void InsertDataIntoSQLiteDatabase() {
-        long a;
-        Cursor cursor = null;
+        long insertData;
 
-
-        sqLiteDatabaseObj = sqLiteHelper.getWritableDatabase();
-    //Need to make total time insert into the database - managed to get it to display on the screen * SUCCESSFULLY TRANSFERRED*
-
-            ContentValues contentValues = new ContentValues();
-       //     contentValues.put("runId", runId);
+        ContentValues contentValues = new ContentValues();
         contentValues.put("userId", userId);
         contentValues.put("timeOfRun", timeOfRun);
         contentValues.put("distance", dista);
-            contentValues.put("time", time1);
-            a = sqLiteHelper.insert(TABLE_NAME_1, contentValues, SQLiteHelper.Table1_Column_ID);
+        contentValues.put("time", hours + "." + minutes + "." + seconds);
 
-            if (a > 0) {
-                Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
-            }
-            sqLiteDatabaseObj.close();
+        Log.i("userId", "userId" + userId);
 
+        insertData = sqLiteHelper.insert(RunDetails.TABLE_NAME_1, contentValues, RunDetails.Table1_Column_1_date);
+
+        if (insertData > 0) {
+            Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
+        }
+        sqLiteDatabaseObj.close();
     }
 
+    //JUST TO SEE WHETHER THE DATABASE WAS WORKING CORRECTLY
     public static boolean columnExistsInTable(SQLiteDatabase db, String table, String columnToCheck) {
         Cursor cursor = null;
         try {

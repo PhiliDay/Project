@@ -49,8 +49,22 @@ public class ActivityIntentService extends IntentService {
 
     private void broadcastActivity(DetectedActivity activity){
         Intent intent = new Intent(Constants.BROADCAST_DETECTED_ACTIVITY);
-        intent.putExtra("type", activity.getType());
-        intent.putExtra("confidence", activity.getConfidence());
+        int type = intent.getIntExtra("type", -1);
+        int type1 = activity.getType();
+        Log.i("mylog", "type: " + type);
+        Log.i("mylog", "type1: " + type1);
+
+        int confidence1 = activity.getConfidence();
+
+        int confidence = intent.getIntExtra("confidence", 0);
+        Log.i("mylog", "confidence: " + confidence);
+        Log.i("mylog", "confidence1: " + confidence1);
+
+        intent.putExtra("type", type);
+        intent.putExtra("type1", type1);
+        intent.putExtra("confidence", confidence);
+        intent.putExtra("confidence1", confidence1);
+
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
