@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home"
+        android:onClick="onOptionsItemSelected"/>
+
+    <item
+        android:id="@+id/navigation_record"
+        android:icon="@drawable/round_radio_button_checked_black_18dp"
+        android:title="@string/title_record"
+        android:onClick="onOptionsItemSelected"/>
+
+    <item
+        android:id="@+id/navigation_logout"
+        android:icon="@drawable/logout"
+        android:title="@string/title_logout"
+        android:onClick="onOptionsItemSelected"/>
+
+
+</menu>

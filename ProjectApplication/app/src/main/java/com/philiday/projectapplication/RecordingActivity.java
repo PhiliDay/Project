@@ -6,16 +6,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.internal.BottomNavigationMenuView;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -24,6 +33,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.ActivityRecognitionClient;
 
+import java.lang.reflect.Field;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import com.google.android.gms.location.DetectedActivity;
@@ -147,13 +157,16 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         save.setEnabled(false);
 
 
-
-
         if (!isLocationEnabled()){
             Log.v("mytag", "No location");
          }
 
+//        BottomNavigationView item = findViewById(R.id.navigation_bin);
+//        setIcon.item= R.drawable.bin;
 
+
+
+      //  navigation.getMenu().findItem(R.id.navigation_record).getIcon().setColorFilter(Color.RED,PorterDuff.Mode.SRC_IN);
 
 
         // Click and start journey
@@ -586,6 +599,33 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     private void startTracking() {
         Intent intent1 = new Intent(RecordingActivity.this, BackgroundDetectedActivitiesService.class);
         startService(intent1);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.navigation_home:
+                Toast.makeText(getApplicationContext(),
+                        "Correctly Identified Home!",
+                        Toast.LENGTH_SHORT)
+                        .show();
+                Intent home = new Intent(this, timelineActivity.class);
+                startActivity(home);
+                return true;
+            case R.id.navigation_record:
+                Toast.makeText(getApplicationContext(),
+                        "Correctly Identified Record!",
+                        Toast.LENGTH_SHORT)
+                        .show();
+                return true;
+            case R.id.navigation_logout:
+                Toast.makeText(getApplicationContext(),
+                        "Correctly Identified Logout!",
+                        Toast.LENGTH_SHORT)
+                        .show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
