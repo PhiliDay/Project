@@ -36,12 +36,15 @@
         android:id="@+id/toMap"
         android:layout_width="253dp"
         android:layout_height="81dp"
-        android:layout_marginBottom="348dp"
+        android:layout_marginBottom="192dp"
+        android:layout_marginTop="8dp"
         android:onClick="goToMap"
         android:text="@string/record_run"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.607"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_container" />
 
     <TextView
         android:id="@+id/email"

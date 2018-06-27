@@ -1,6 +1,8 @@
 package com.philiday.projectapplication;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -18,6 +20,9 @@ public class timelineActivity extends AppCompatActivity {
     String EmailHolder;
     String username;
     TextView Email;
+    SQLiteDatabase sqLiteDatabaseObj;
+    SQLiteHelper db;
+Cursor cursor;
 
 
     @Override
@@ -33,12 +38,80 @@ public class timelineActivity extends AppCompatActivity {
         //Ignore this(its to do with database stuff)
         Intent intent = getIntent();
 
+
+
         EmailHolder = intent.getStringExtra("Username");
-        Email.setText(Email.getText().toString() + " " + EmailHolder);
-        Email.setText(getUsername());
+        Log.i("mytag", "help" + EmailHolder);
+        db = new SQLiteHelper(this);
+
+        gettingDatabase(EmailHolder);
+        // c = db.getUserDetails(EmailHolder);
+
+//            String user1 = c.getString(0);
+//            Log.i("mytag", "why?" + user1
+//            );
+//        while (c.moveToNext()) {
+//
+//            if (c.isFirst()) {
+//
+//                c.moveToFirst();
+//                String user = c.getString(c.getColumnIndex(SQLiteHelper.Table_Column_ID));
+//                Log.i("mytag", "?" + user);
+//                Email.setText(Email.getText().toString() + " " + user);
+//
+//            }
+//        }
+        // get the user details from the database
+//        Log.i("mytag", "why?" + c);
+//        if(c == null){
+//            Log.i("mytag", "WHYYY?");
+//
+//        }
+          //  String user = c.getString(2);
+
+
+
+
+            // Email.setText(getUsername());
 
 
     }
+
+    public void gettingDatabase(String name){
+
+        // Opening SQLite database write permission.
+        sqLiteDatabaseObj = db.getWritableDatabase();
+
+        // Adding search email query to cursor.
+        cursor = sqLiteDatabaseObj.query(SQLiteHelper.TABLE_NAME, null, " " + SQLiteHelper.Table_Column_2_Email + "=?", new String[]{name}, null, null, null);
+        Log.v("MYDB","Table TABLE_NAME has " +
+                Integer.toString(cursor.getCount()) +
+                " rows");
+
+        for (int i=0; i < cursor.getColumnCount(); i++) {
+            Log.v("MYDB", "Table TABLE_NAME has a column named " +
+                    cursor.getColumnName(i)
+            );
+        }
+        while (cursor.moveToNext()) {
+
+            if (cursor.isFirst()) {
+
+                cursor.moveToFirst();
+                String user = cursor.getString(cursor.getColumnIndex(SQLiteHelper.Table_Column_2_Email));
+
+                // If Email is already exists then Result variable value set as Email Found.
+                Log.i("mytag", "?"  + user);
+                Email.setText(Email.getText().toString() + " " + user);
+
+                // Closing cursor.
+                cursor.close();
+            }
+        }
+
+
+    }
+
 
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        getMenuInflater().inflate(R.menu.navigation, menu);
@@ -53,6 +126,7 @@ public class timelineActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT)
                         .show();
                 Intent home = new Intent(this, timelineActivity.class);
+                home.putExtra("username", EmailHolder);
                 startActivity(home);
                 return true;
             case R.id.navigation_record:

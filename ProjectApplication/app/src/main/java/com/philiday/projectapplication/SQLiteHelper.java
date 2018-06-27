@@ -4,8 +4,11 @@ package com.philiday.projectapplication;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.util.Log;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
 
@@ -29,7 +32,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String Table1_Column_5_userId="userId";
 
     // private ContentValues cValues;
-    //private SQLiteDatabase dataBase = null;
+    SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+    SQLiteDatabase sqLiteDatabaseObj;
 
     public SQLiteHelper(Context context) {
 
@@ -61,6 +65,34 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         long id=dataBase.insert(table,col,cv);
         return id;
     }
+
+    public void getUserDetails(String name){
+        String[] select = {Table_Column_ID};
+        Log.i("mytag", "help1" + name);
+        SQLiteDatabase database = getWritableDatabase();
+//        Cursor c = sqLiteDatabaseObj.query(SQLiteHelper.TABLE_NAME, select, " " + SQLiteHelper.Table_Column_1_Name + "=?", new String[]{Table_Column_1_Name}, null, null, null);
+
+        Cursor c =  database.query(TABLE_NAME, select,
+                Table_Column_ID + " = \"" + name + "\"" ,
+                null, null, null, null, null);
+
+        Log.v("MYDB","Table TABLE_NAME has " +
+                Integer.toString(c.getCount()) +
+                " rows");
+
+        for (int i=0; i < c.getColumnCount(); i++) {
+            Log.v("MYDB", "Table TABLE_NAME has a column named " +
+                    c.getColumnName(i)
+            );
+        }
+      //  return c;
+    }
+
+
+
+
+
+
 
 //    public long insertUser(String name, String password){
 //        SQLiteDatabase db = this.getWritableDatabase();

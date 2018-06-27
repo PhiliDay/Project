@@ -5,7 +5,13 @@
         <item name="colorPrimary">#6960EC</item>
         <item name="colorPrimaryDark">#1F45FC</item>
         <item name="colorAccent">#736AFF</item>
+        <item name="buttonStyle">@style/btn</item>
 
+    </style>
+
+    <style name="btn" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">@color/greyText</item>
+        <item name="android:background">@drawable/shape</item>
     </style>
 
     <style name="GreyText" parent="TextAppearance.AppCompat">
@@ -20,6 +26,7 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 
 
 </resources>

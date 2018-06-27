@@ -183,8 +183,9 @@
 
     <Button
         android:id="@+id/stop"
-        android:layout_width="152dp"
-        android:layout_height="63dp"
+        style="@style/btn"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="156dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
@@ -194,11 +195,12 @@
 
     <Button
         android:id="@+id/start"
-        android:layout_width="152dp"
-        android:layout_height="63dp"
+        style="@style/btn"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="156dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:onClick="broadcastIntent"
         android:text="@string/record_run"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -206,8 +208,9 @@
 
     <Button
         android:id="@+id/save"
+        style="@style/btn"
         android:layout_width="263dp"
-        android:layout_height="63dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="40dp"
         android:layout_marginLeft="40dp"
@@ -258,7 +261,9 @@
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </FrameLayout>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation2"
@@ -271,5 +276,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/navigation2" />
 
+    <Chronometer
+        android:id="@+id/chronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="196dp"
+        android:layout_marginRight="196dp"
+        android:layout_marginTop="332dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

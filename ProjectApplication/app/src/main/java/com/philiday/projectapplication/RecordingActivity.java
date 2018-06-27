@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
@@ -27,6 +28,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +72,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     int type;
     int confidence;
 
+    private Location previousLocation;
+
 
     double speed=0;
     double dist = 0;
@@ -106,7 +110,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     final static String[] PERMISSIONS = {Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION};
 
-
+    LocationListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +165,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             Log.v("mytag", "No location");
          }
 
+
 //        BottomNavigationView item = findViewById(R.id.navigation_bin);
 //        setIcon.item= R.drawable.bin;
 
@@ -168,50 +173,14 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
       //  navigation.getMenu().findItem(R.id.navigation_record).getIcon().setColorFilter(Color.RED,PorterDuff.Mode.SRC_IN);
 
-
         // Click and start journey
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start.setEnabled(false);
-                stop.setEnabled(true);
-
-                //Take this away when actually delivering the application
-//                startime.setText("starttime");
-           //     endtime.setText("endtime");
-                timetaken.setText("timetaken");
-                distance.setText("distance");
-                startlocation.setText("startlocation");
-               // endlocation.setText("endlocation");
-              //  currentLoc.setText("currentlocation");
-                pace.setText("pace");
-                currentPace.setText("currentPace");
-                walkingPace.setText("walkingPace");
-                runningPace.setText("runningPace");
-                walkingDis.setText("walkingDis");
-                runningDis.setText("runningDis");
-              //  txtActivity.setText("txtActivity");
-              //  txtConfidence.setText("txtConfidence");
-
-                //Get start time
-                Calendar cl = Calendar.getInstance();
-                stime = cl.getTimeInMillis();
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-              //  startime.setText(sdf.format(cl.getTime()));
-
-                Log.i("myTag", "startLocationString" + startLocationString);
-                if (startLocationString != null) {
-                    startlocation.setText(startLocationString);
-                    Log.i("myTag", ":" + startLocationString);
-
-                }
-
-
-
-
-
+                clickStart(v);
             }
         });
+
 
         //Click and stop journey
         stop.setOnClickListener(new View.OnClickListener() {
@@ -223,11 +192,15 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
                 tv.setText("0:00:00");
 
+                //Stop the timer
+                stopTime();
+
                 // Get end time
-                Calendar cl = Calendar.getInstance();
-                etime = cl.getTimeInMillis();
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-              //  endtime.setText(sdf.format(cl.getTime()));
+                getEndTime();
+
+                //another way to get the duration
+             //   int totalDuration = (int) (SystemClock.elapsedRealtime() - duration.getBase()) / 1000; //convert from ms to s
+
 
                 // Get the duration
                 dtime =etime -stime;
@@ -293,25 +266,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RecordingActivity.this, SummaryActivity.class);
-
-                String distanc = getValue(dist);
-               // String totalTime2 = getValue(totalTime);
-                String hoursTaken = getValue(hh);
-                String minutesTaken = getValue(mn);
-                String secondsTaken = getValue(s);
-                String calendarDate = ymd;
-
-               // Log.v("mytag", "totalTime"+ totalTime2);
-                Log.v("mytag", "distanc"+ distanc);
-                intent.putExtra("distance", distanc);
-                //intent.putExtra("time", totalTime2);
-                intent.putExtra("timeOfRun", calendarDate);
-                intent.putExtra("Username", db_username);
-                intent.putExtra("hours", hoursTaken);
-                intent.putExtra("minutes", minutesTaken);
-                intent.putExtra("seconds", secondsTaken);
-                startActivity(intent);
+                clickSave(v);
             }
         });
 
@@ -349,58 +304,66 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         return item;
     }
 
-    public void onLocationChanged(Location location) {
 
+        public void onLocationChanged(Location location) {
 
-        if (location != null) {
-            if (startLocation == null && stop.isEnabled()) {
-                Log.v("mytag", "LOCATION NULL");
-                startLocation = location;
-                latestLocation = location;
-                LatLng myCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
-                startLocationString = "Coordinate: " + myCoordinates;
-                startlocation.setText(startLocationString);
-                //Puts in my start location as current loc -- this is later updated
-             //   currentLoc.setText(startLocationString);
-                dist = 0;
-            }
+            if (location != null) {
+                if (startLocation == null && stop.isEnabled()) {
+                    Log.v("mytag", "LOCATION NULL");
+                    startLocation = location;
+                    latestLocation = location;
+                    Log.v("mytag", "Latest Location" + latestLocation);
 
-
-
-
-            //While the user is still running get the distance
-            if(stop.isEnabled()) {
-                double activitySpeed = location.getSpeed();
-                //Add here also if gyroscope is this then walking
-
-                double dist = distance(location.getLatitude(), location.getLongitude(), latestLocation.getLatitude(), latestLocation.getLongitude());
-
-                if(activitySpeed < 1.4){
-
-                walkingDist = walkingDist + dist;
-                walkingDis.setText(getDistance(walkingDist));
-                } else{
-                        runningDist = runningDist + dist;
-                        runningDis.setText(getDistance(runningDist));
+                    LatLng myCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
+                    startLocationString = "Coordinate: " + myCoordinates;
+                    startlocation.setText(startLocationString);
+                    //Puts in my start location as current loc -- this is later updated
+                    //   currentLoc.setText(startLocationString);
+                    dist = 0;
                 }
 
-                // updating the max speed
-                double newSpeed = location.getSpeed();
-                findSpeed(newSpeed, speed);
-                DecimalFormat df = new DecimalFormat("#.##");
-                pace.setText(df.format(speed) + " m/s");
 
-                //just the speed
-                double currentSpeed = location.getSpeed();
-                speed = currentSpeed * 26.8224;
-                DecimalFormat df1 = new DecimalFormat("#.##");
-                currentPace.setText(df1.format(speed) + "min/mile");
+                //While the user is still running get the distance
+                if (stop.isEnabled()) {
+                    double activitySpeed = location.getSpeed();
+                    //Add here also if gyroscope is this then walking
+
+
+                    //NEED TO DECIDE HOW BEST TO DO THIS
+                    //   double dist = distance(location.getLatitude(), location.getLongitude(), latestLocation.getLatitude(), latestLocation.getLongitude());
+                    double dist = location.distanceTo(latestLocation);
+
+                    //Is this needed?
+                    latestLocation = location;
+
+                    Log.i("mytag", "dist" + dist);
+
+                    if (activitySpeed < 1.4) {
+
+                        walkingDist = walkingDist + dist;
+                        walkingDis.setText(getDistance(walkingDist));
+                    } else {
+                        runningDist = runningDist + dist;
+                        runningDis.setText(getDistance(runningDist));
+                    }
+
+                    // updating the max speed
+                    double newSpeed = location.getSpeed();
+                    findSpeed(newSpeed, speed);
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    pace.setText(df.format(speed) + " m/s");
+
+                    //just the speed
+                    double currentSpeed = location.getSpeed();
+                    speed = currentSpeed * 26.8224;
+                    DecimalFormat df1 = new DecimalFormat("#.##");
+                    currentPace.setText(df1.format(speed) + "min/mile");
+                }
             }
-        }
 //
-//        }
+        }
 
-    }
+
     public void onProviderDisabled(String provider) {
         // Code to do something if location provider is disabled e.g. display error
     }
@@ -418,7 +381,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     private void setUpLocation() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
             return;
         }
         locationManager.requestLocationUpdates(
@@ -426,6 +388,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 1000,
                 5,
                 this);
+
     }
 
     /**
@@ -609,6 +572,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                         Toast.LENGTH_SHORT)
                         .show();
                 Intent home = new Intent(this, timelineActivity.class);
+                home.putExtra("username", db_username);
                 startActivity(home);
                 return true;
             case R.id.navigation_record:
@@ -627,6 +591,98 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public void clickStart(View v){
+            boolean gpsEnabled = false;
+            start.setEnabled(false);
+            stop.setEnabled(true);
+
+            //Take this away when actually delivering the application
+//                startime.setText("starttime");
+            //     endtime.setText("endtime");
+            timetaken.setText("timetaken");
+            distance.setText("distance");
+            startlocation.setText("startlocation");
+            // endlocation.setText("endlocation");
+            //  currentLoc.setText("currentlocation");
+            pace.setText("pace");
+            currentPace.setText("currentPace");
+            walkingPace.setText("walkingPace");
+            runningPace.setText("runningPace");
+            walkingDis.setText("walkingDis");
+            runningDis.setText("runningDis");
+            //  txtActivity.setText("txtActivity");
+            //  txtConfidence.setText("txtConfidence");
+
+           //Get start time
+            calendarTime();
+            //Other way of doing start time
+            startTime();
+
+            Log.i("myTag", "startLocationString" + startLocationString);
+            startLocation(startLocationString);
+        }
+
+        private void clickSave(View v){
+            Intent intent = new Intent(RecordingActivity.this, SummaryActivity.class);
+
+            String distanc = getValue(dist);
+            // String totalTime2 = getValue(totalTime);
+            String hoursTaken = getValue(hh);
+            String minutesTaken = getValue(mn);
+            String secondsTaken = getValue(s);
+            String calendarDate = ymd;
+
+            // Log.v("mytag", "totalTime"+ totalTime2);
+            Log.v("mytag", "distanc"+ distanc);
+            intent.putExtra("distance", distanc);
+            //intent.putExtra("time", totalTime2);
+            intent.putExtra("timeOfRun", calendarDate);
+            intent.putExtra("Username", db_username);
+            intent.putExtra("hours", hoursTaken);
+            intent.putExtra("minutes", minutesTaken);
+            intent.putExtra("seconds", secondsTaken);
+            startActivity(intent);
+        }
+
+
+        private void startTime(){
+            Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
+            stime = System.currentTimeMillis();
+            duration.setBase(SystemClock.elapsedRealtime());
+            duration.start();
+        }
+
+        private void stopTime(){
+            Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
+            duration.stop();
+        }
+
+
+        //Is this being used?
+        private void calendarTime(){
+            Calendar cl = Calendar.getInstance();
+            stime = cl.getTimeInMillis();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        }
+
+        private void startLocation(String startLocationString){
+            if(startLocationString != null) {
+             startlocation.setText(startLocationString);
+                Log.i("myTag", ":" + startLocationString);
+
+            }
+        }
+
+        private void getEndTime(){
+            Calendar cl = Calendar.getInstance();
+            etime = cl.getTimeInMillis();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            //  endtime.setText(sdf.format(cl.getTime()));
+        }
+
+
+
 
 
 }

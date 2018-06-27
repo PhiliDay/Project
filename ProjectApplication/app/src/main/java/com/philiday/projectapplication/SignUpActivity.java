@@ -18,14 +18,15 @@ import com.google.android.gms.common.oob.SignUp;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    EditText Email, Password;
+    EditText Email, Password, Password2;
     Button Register;
-    String EmailHolder, PasswordHolder;
+    String EmailHolder, PasswordHolder, PasswordHolder2;
     Boolean EditTextHolder;
     SQLiteDatabase sqLiteDatabaseObj;
     SQLiteHelper sqLiteHelper;
     Cursor cursor;
     String Email_find = "Not_Found";
+    String Password_find = "Not_Found";
 
 
     @Override
@@ -36,6 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
         Register = (Button)findViewById(R.id.sign_up);
         Email = (EditText)findViewById(R.id.email);
         Password = (EditText)findViewById(R.id.password);
+        Password2 = (EditText)findViewById(R.id.password2);
         sqLiteHelper = new SQLiteHelper(this);
 
         // Adding click listener to register button.
@@ -82,6 +84,7 @@ public class SignUpActivity extends AppCompatActivity {
         // If editText is not empty then this block will executed.
         if (EditTextHolder == true) {
             ContentValues contentValues = new ContentValues();
+          // contentValues.put("userId", EmailHolder);
             contentValues.put("email", EmailHolder);
             contentValues.put("password", PasswordHolder);
             a = sqLiteHelper.insert(SQLiteHelper.TABLE_NAME, contentValues, SQLiteHelper.Table_Column_ID);
@@ -101,10 +104,20 @@ public class SignUpActivity extends AppCompatActivity {
         // Getting value from All EditText and storing into String Variables.
         EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
+        PasswordHolder2 = Password2.getText().toString();
+        Log.i("p1", "p1" + PasswordHolder);
+        Log.i("p1", "p2" + PasswordHolder2);
+        if(!PasswordHolder.equals(PasswordHolder2)) {
+            Log.i("p1", "her");
 
-        if(TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder)){
+                Password_find = "Password Incorrect";
+       //     EditTextHolder = false;
+        }
+        if(TextUtils.isEmpty(EmailHolder) || TextUtils.isEmpty(PasswordHolder) || TextUtils.isEmpty(PasswordHolder2)){
+            Log.i("p1", "p1" + PasswordHolder);
+            Log.i("p1", "p2" + PasswordHolder2);
 
-            EditTextHolder = false ;
+            EditTextHolder = false;
 
         }
         else {
@@ -112,6 +125,8 @@ public class SignUpActivity extends AppCompatActivity {
             EditTextHolder = true ;
         }
     }
+
+
 
     // Checking Email is already exists or not.
     public void CheckingEmailAlreadyExistsOrNot(){
@@ -140,7 +155,7 @@ public class SignUpActivity extends AppCompatActivity {
                 Email_find = "Email Already Exists";
 
                 // Closing cursor.
-                cursor.close();
+              //  cursor.close();
             }
         }
 
@@ -159,11 +174,15 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(SignUpActivity.this,"Email Already Exists",Toast.LENGTH_LONG).show();
 
         }
+        if(Password_find.equalsIgnoreCase("Password Incorrect")){
+            Toast.makeText(SignUpActivity.this,"Password Incorrect",Toast.LENGTH_LONG).show();
+
+        }
         else {
             // If email already doesn't exists then user registration details will entered to SQLite database.
             createUserInDatabase();
         }
-
+        Password_find = "Not_Found";
         Email_find = "Not_Found" ;
     }
 

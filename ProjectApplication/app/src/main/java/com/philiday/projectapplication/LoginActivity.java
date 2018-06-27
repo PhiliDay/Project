@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 
             // Adding search email query to cursor.
             cursor = sqLiteDatabaseObj.query(SQLiteHelper.TABLE_NAME, null, " " + SQLiteHelper.Table_Column_2_Email + "=?", new String[]{EmailHolder}, null, null, null);
+            Log.i("mytag", "curs?" + cursor);
 
             while (cursor.moveToNext()) {
 
@@ -75,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     // Storing Password associated with entered email.
                     temp = cursor.getString(cursor.getColumnIndex(SQLiteHelper.Table_Column_3_Password));
-
+                    Log.i("mytag", "temp" + temp);
                     // Closing cursor.
                     cursor.close();
                 }
