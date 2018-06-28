@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                     temp = cursor.getString(cursor.getColumnIndex(SQLiteHelper.Table_Column_3_Password));
                     Log.i("mytag", "temp" + temp);
                     // Closing cursor.
-                    cursor.close();
+                 //   cursor.close();
                 }
             }
 

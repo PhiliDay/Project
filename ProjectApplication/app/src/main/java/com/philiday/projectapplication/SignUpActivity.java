@@ -153,7 +153,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 // If Email is already exists then Result variable value set as Email Found.
                 Email_find = "Email Already Exists";
-
+                Log.i("mytag", "email: " + Email_find);
                 // Closing cursor.
               //  cursor.close();
             }
@@ -161,6 +161,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Calling method to check final result and insert data into SQLite database.
         runSearch();
+        cursor.close();
 
     }
 
@@ -174,7 +175,7 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(SignUpActivity.this,"Email Already Exists",Toast.LENGTH_LONG).show();
 
         }
-        if(Password_find.equalsIgnoreCase("Password Incorrect")){
+        else if(Password_find.equalsIgnoreCase("Password Incorrect")){
             Toast.makeText(SignUpActivity.this,"Password Incorrect",Toast.LENGTH_LONG).show();
 
         }

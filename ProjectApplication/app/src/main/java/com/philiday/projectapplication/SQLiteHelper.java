@@ -3,6 +3,7 @@ package com.philiday.projectapplication;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -34,6 +35,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     // private ContentValues cValues;
     SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
     SQLiteDatabase sqLiteDatabaseObj;
+
 
     public SQLiteHelper(Context context) {
 
@@ -144,5 +146,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //        // return count
 //        return count;
 //    }
+
+
 
 }

@@ -22,6 +22,7 @@
 
     <Button
         android:id="@+id/button3"
+        style="@style/btn2"
         android:layout_width="253dp"
         android:layout_height="81dp"
         android:layout_marginBottom="16dp"
@@ -34,12 +35,14 @@
 
     <Button
         android:id="@+id/toMap"
+        style="@style/btn2"
         android:layout_width="253dp"
         android:layout_height="81dp"
         android:layout_marginBottom="192dp"
         android:layout_marginTop="8dp"
         android:onClick="goToMap"
         android:text="@string/record_run"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.607"
@@ -73,9 +76,9 @@
         android:id="@+id/navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        android:background="@color/white"
+        app:itemIconTint="@color/colorPrimary"
+        app:itemTextColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

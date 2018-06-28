@@ -2,9 +2,9 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#6960EC</item>
-        <item name="colorPrimaryDark">#1F45FC</item>
-        <item name="colorAccent">#736AFF</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="buttonStyle">@style/btn</item>
 
     </style>
@@ -14,8 +14,13 @@
         <item name="android:background">@drawable/shape</item>
     </style>
 
+    <style name="btn2" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">@color/greyText</item>
+        <item name="android:background">@drawable/shape2</item>
+    </style>
+
     <style name="GreyText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">#808080</item>
+        <item name="android:textColor">#FFFFFF</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

@@ -105,7 +105,7 @@ Cursor cursor;
                 Email.setText(Email.getText().toString() + " " + user);
 
                 // Closing cursor.
-                cursor.close();
+             //   cursor.close();
             }
         }
 
@@ -125,9 +125,6 @@ Cursor cursor;
                         "Correctly Identified Home!",
                         Toast.LENGTH_SHORT)
                         .show();
-                Intent home = new Intent(this, timelineActivity.class);
-                home.putExtra("username", EmailHolder);
-                startActivity(home);
                 return true;
             case R.id.navigation_record:
                 Toast.makeText(getApplicationContext(),
