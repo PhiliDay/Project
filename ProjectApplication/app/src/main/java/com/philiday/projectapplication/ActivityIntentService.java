@@ -35,7 +35,7 @@ public class ActivityIntentService extends IntentService {
 //If data is available, then extract the ActivityRecognitionResult from the Intent//
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
 
-            Log.i("mylog", "result: " + result);
+         //   Log.i("mylog", "result: " + result);
 
 //Get an array of DetectedActivity objects//
 
@@ -51,14 +51,14 @@ public class ActivityIntentService extends IntentService {
         Intent intent = new Intent(Constants.BROADCAST_DETECTED_ACTIVITY);
         int type = intent.getIntExtra("type", -1);
         int type1 = activity.getType();
-        Log.i("mylog", "type: " + type);
-        Log.i("mylog", "type1: " + type1);
+      //  Log.i("mylog", "type: " + type);
+       // Log.i("mylog", "type1: " + type1);
 
         int confidence1 = activity.getConfidence();
 
         int confidence = intent.getIntExtra("confidence", 0);
-        Log.i("mylog", "confidence: " + confidence);
-        Log.i("mylog", "confidence1: " + confidence1);
+       // Log.i("mylog", "confidence: " + confidence);
+      //  Log.i("mylog", "confidence1: " + confidence1);
 
         intent.putExtra("type", type);
         intent.putExtra("type1", type1);

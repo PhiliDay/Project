@@ -9,14 +9,19 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME="UserDataBase";
-    private static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 1;
 
-    public static final String TABLE_NAME="UserTable";
+    public static final String TABLE_NAME="user";
     public static final String TABLE_NAME_1="RunTable";
 
 
@@ -31,6 +36,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String Table1_Column_3_time="time";
     public static final String Table1_Column_4_pace="pace";
     public static final String Table1_Column_5_userId="userId";
+    String temp = "NOT_FOUND" ;
 
     // private ContentValues cValues;
     SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -45,9 +51,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-     //   database.execSQL("DROP TABLE IF EXISTS "+ RunDetails.TABLE_NAME_1);
+        Log.i("tableQuery", UserDetails.CREATE_TABLE);
 
         database.execSQL(UserDetails.CREATE_TABLE);
+
         database.execSQL(RunDetails.CREATE_TABLE_2);
     }
 
@@ -90,62 +97,190 @@ public class SQLiteHelper extends SQLiteOpenHelper {
       //  return c;
     }
 
+    public RunDetails displayRun(String name) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = ("SELECT * FROM " + RunDetails.TABLE_NAME_1);
+
+        Log.i("query", selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+
+        Log.v("MYDB", "Table1 TABLE_NAME has " +
+                Integer.toString(c.getCount()) +
+                " rows");
+
+        for (int i = 0; i < c.getColumnCount(); i++) {
+            Log.v("MYDB", "Table1 TABLE_NAME has a column named " +
+                    c.getColumnName(i)
+            );
+        }
+
+        if (c != null)
+            c.moveToFirst();
+            Log.i("hello", "hello");
+            RunDetails rd = new RunDetails();
+            rd.setDistance(c.getString(c.getColumnIndex(RunDetails.Table1_Column_2_distance)));
+            rd.setDate(c.getString(c.getColumnIndex(RunDetails.Table1_Column_1_date)));
+            rd.setTime(c.getString(c.getColumnIndex(RunDetails.Table1_Column_3_time)));
+            // insert pace when needed
+
+
+            return rd;
+
+
+    }
+
+    public ArrayList<RunDetails> getAllRuns(String name){
+        ArrayList<RunDetails> runs = new ArrayList<RunDetails>();
+
+        String selectQuery = ("SELECT * FROM " + RunDetails.TABLE_NAME_1);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if(c.moveToFirst()){
+            do{
+                RunDetails rd = new RunDetails();
+                rd.setUserId(c.getString(c.getColumnIndex(RunDetails.Table1_Column_5_userId)));
+                rd.setDistance(c.getString(c.getColumnIndex(RunDetails.Table1_Column_2_distance)));
+                rd.setDate(c.getString(c.getColumnIndex(RunDetails.Table1_Column_1_date)));
+                rd.setTime(c.getString(c.getColumnIndex(RunDetails.Table1_Column_3_time)));
+                runs.add(rd);
+            }while (c.moveToNext());
+        }
+        return runs;
+    }
+
+    public void closeDb(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        if(db != null && db.isOpen())
+            db.close();
+    }
+
+    public long createUserInDatabase(UserDetails user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+       // String userID = createAUserId(user.getId());
+
+        ContentValues contentValues = new ContentValues();
+
+     //   contentValues.put(Table1_Column_5_userId, user.getId());
+        contentValues.put(Table_Column_2_Email, user.getEmail());
+        Log.i("userRow", "help" + user.getEmail());
+
+        contentValues.put(Table_Column_3_Password, user.getPassword());
+        long userRow = db.insert(UserDetails.TABLE_NAME, null, contentValues);
+        Log.i("userRow", "help2" + user.getPassword());
+
+
+        if (userRow > 0) {
+            // String selectQuery = ("SELECT * FROM " + UserDetails.TABLE_NAME);
+
+            // Cursor c = db.rawQuery(selectQuery, null);
+            Log.i("userRow", "datainserted");
+        }
+
+    return userRow;
+        // }
+    }
+
+    public List<UserDetails> getAllUsers(){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        List<UserDetails> userDetailsList = new ArrayList<UserDetails>();
+
+        String selectQuery = "SELECT * FROM " + UserDetails.TABLE_NAME;
+
+        Log.i("Tag", selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if(c.moveToFirst()){
+            do{
+                UserDetails u = new UserDetails();
+                u.setEmail(c.getString((c.getColumnIndex(UserDetails.Table_Column_2_Email))));
+                u.setPassword(c.getString((c.getColumnIndex(UserDetails.Table_Column_3_Password))));
+
+                userDetailsList.add(u);
+            }while(c.moveToNext());
+        }
+        return userDetailsList;
+    }
+
+
+    public UserDetails displayUser(String name) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = ("SELECT * FROM " + UserDetails.TABLE_NAME + " WHERE email = '" + name +"'");
+
+        Log.i("query", selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+
+        Log.v("MYDB", "Table1 TABLE_NAME has " +
+                Integer.toString(c.getCount()) +
+                " rows");
+
+        for (int i = 0; i < c.getColumnCount(); i++) {
+            Log.v("MYDB", "Table1 TABLE_NAME has a column named " +
+                    c.getColumnName(i)
+            );
+        }
+        Log.d("Count",String.valueOf(c.getCount()));
+        if(c.getCount() > 0){
+// get values from cursor here
+        }
+
+        if(c.getCount() == 0){
+            Log.i("user", "user does not exist");
+        }
+
+        if (c != null)
+            c.moveToFirst();
+        Log.i("hello", "hello");
+        UserDetails ud = new UserDetails();
+        ud.setEmail(c.getString(c.getColumnIndex(UserDetails.Table_Column_2_Email)));
+        ud.setPassword(c.getString(c.getColumnIndex(UserDetails.Table_Column_3_Password)));
+
+        // ud.setId(c.getString(c.getColumnIndex(UserDetails.Table_Column_ID)));
+
+
+        return ud;
+
+
+    }
 
 
 
 
 
+    // Insert data into SQLite database method.
+    public long createRun(RunDetails run) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
-//    public long insertUser(String name, String password){
-//        SQLiteDatabase db = this.getWritableDatabase();
-//
-//        ContentValues values = new ContentValues();
-//        values.put(UserDetails.Table_Column_1_Name, name);
-//        values.put(UserDetails.Table_Column_3_Password, password);
-//
-//        long id = db.insert(UserDetails.TABLE_NAME, null, values);
-//
-//        db.close();
-//
-//        return id;
-//    }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("userId", run.getUserId());
+        contentValues.put("timeOfRun", run.getDate());
+        contentValues.put("distance", run.getDistance());
+        contentValues.put("time", run.getTime());
 
-//    public UserDetails getData(String userId){
-//        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        Cursor cursor = db.query(UserDetails.TABLE_NAME,
-//                new String[]{UserDetails.Table_Column_ID, UserDetails.Table_Column_1_Name, UserDetails.Table_Column_2_Email, UserDetails.Table_Column_3_Password},
-//                UserDetails.Table_Column_ID + "=?",
-//                new String[]{String.valueOf(userId)}, null, null, null, null);
-//
-//        if (cursor != null)
-//            cursor.moveToFirst();
-//
-//        // prepare note object
-//        UserDetails userDetails = new UserDetails(
-//                cursor.getString(cursor.getColumnIndex(UserDetails.Table_Column_ID)),
-//                cursor.getString(cursor.getColumnIndex(UserDetails.Table_Column_1_Name)));
-//           //     cursor.getString(cursor.getColumnIndex(UserDetails.Table_Column_2_Email)),
-//           //     cursor.getString(cursor.getColumnIndex(UserDetails.Table_Column_3_Password)));
-//
-//        // close the db connection
-//        cursor.close();
-//
-//        return userDetails;
-//    }
+        Log.i("userId", "userId" + run);
+        Log.i("userId", "userId" + run.getTime());
 
-//    public int getUsersCount() {
-//        String countQuery = "SELECT  * FROM " + UserDetails.TABLE_NAME;
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(countQuery, null);
-//
-//        int count = cursor.getCount();
-//        cursor.close();
-//
-//
-//        // return count
-//        return count;
-//    }
+        long userRow = db.insert(RunDetails.TABLE_NAME_1, null, contentValues);
+
+
+        if (userRow > 0) {
+            Log.i("runRow", "datainserted");
+        }
+
+        return userRow;
+    }
+
 
 
 

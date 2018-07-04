@@ -18,9 +18,10 @@ public class LoginActivity extends AppCompatActivity {
     EditText Email, Password ;
     String EmailHolder, PasswordHolder;
     Boolean EditTextHolder;
-    SQLiteDatabase sqLiteDatabaseObj;
+    SQLiteDatabase db;
+    String name;
     SQLiteHelper sqLiteHelper;
-    Cursor cursor;
+   // Cursor cursor;
     String temp = "NOT_FOUND" ;
     public static final String UserEmail = "";
 
@@ -36,17 +37,36 @@ public class LoginActivity extends AppCompatActivity {
         Password = (EditText)findViewById(R.id.editPassword);
 
         sqLiteHelper = new SQLiteHelper(this);
+        // Getting value from All EditText and storing into String Variables.
+
+        UserDetails username = new UserDetails(EmailHolder, PasswordHolder);
+        sqLiteHelper.getWritableDatabase();
 
         //Adding click listener to log in button.
         LogInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //CheckEditTextStatus();
+                String name = Email.getText().toString();
+                UserDetails user = sqLiteHelper.displayUser(name);
+                EmailHolder = Email.getText().toString();
 
-                // Calling EditText is empty or no method.
-                CheckEditTextStatus();
+                String email = user.getEmail();
+                String password = user.getPassword();
+                Log.i("emailHolder", "emailHolder2" + EmailHolder);
 
-                // Calling login method.
-                LoginFunction();
+                if(EmailHolder.equals(email)){
+                    Toast.makeText(LoginActivity.this,"Login Successfully",Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(LoginActivity.this, timelineActivity.class);
+
+                    loginIntent.putExtra("Username", EmailHolder);
+                    startActivity(loginIntent);
+                }else{
+                    Toast.makeText(LoginActivity.this,"Username or Password Incorrect, try again",Toast.LENGTH_LONG).show();
+
+                }
+                Log.i("emailHolder", "emailHolder" + email);
+                Log.i("passwordHolder", "passwordHolder" + password);
 
 
             }
@@ -55,45 +75,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    // Login function starts from here.
-    public void LoginFunction(){
-        Log.i("mytag", "login here");
 
-        if(EditTextHolder) {
-
-            // Opening SQLite database write permission.
-            sqLiteDatabaseObj = sqLiteHelper.getWritableDatabase();
-
-            // Adding search email query to cursor.
-            cursor = sqLiteDatabaseObj.query(SQLiteHelper.TABLE_NAME, null, " " + SQLiteHelper.Table_Column_2_Email + "=?", new String[]{EmailHolder}, null, null, null);
-            Log.i("mytag", "curs?" + cursor);
-
-            while (cursor.moveToNext()) {
-
-                if (cursor.isFirst()) {
-
-                    cursor.moveToFirst();
-
-                    // Storing Password associated with entered email.
-                    temp = cursor.getString(cursor.getColumnIndex(SQLiteHelper.Table_Column_3_Password));
-                    Log.i("mytag", "temp" + temp);
-                    // Closing cursor.
-                 //   cursor.close();
-                }
-            }
-
-            // Calling method to check final result ..
-            runSearch();
-
-        }
-        else {
-
-            //If any of login EditText empty then this block will be executed.
-            Toast.makeText(LoginActivity.this,"Please Enter UserName or Password.",Toast.LENGTH_LONG).show();
-            Log.i("mytag", "Reaches here");
-        }
-
-    }
 
     // Checking EditText is empty or not.
     public void CheckEditTextStatus(){
@@ -118,14 +100,14 @@ public class LoginActivity extends AppCompatActivity {
     public void runSearch(){
         if(temp.equalsIgnoreCase(PasswordHolder))
         {
-            Toast.makeText(LoginActivity.this,"Login Successfully",Toast.LENGTH_LONG).show();
 
             // Going to Dashboard activity after login success message.
-            Intent intent = new Intent(LoginActivity.this, timelineActivity.class);
+//            Intent intent = new Intent(LoginActivity.this, timelineActivity.class);
 
             // Sending Email to Dashboard Activity using intent.
-            intent.putExtra("Username", EmailHolder);
-            startActivity(intent);
+
+//            intent.putExtra("Username", EmailHolder);
+//            startActivity(intent);
         }
         else {
             Toast.makeText(LoginActivity.this,"UserName or Password is Wrong, Please Try Again.",Toast.LENGTH_LONG).show();

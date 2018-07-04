@@ -31,9 +31,9 @@
         android:id="@+id/distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="76dp"
-        android:layout_marginLeft="44dp"
-        android:layout_marginStart="44dp"
+        android:layout_marginBottom="72dp"
+        android:layout_marginLeft="96dp"
+        android:layout_marginStart="96dp"
         app:layout_constraintBottom_toTopOf="@+id/start"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -51,11 +51,14 @@
         android:id="@+id/timetaken"
         android:layout_width="106dp"
         android:layout_height="39dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="36dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="200dp"
+        app:layout_constraintBottom_toTopOf="@+id/chronometer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txt_activity" />
+        app:layout_constraintTop_toTopOf="@+id/txt_activity"
+        app:layout_constraintVertical_bias="0.0" />
         <!--app:layout_constraintTop_toBottomOf="@+id/endtime" -->
 
 
@@ -67,8 +70,9 @@
         android:layout_marginLeft="204dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="204dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="164dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -80,7 +84,7 @@
         android:layout_marginLeft="204dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="204dp"
-        android:layout_marginTop="32dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
         <!--app:layout_constraintTop_toBottomOf="@+id/endLocation" -->
@@ -106,6 +110,7 @@
         android:layout_marginEnd="148dp"
         android:layout_marginRight="148dp"
         android:layout_marginTop="256dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -116,6 +121,7 @@
         android:layout_marginEnd="148dp"
         android:layout_marginRight="148dp"
         android:layout_marginTop="308dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -124,9 +130,9 @@
         android:id="@+id/walkingDis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="192dp"
-        android:layout_marginStart="192dp"
-        android:layout_marginTop="224dp"
+        android:layout_marginLeft="304dp"
+        android:layout_marginStart="304dp"
+        android:layout_marginTop="272dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -148,6 +154,7 @@
         android:layout_marginLeft="216dp"
         android:layout_marginStart="216dp"
         android:layout_marginTop="208dp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -158,6 +165,7 @@
         android:layout_marginLeft="216dp"
         android:layout_marginStart="216dp"
         android:layout_marginTop="292dp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -165,9 +173,9 @@
         android:id="@+id/runningDis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="192dp"
-        android:layout_marginStart="192dp"
-        android:layout_marginTop="164dp"
+        android:layout_marginLeft="304dp"
+        android:layout_marginStart="304dp"
+        android:layout_marginTop="224dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -186,7 +194,7 @@
         style="@style/btn2"
         android:layout_width="160dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="156dp"
+        android:layout_marginBottom="120dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/end_run"
@@ -198,13 +206,30 @@
         style="@style/btn2"
         android:layout_width="160dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="156dp"
+        android:layout_marginBottom="120dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:onClick="broadcastIntent"
         android:text="@string/record_run"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mapView"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="411dp"
+        android:layout_height="141dp"
+        android:layout_marginBottom="365dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:context="com.example.mapwithmarker.MapsMarkerActivity"
+        tools:layout="?android:attr/preferenceLayoutChild" />
 
     <Button
         android:id="@+id/save"
@@ -223,16 +248,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stop"
-        app:layout_constraintVertical_bias="0.17" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/txt_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="96dp"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="204dp"
+        android:layout_marginStart="204dp"
+        android:layout_marginTop="384dp"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimary"
         android:textSize="10sp"
@@ -245,9 +270,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginEnd="64dp"
-        android:layout_marginRight="64dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginRight="128dp"
+        android:layout_marginTop="384dp"
         android:textAllCaps="true"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -281,9 +306,9 @@
         android:id="@+id/chronometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="196dp"
-        android:layout_marginRight="196dp"
-        android:layout_marginTop="332dp"
+        android:layout_marginEnd="312dp"
+        android:layout_marginRight="312dp"
+        android:layout_marginTop="320dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

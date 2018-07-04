@@ -1,6 +1,8 @@
 package com.philiday.projectapplication;
 
 
+import android.content.Context;
+
 public class RunDetails {
 
     public static final String TABLE_NAME_1 = "RunTable1";
@@ -22,14 +24,17 @@ public class RunDetails {
 
     public static final String CREATE_TABLE_2="CREATE TABLE IF NOT EXISTS "+ TABLE_NAME_1+" ("
       //      +Table1_Column_ID+" TIMESTAMP PRIMARY KEY AUTOINCREMENT,"
-            +Table1_Column_1_date+" TIMESTAMP,"
-            +Table1_Column_2_distance+" VARCHAR,"
-            +Table1_Column_3_time+" VARCHAR,"
+            +Table1_Column_1_date+" TIMESTAMP, "
+            +Table1_Column_2_distance+" VARCHAR, "
+            +Table1_Column_3_time+" VARCHAR, "
             //   +Table1_Column_4_pace+"INTEGER NOT NULL,"
             +Table1_Column_5_userId+" VARCHAR NOT NULL, FOREIGN KEY (" +Table1_Column_5_userId+ ") REFERENCES " + UserDetails.TABLE_NAME + "(" + UserDetails.Table_Column_1_Name + "));";
 
-    public RunDetails() {
+    public RunDetails(){
+
     }
+
+
 
     public RunDetails(String userId, String date, String distance, String time) {
         this.userId = userId;
@@ -76,6 +81,13 @@ public class RunDetails {
 
     public void setUserId(String userId){
         this.userId = userId;
+    }
+
+    public void setRun(String userId, String distance, String time, String date){
+        this.userId = userId;
+        this.distance = distance;
+        this.time = time;
+        this.date = date;
     }
 
 }

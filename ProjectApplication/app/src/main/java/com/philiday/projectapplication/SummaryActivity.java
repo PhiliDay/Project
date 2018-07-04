@@ -36,11 +36,11 @@ public class SummaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_summary);
         sqLiteHelper = new SQLiteHelper(this);
 
-        startLocation = (TextView)findViewById(R.id.startLoc);
-        distance = (TextView)findViewById(R.id.distance);
-        time = (TextView)findViewById(R.id.time);
-        date = (TextView)findViewById(R.id.date);
-        username = (TextView)findViewById(R.id.username);
+        startLocation = (TextView) findViewById(R.id.startLoc);
+        distance = (TextView) findViewById(R.id.distance);
+        time = (TextView) findViewById(R.id.time);
+        date = (TextView) findViewById(R.id.date);
+        username = (TextView) findViewById(R.id.username);
 
         Intent intent = getIntent();
         Bundle b = intent.getExtras();
@@ -49,16 +49,17 @@ public class SummaryActivity extends AppCompatActivity {
         DecimalFormat distaf = new DecimalFormat("#.###");
         //   dista1 = distaf.format(dista);
 
-         dista = (String)b.get("distance");
-         time1 = (String)b.get("time");
-         timeOfRun = (String)b.get("timeOfRun");
-         userId = (String)b.get("Username");
-         hours = (String)b.get("hours");
-         minutes = (String)b.get("minutes");
-         seconds = (String)b.get("seconds");
-         date.setText(timeOfRun);
-         distance.setText(dista);
-         username.setText(userId);
+        dista = (String) b.get("distance");
+        time1 = (String) b.get("time");
+        timeOfRun = (String) b.get("timeOfRun");
+        userId = (String) b.get("Username");
+        hours = (String) b.get("hours");
+        minutes = (String) b.get("minutes");
+        seconds = (String) b.get("seconds");
+        date.setText(timeOfRun);
+        distance.setText(dista);
+        username.setText(userId);
+      //  time.setText(hours + minutes + seconds);
 
         Log.i("username1", "username1" + userId);
         Log.i("hours", "hours " + hours);
@@ -67,54 +68,19 @@ public class SummaryActivity extends AppCompatActivity {
 
 
         //Only displays the relevant information - maybe make different TextViews to ensure correct positioning?
-        if(hours.equals("0.0") && minutes.equals("0.0")){
+        if (hours.equals("0.0") && minutes.equals("0.0")) {
             time.setText(seconds + "s");
-        }
-        else if(hours.equals("0.0")){
-           time.setText(minutes + "mn(s)" + seconds + "s");
-        } else{
+        } else if (hours.equals("0.0")) {
+            time.setText(minutes + "mn(s)" + seconds + "s");
+        } else {
             time.setText(hours + "h(s), " + minutes + "mn(s) " + seconds + "s");
         }
 
-      //  startLocation.setText(startLocation.getText().toString() + walkingDistanceHolder);
-        SQLiteDataBaseBuild();
-        SQLiteTableBuild();
-      //  columnExistsInTable(sqLiteDatabaseObj, RunDetails.TABLE_NAME_1, RunDetails.Table1_Column_1_date);
-       // columnExistsInTable(sqLiteDatabaseObj, RunDetails.TABLE_NAME_1, RunDetails.Table1_Column_ID);
+        sqLiteHelper = new SQLiteHelper(getApplicationContext());
+        RunDetails run = new RunDetails(userId, timeOfRun, dista, hours + "h(s), " + minutes + "mn(s) " + seconds + "s");
+        sqLiteHelper.getWritableDatabase();
+        long insertingRun = sqLiteHelper.createRun(run);
 
-        InsertDataIntoSQLiteDatabase();
-
-    }
-
-    // SQLite database build method.
-    public void SQLiteDataBaseBuild(){
-        sqLiteDatabaseObj = openOrCreateDatabase(SQLiteHelper.DATABASE_NAME, Context.MODE_PRIVATE, null);
-    }
-
-    // SQLite table build method.
-    public void SQLiteTableBuild() {
-        sqLiteDatabaseObj = sqLiteHelper.getWritableDatabase();
-        sqLiteDatabaseObj.execSQL(RunDetails.CREATE_TABLE_2);
-    }
-
-    // Insert data into SQLite database method.
-    public void InsertDataIntoSQLiteDatabase() {
-        long insertData;
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("userId", userId);
-        contentValues.put("timeOfRun", timeOfRun);
-        contentValues.put("distance", dista);
-        contentValues.put("time", hours + "." + minutes + "." + seconds);
-
-        Log.i("userId", "userId" + userId);
-
-        insertData = sqLiteHelper.insert(RunDetails.TABLE_NAME_1, contentValues, RunDetails.Table1_Column_1_date);
-
-        if (insertData > 0) {
-            Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
-        }
-        sqLiteDatabaseObj.close();
     }
 
     //JUST TO SEE WHETHER THE DATABASE WAS WORKING CORRECTLY

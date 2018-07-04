@@ -22,7 +22,7 @@ public class SignUpActivity extends AppCompatActivity {
     Button Register;
     String EmailHolder, PasswordHolder, PasswordHolder2;
     Boolean EditTextHolder;
-    SQLiteDatabase sqLiteDatabaseObj;
+    SQLiteDatabase db;
     SQLiteHelper sqLiteHelper;
     Cursor cursor;
     String Email_find = "Not_Found";
@@ -33,29 +33,48 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+     //   sqLiteHelper = new SQLiteHelper(getApplicationContext());
 
         Register = (Button)findViewById(R.id.sign_up);
         Email = (EditText)findViewById(R.id.email);
         Password = (EditText)findViewById(R.id.password);
         Password2 = (EditText)findViewById(R.id.password2);
         sqLiteHelper = new SQLiteHelper(this);
-
+        EmailHolder = Email.getText().toString();
+        PasswordHolder = Password.getText().toString();
         // Adding click listener to register button.
+
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-          //  SQLiteDatabase mydb = sqLiteHelper.getWritableDatabase();
-               // SQLiteDataBaseBuild();
-               // SQLiteTableBuild();
-                compareEditText();
 
+
+            UserDetails user = new UserDetails(EmailHolder, PasswordHolder);
+
+             //   compareEditText();
+                db = sqLiteHelper.getWritableDatabase();
+
+                sqLiteHelper.getWritableDatabase();
+                compareEditText();
                 CheckingEmailAlreadyExistsOrNot();
 
-
-            //    CheckFinalResult();
+                if(runSearch() == false) {
+                    Log.i("getsTohere", "getsTohere");
+                    user.setEmail(EmailHolder);
+                    user.setPassword(PasswordHolder);
+                    long insertingUser = sqLiteHelper.createUserInDatabase(user);
+                    Log.d("User Count", "User Count: " + sqLiteHelper.getAllUsers().size());
+                    goToLogin(view);
+                }
+               // CheckFinalResult();
             }
         });
 
+    }
+
+    public void goToLogin(View view){
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     public void goToTimeline(View view) {
@@ -64,39 +83,6 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-//    // SQLite database build method.
-//    public void SQLiteDataBaseBuild(){
-//
-//        sqLiteDatabaseObj = openOrCreateDatabase(SQLiteHelper.DATABASE_NAME, Context.MODE_PRIVATE, null);
-//
-//    }
-//
-//    // SQLite table build method.
-//    public void SQLiteTableBuild() {
-//
-//        sqLiteDatabaseObj.execSQL("CREATE TABLE IF NOT EXISTS " + SQLiteHelper.TABLE_NAME + "(" + SQLiteHelper.Table_Column_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + SQLiteHelper.Table_Column_2_Email + " VARCHAR, " + SQLiteHelper.Table_Column_3_Password + " VARCHAR);");
-//
-//    }
-
-    // Insert data into SQLite database method.
-    public void createUserInDatabase() {
-        long a;
-        // If editText is not empty then this block will executed.
-        if (EditTextHolder == true) {
-            ContentValues contentValues = new ContentValues();
-          // contentValues.put("userId", EmailHolder);
-            contentValues.put("email", EmailHolder);
-            contentValues.put("password", PasswordHolder);
-            a = sqLiteHelper.insert(SQLiteHelper.TABLE_NAME, contentValues, SQLiteHelper.Table_Column_ID);
-            if (a > 0) {
-                Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
-            }
-            sqLiteDatabaseObj.close();
-
-        }
-    }
 
     // Method to check EditText is empty or Not.
     public void compareEditText(){
@@ -132,10 +118,12 @@ public class SignUpActivity extends AppCompatActivity {
     public void CheckingEmailAlreadyExistsOrNot(){
 
         // Opening SQLite database write permission.
-        sqLiteDatabaseObj = sqLiteHelper.getWritableDatabase();
+        db = sqLiteHelper.getWritableDatabase();
 
         // Adding search email query to cursor.
-        cursor = sqLiteDatabaseObj.query(SQLiteHelper.TABLE_NAME, null, " " + SQLiteHelper.Table_Column_2_Email + "=?", new String[]{EmailHolder}, null, null, null);
+        String selectQuery = ("SELECT * FROM " + UserDetails.TABLE_NAME + " WHERE email = '" + EmailHolder +"'");
+
+        cursor = db.rawQuery(selectQuery, null);
         Log.v("MYDB","Table TABLE_NAME has " +
                 Integer.toString(cursor.getCount()) +
                 " rows");
@@ -160,12 +148,12 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         // Calling method to check final result and insert data into SQLite database.
-        runSearch();
+        compareEditText();
         cursor.close();
 
     }
 
-    public void runSearch(){
+    public boolean runSearch(){
 
         // Checking whether email is already exists or not.
         if(Email_find.equalsIgnoreCase("Email Already Exists"))
@@ -180,11 +168,12 @@ public class SignUpActivity extends AppCompatActivity {
 
         }
         else {
+            return false;
             // If email already doesn't exists then user registration details will entered to SQLite database.
-            createUserInDatabase();
         }
         Password_find = "Not_Found";
         Email_find = "Not_Found" ;
+        return true;
     }
 
 

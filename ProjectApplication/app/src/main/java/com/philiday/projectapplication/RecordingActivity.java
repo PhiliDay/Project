@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -36,10 +37,21 @@ import android.widget.Toast;
 import com.google.android.gms.location.ActivityRecognitionClient;
 
 import java.lang.reflect.Field;
+import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import com.google.android.gms.location.DetectedActivity;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,7 +60,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
-public class RecordingActivity extends AppCompatActivity implements LocationListener {
+public class RecordingActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
 
     private LocationManager locationManager;
 
@@ -68,15 +80,21 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     double hh = 0;
     double mn = 0;
     double s = 0;
-
+String totalDistance;
     int type;
     int confidence;
 
     private Location previousLocation;
+    MarkerOptions mo;
+    Marker marker;
+    private GoogleMap mMap;
 
 
     double speed=0;
-    double dist = 0;
+    double dist;
+    double walked;
+    double ran;
+
     double walkingDist = 0;
     double runningDist = 0;
     double walkPace = 0;
@@ -101,6 +119,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
   //  private ActivitiesAdapter mAdapter;
   //  private Context mContext;
 
+    private ArrayList<LatLng> points; //added
+    Polyline line; //added
+
     String db_username;
     SQLiteHelper db;
 
@@ -117,6 +138,15 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapView);
+        mapFragment.getMapAsync(this);
+
+        points = new ArrayList<LatLng>(); //added
+
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        mo = new MarkerOptions().position(new LatLng(0, 0)).title("Current location");
 //        if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
 //            requestPermissions(PERMISSIONS, PERMISSION_ALL);
 //        } else setUpLocation();
@@ -143,7 +173,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         startlocation = (TextView) findViewById(R.id.starting);
        // endlocation = (TextView) findViewById(R.id.endLocation);
        //
-        // currentLoc = (TextView) findViewById(R.id.updating);
+         currentLoc = (TextView) findViewById(R.id.updating);
         pace = (TextView) findViewById(R.id.pace);
         currentPace = (TextView) findViewById(R.id.currentPace);
         tv = (TextView) findViewById(R.id.timer);
@@ -224,13 +254,13 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                     dist = 0;
                 }
 
-                distance.setText(getDistance(dist));
+                //distance.setText(getDistance(dist));
                // walkingDist = 1609.34;
 
                 //Finding out the pace that you completed your walk. Need to do 0 otherwise you get infinity
-                if(walkingDist == 0){
-                    walkingPace.setText("distanceiszero");
-                }else {
+              //  if(walkingDist == 0){
+             //       walkingPace.setText("distanceiszero");
+              //  }else {
                      h = TimeUnit.MILLISECONDS.toHours(dtime);
                      n = TimeUnit.MILLISECONDS.toMinutes(dtime) - h *60;
                      ss = TimeUnit.MILLISECONDS.toSeconds(dtime) - h *60 * 60 - n * 60;
@@ -250,7 +280,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                     Log.e("Result c: ", String.valueOf(walkPace));
 
                     walkingPace.setText("" + walkPace);
-                }
+             //   }
 
                 if(runningDist == 0){
                     runningPace.setText("rP");
@@ -304,48 +334,93 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         return item;
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        marker = mMap.addMarker(mo);
+        // Add a marker
+        // and move the map's camera to the same location.
+//        LatLng startPos = new LatLng(51.4558654, -2.6034682);
+//        googleMap.addMarker(new MarkerOptions().position(startPos)
+//                .title("Start Position"));
+//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(startPos));
+    }
+
 
         public void onLocationChanged(Location location) {
+        double oldDist = 0;
+
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            LatLng myCoordinates = new LatLng(latitude, longitude);
+
+            points.add(myCoordinates); //added
+
+            redrawLine(); //added
+
 
             if (location != null) {
-                if (startLocation == null && stop.isEnabled()) {
+                if (startLocation == null) {
                     Log.v("mytag", "LOCATION NULL");
                     startLocation = location;
                     latestLocation = location;
                     Log.v("mytag", "Latest Location" + latestLocation);
 
-                    LatLng myCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
+                    marker.setPosition(myCoordinates);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, 14));
                     startLocationString = "Coordinate: " + myCoordinates;
                     startlocation.setText(startLocationString);
                     //Puts in my start location as current loc -- this is later updated
-                    //   currentLoc.setText(startLocationString);
+                       currentLoc.setText(startLocationString);
                     dist = 0;
                 }
 
 
                 //While the user is still running get the distance
                 if (stop.isEnabled()) {
+
                     double activitySpeed = location.getSpeed();
                     //Add here also if gyroscope is this then walking
+                    Log.i("speed", "speed: " + activitySpeed);
+                    marker.setPosition(myCoordinates);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, 14));
+
 
 
                     //NEED TO DECIDE HOW BEST TO DO THIS
-                    //   double dist = distance(location.getLatitude(), location.getLongitude(), latestLocation.getLatitude(), latestLocation.getLongitude());
-                    double dist = location.distanceTo(latestLocation);
-
+                      double  d = distance(location.getLatitude(), location.getLongitude(), latestLocation.getLatitude(), latestLocation.getLongitude());
+                    //double dist = location.distanceTo(latestLocation);
+                    Log.i("mytag", "latestLocation: " + latestLocation);
+                    dist = dist + d;
                     //Is this needed?
                     latestLocation = location;
 
-                    Log.i("mytag", "dist" + dist);
+                    //PROPOSED IDEA
+                 //   if(activitySpeed < 1.4){
+                         walked = walkingDist + d;
+                  //  }// else{
+                     //    ran = runningDist + d;
+                  //  }
 
-                    if (activitySpeed < 1.4) {
+                    String walkedDist = getDistance(walked);
+                    walkingDis.setText(walkedDist);
 
-                        walkingDist = walkingDist + dist;
-                        walkingDis.setText(getDistance(walkingDist));
-                    } else {
-                        runningDist = runningDist + dist;
-                        runningDis.setText(getDistance(runningDist));
-                    }
+                    String ranDist = getDistance(ran);
+                    runningDis.setText(ranDist);
+
+                    Log.i("mytag", "dist: " + dist);
+                    Log.i("mytag", "latestLocation-location: " + latestLocation);
+
+                //    if (activitySpeed < 1.4) {
+                    String walkingDistance = getDistance(walked);
+                      //  walkingDist = walkingDist + dist;
+                        distance.setText(walkingDistance);
+                //   }
+                    totalDistance = walkingDistance;
+                 //  else {
+                     //   String runningDist = getDistance(ran);
+                     //   runningDis.setText(runningDist);
+                  //  }
 
                     // updating the max speed
                     double newSpeed = location.getSpeed();
@@ -531,18 +606,24 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
     private static double distance(double lat1, double lon1, double lat2, double lon2) {
         //Radius of the earth in km: 6371km
-        double earthRadius = 3958.75; // miles (or 6371.0 kilometers)
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLng = Math.toRadians(lon2-lon1);
+        int earthRadius = 6371; // miles (or 6371.0 kilometers)
+        double dLat = deg2rad(lat2-lat1);
+        double dLng = deg2rad(lon2-lon1);
         double sindLat = Math.sin(dLat / 2);
         double sindLng = Math.sin(dLng / 2);
         double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
-                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+                * Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2));
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double d = earthRadius * c;
 
+        //without this - returns km
+        double meterConversion = 1609;
 
-        return d;
+        return d ;
+    }
+
+    private static double deg2rad(double deg){
+        return deg * (Math.PI/180);
     }
 
     private static double findSpeed(double newSpeed, double speed)
@@ -592,7 +673,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         }
     }
 
-    public void clickStart(View v){
+    public void clickStart(View v) {
+
+
             boolean gpsEnabled = false;
             start.setEnabled(false);
             stop.setEnabled(true);
@@ -604,7 +687,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             distance.setText("distance");
             startlocation.setText("startlocation");
             // endlocation.setText("endlocation");
-            //  currentLoc.setText("currentlocation");
+            currentLoc.setText("currentlocation");
             pace.setText("pace");
             currentPace.setText("currentPace");
             walkingPace.setText("walkingPace");
@@ -614,19 +697,21 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             //  txtActivity.setText("txtActivity");
             //  txtConfidence.setText("txtConfidence");
 
-           //Get start time
+            //Get start time
             calendarTime();
             //Other way of doing start time
             startTime();
 
             Log.i("myTag", "startLocationString" + startLocationString);
             startLocation(startLocationString);
-        }
+
+    }
 
         private void clickSave(View v){
             Intent intent = new Intent(RecordingActivity.this, SummaryActivity.class);
 
             String distanc = getValue(dist);
+
             // String totalTime2 = getValue(totalTime);
             String hoursTaken = getValue(hh);
             String minutesTaken = getValue(mn);
@@ -635,7 +720,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
             // Log.v("mytag", "totalTime"+ totalTime2);
             Log.v("mytag", "distanc"+ distanc);
-            intent.putExtra("distance", distanc);
+            intent.putExtra("distance", totalDistance);
             //intent.putExtra("time", totalTime2);
             intent.putExtra("timeOfRun", calendarDate);
             intent.putExtra("Username", db_username);
@@ -680,6 +765,22 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
             //  endtime.setText(sdf.format(cl.getTime()));
         }
+
+
+    private void redrawLine(){
+
+        //mMap.clear();  //clears all Markers and Polylines
+
+        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+        for (int i = 0; i < points.size(); i++) {
+            LatLng point = points.get(i);
+            options.add(point);
+        }
+       // addMarker(); //add Marker in current position
+        line = mMap.addPolyline(options); //add Polyline
+    }
+
+
 
 
 

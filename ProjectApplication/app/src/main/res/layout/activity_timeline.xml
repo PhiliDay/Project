@@ -42,7 +42,7 @@
         android:layout_marginTop="8dp"
         android:onClick="goToMap"
         android:text="@string/record_run"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.607"
@@ -57,7 +57,34 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:lineSpacingExtra="30sp"
-        android:text="@string/welcome"
+        app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="28dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="68dp"
+        android:lineSpacingExtra="30sp"
+        android:text="@string/day"
+        android:visibility="gone"
+        app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="172dp"
+        android:layout_marginStart="172dp"
+        android:layout_marginTop="68dp"
+        android:lineSpacingExtra="30sp"
+        android:text="@string/time"
+        android:visibility="gone"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -65,9 +92,10 @@
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="283dp"
+        android:layout_marginTop="120dp"
         android:text="@string/navigation_drawer_open"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -77,11 +105,25 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:visibility="visible"
         app:itemIconTint="@color/colorPrimary"
         app:itemTextColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/navigation" />
+
+    <ListView
+        android:id="@+id/runList"
+        style="@android:style/Widget.ListView"
+        android:layout_width="wrap_content"
+        android:layout_height="350dp"
+        android:layout_marginBottom="96dp"
+        android:divider="@color/lightBlue"
+        android:lineSpacingExtra="30sp"
+        android:text="@string/welcome"
+        app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        app:layout_constraintStart_toStartOf="parent"></ListView>
 
 </android.support.constraint.ConstraintLayout>

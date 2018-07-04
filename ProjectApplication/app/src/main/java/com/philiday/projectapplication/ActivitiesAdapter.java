@@ -1,72 +1,71 @@
-//package com.philiday.projectapplication;
-//import android.support.annotation.NonNull;
-//import android.support.annotation.Nullable;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//
-//import android.util.Log;
-//import android.widget.ArrayAdapter;
-//import android.content.Context;
-//import android.view.LayoutInflater;
-//import android.widget.TextView;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import com.google.android.gms.location.DetectedActivity;
-//class ActivitiesAdapter extends ArrayAdapter<DetectedActivity> {
-//
-//    ActivitiesAdapter(Context context,
-//                      ArrayList<DetectedActivity> detectedActivities) {
-//        super(context, 0, detectedActivities);
-//    }
-//    @NonNull
-//    @Override
-//    public View getView(int position, @Nullable View view, @NonNull ViewGroup parent) {
-//
-////Retrieve the data item//
-//        DetectedActivity detectedActivity = getItem(position);
-//        if (view == null) {
-//            view = LayoutInflater.from(getContext()).inflate(
-//                    R.layout.activity_recording, parent, false);
-//        }
-////Retrieve the TextViews where we’ll display the activity type, and percentage//
-//
-//        TextView activityName = (TextView) view.findViewById(R.id.activity_type);
-//
-////If an activity is detected...//
-//        if (detectedActivity != null) {
-//            Log.i("myTag", "DETECTED ACTIVITY" );
-//
-//            activityName.setText(ActivityIntentService.getActivityString(getContext(),
-//
-////...get the activity type...//
-//                    detectedActivity.getType()));
-//
-//        }
-//        return view;
-//    }
-//    //Process the list of detected activities//
-////    void updateActivities(ArrayList<DetectedActivity> detectedActivities) {
-////        HashMap<Integer, Integer> detectedActivitiesMap = new HashMap<>();
-////        for (DetectedActivity activity : detectedActivities) {
-////            detectedActivitiesMap.put(activity.getType(), activity.getConfidence());
-////        }
-////
-////        ArrayList<DetectedActivity> temporaryList = new ArrayList<>();
-////        for (int i = 0; i < ActivityIntentService.POSSIBLE_ACTIVITIES.length; i++) {
-////            int confidence = detectedActivitiesMap.containsKey(ActivityIntentService.POSSIBLE_ACTIVITIES[i]) ?
-////                    detectedActivitiesMap.get(ActivityIntentService.POSSIBLE_ACTIVITIES[i]) : 0;
-////
-//////Add the object to a temporaryList//
-////            temporaryList.add(new
-////                    DetectedActivity(ActivityIntentService.POSSIBLE_ACTIVITIES[i],
-////                    confidence));
-////        }
-//////Remove all elements from the temporaryList//
-////        this.clear();
-//////Refresh the View//
-////
-////        for (DetectedActivity detectedActivity: temporaryList) {
-////            this.add(detectedActivity);
-////        }
-// //   }
-//}
+package com.philiday.projectapplication;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+public class ActivitiesAdapter extends BaseAdapter {
+
+    private ArrayList<RunDetails> runList;
+    private Context context;
+
+    public ActivitiesAdapter(ArrayList<RunDetails> list, Context cont){
+        this.runList = list;
+        this.context = cont;
+    }
+
+    @Override
+    public int getCount() {
+        return this.runList.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return this.runList.get(position);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder = null;
+
+        if(convertView == null){
+            LayoutInflater inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inf.inflate(R.layout.activity_list, null);
+
+            holder = new ViewHolder();
+            holder.date = (TextView)convertView.findViewById(R.id.date);
+            holder.time = (TextView)convertView.findViewById(R.id.time);
+            holder.distance = (TextView)convertView.findViewById(R.id.distance);
+
+            convertView.setTag(holder);
+        }
+        else {
+            holder = (ViewHolder)convertView.getTag();
+        }
+
+        RunDetails stu = runList.get(position);
+        holder.date.setText(stu.getDate());
+        holder.time.setText(stu.getTime());
+        holder.distance.setText(stu.getDistance());
+
+
+        return convertView;
+    }
+
+    private static class ViewHolder{
+        public TextView date;
+        public TextView time;
+        public TextView distance;
+
+    }
+}
