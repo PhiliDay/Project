@@ -37,6 +37,8 @@ public class timelineActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+
 
         //Assigns Email to the textview email within activity_timeline (layout)
         Email = (TextView)findViewById(R.id.email);
