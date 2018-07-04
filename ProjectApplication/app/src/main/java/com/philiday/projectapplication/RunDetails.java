@@ -14,12 +14,16 @@ public class RunDetails {
     public static final String Table1_Column_3_time="time";
     public static final String Table1_Column_4_pace="pace";
     public static final String Table1_Column_5_userId="userId";
+    public static final String Table1_Column_6_walkingDist="walkingDist";
+    public static final String Table1_Column_7_ranDist="ranDist";
 
     private String runId;
     private String date;
     private String distance;
     private String time;
     private String userId;
+    private String walkingDist;
+    private String ranDist;
 
 
     public static final String CREATE_TABLE_2="CREATE TABLE IF NOT EXISTS "+ TABLE_NAME_1+" ("
@@ -27,6 +31,8 @@ public class RunDetails {
             +Table1_Column_1_date+" TIMESTAMP, "
             +Table1_Column_2_distance+" VARCHAR, "
             +Table1_Column_3_time+" VARCHAR, "
+            +Table1_Column_6_walkingDist+" VARCHAR, "
+            +Table1_Column_7_ranDist+" VARCHAR, "
             //   +Table1_Column_4_pace+"INTEGER NOT NULL,"
             +Table1_Column_5_userId+" VARCHAR NOT NULL, FOREIGN KEY (" +Table1_Column_5_userId+ ") REFERENCES " + UserDetails.TABLE_NAME + "(" + UserDetails.Table_Column_1_Name + "));";
 
@@ -36,11 +42,13 @@ public class RunDetails {
 
 
 
-    public RunDetails(String userId, String date, String distance, String time) {
+    public RunDetails(String userId, String date, String distance, String time, String walkingDist, String ranDist) {
         this.userId = userId;
         this.date = date;
         this.distance = distance;
         this.time = time;
+        this.walkingDist = walkingDist;
+        this.ranDist = ranDist;
     }
 
     public String getrunId() {
@@ -82,6 +90,23 @@ public class RunDetails {
     public void setUserId(String userId){
         this.userId = userId;
     }
+
+    public void setWalkingDist(String walkingDist){
+        this.walkingDist = walkingDist;
+    }
+
+    public void setRanDist(String ranDist){
+        this.ranDist = ranDist;
+    }
+
+    public String getWalkingDist(){
+        return walkingDist;
+    }
+    public String getRanDist(){
+        return ranDist;
+    }
+
+
 
     public void setRun(String userId, String distance, String time, String date){
         this.userId = userId;

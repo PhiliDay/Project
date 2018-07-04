@@ -23,7 +23,7 @@ import static com.philiday.projectapplication.SQLiteHelper.Table1_Column_5_userI
 
 public class SummaryActivity extends AppCompatActivity {
 
-    String dista, time1, timeOfRun, userId, hours, minutes, seconds;
+    String dista, time1, timeOfRun, userId, hours, minutes, seconds, walkingDist, ranDist;
 
     TextView distance, time, date, username;
     TextView startLocation;
@@ -56,6 +56,8 @@ public class SummaryActivity extends AppCompatActivity {
         hours = (String) b.get("hours");
         minutes = (String) b.get("minutes");
         seconds = (String) b.get("seconds");
+        walkingDist = (String) b.get("walkedDist");
+        ranDist = (String) b.get("ranDist");
         date.setText(timeOfRun);
         distance.setText(dista);
         username.setText(userId);
@@ -64,7 +66,7 @@ public class SummaryActivity extends AppCompatActivity {
         Log.i("username1", "username1" + userId);
         Log.i("hours", "hours " + hours);
         Log.i("minutes", "minutes" + minutes);
-        Log.i("seconds", "seconds" + seconds);
+        Log.i("walkingDist", "walkingDist1" + walkingDist);
 
 
         //Only displays the relevant information - maybe make different TextViews to ensure correct positioning?
@@ -77,7 +79,7 @@ public class SummaryActivity extends AppCompatActivity {
         }
 
         sqLiteHelper = new SQLiteHelper(getApplicationContext());
-        RunDetails run = new RunDetails(userId, timeOfRun, dista, hours + "h(s), " + minutes + "mn(s) " + seconds + "s");
+        RunDetails run = new RunDetails(userId, timeOfRun, dista, hours + "h(s), " + minutes + "mn(s) " + seconds + "s", walkingDist, ranDist);
         sqLiteHelper.getWritableDatabase();
         long insertingRun = sqLiteHelper.createRun(run);
 

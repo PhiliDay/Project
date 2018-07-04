@@ -147,6 +147,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 rd.setDistance(c.getString(c.getColumnIndex(RunDetails.Table1_Column_2_distance)));
                 rd.setDate(c.getString(c.getColumnIndex(RunDetails.Table1_Column_1_date)));
                 rd.setTime(c.getString(c.getColumnIndex(RunDetails.Table1_Column_3_time)));
+                rd.setWalkingDist(c.getString(c.getColumnIndex(RunDetails.Table1_Column_6_walkingDist)));
+                rd.setRanDist(c.getString(c.getColumnIndex(RunDetails.Table1_Column_7_ranDist)));
+
                 runs.add(rd);
             }while (c.moveToNext());
         }
@@ -267,9 +270,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         contentValues.put("timeOfRun", run.getDate());
         contentValues.put("distance", run.getDistance());
         contentValues.put("time", run.getTime());
+        contentValues.put("walkingDist", run.getWalkingDist());
+        contentValues.put("ranDist", run.getRanDist());
 
         Log.i("userId", "userId" + run);
         Log.i("userId", "userId" + run.getTime());
+        Log.i("userId", "walkingDist" + run.getWalkingDist());
 
         long userRow = db.insert(RunDetails.TABLE_NAME_1, null, contentValues);
 

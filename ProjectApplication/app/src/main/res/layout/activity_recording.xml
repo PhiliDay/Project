@@ -34,6 +34,7 @@
         android:layout_marginBottom="72dp"
         android:layout_marginLeft="96dp"
         android:layout_marginStart="96dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/start"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -71,6 +72,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="204dp"
         android:layout_marginTop="164dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,9 +132,10 @@
         android:id="@+id/walkingDis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="304dp"
-        android:layout_marginStart="304dp"
-        android:layout_marginTop="272dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="224dp"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -173,10 +176,11 @@
         android:id="@+id/runningDis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="304dp"
-        android:layout_marginStart="304dp"
+        android:layout_marginEnd="96dp"
+        android:layout_marginRight="96dp"
         android:layout_marginTop="224dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -186,6 +190,7 @@
         android:layout_marginEnd="148dp"
         android:layout_marginRight="148dp"
         android:layout_marginTop="208dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -255,9 +260,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="204dp"
-        android:layout_marginStart="204dp"
-        android:layout_marginTop="384dp"
+        android:layout_marginLeft="124dp"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="324dp"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimary"
         android:textSize="10sp"
@@ -270,13 +275,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginEnd="128dp"
-        android:layout_marginRight="128dp"
-        android:layout_marginTop="384dp"
+        android:layout_marginEnd="176dp"
+        android:layout_marginRight="176dp"
+        android:layout_marginTop="324dp"
         android:textAllCaps="true"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="112dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="164dp"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_container" />
 
     <FrameLayout
         android:id="@+id/fragment_container"
@@ -306,9 +322,10 @@
         android:id="@+id/chronometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="312dp"
-        android:layout_marginRight="312dp"
-        android:layout_marginTop="320dp"
+        android:layout_marginEnd="196dp"
+        android:layout_marginRight="196dp"
+        android:layout_marginTop="188dp"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

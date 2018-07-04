@@ -39,6 +39,26 @@
         android:textColor="@color/oldsilver"
         android:textSize="15sp"></TextView>
 
+        <TextView
+            android:id="@+id/walkingDist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@+id/time"
+            android:gravity="center_horizontal"
+            android:textColor="@color/oldsilver"
+            android:textSize="15sp"></TextView>
+
+        <TextView
+            android:id="@+id/ranDist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@+id/time"
+            android:gravity="center_horizontal"
+            android:textColor="@color/oldsilver"
+            android:textSize="15sp"></TextView>
+
     </TableRow>
 
     </TableLayout>

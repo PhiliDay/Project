@@ -28,9 +28,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +59,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +93,8 @@ String totalDistance;
     Marker marker;
     private GoogleMap mMap;
 
-
+    String walkedDist;
+    String ranDist;
     double speed=0;
     double dist;
     double walked;
@@ -111,6 +116,9 @@ String totalDistance;
     public int seconds = 0;
     public int minutes = 0;
     public int hour = 0;
+    Spinner mode;
+    String db_mode;
+
 
     private String TAG = RecordingActivity.class.getSimpleName();
 
@@ -138,12 +146,46 @@ String totalDistance;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
 
+        if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+        } else setUpLocation();
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapView);
         mapFragment.getMapAsync(this);
 
         points = new ArrayList<LatLng>(); //added
 
+        List<String> list = new ArrayList<String>();
+        list.add("Walking");
+        list.add("Running");
+        mode = (Spinner) findViewById(R.id.mode);
+
+
+        ArrayAdapter<String> dataadapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, list);
+        dataadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mode.setAdapter(dataadapter);
+
+
+        mode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            private boolean isSpinnerInitial = true;
+
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                db_mode = mode.getSelectedItem().toString();
+
+                Toast.makeText(parent.getContext(),
+                        parent.getItemAtPosition(pos).toString(),
+                        Toast.LENGTH_LONG).show();
+
+
+            }
+
+            public void onNothingSelected(AdapterView<?> paren) {
+
+            }
+
+        });
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mo = new MarkerOptions().position(new LatLng(0, 0)).title("Current location");
@@ -151,9 +193,7 @@ String totalDistance;
 //            requestPermissions(PERMISSIONS, PERMISSION_ALL);
 //        } else setUpLocation();
        // askPermission();
-        if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
-            requestPermissions(PERMISSIONS, PERMISSION_ALL);
-        } else setUpLocation();
+
      //   setUpLocation();
 
         //This gets the username from the login and puts it in the db_username
@@ -385,42 +425,37 @@ String totalDistance;
                     marker.setPosition(myCoordinates);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, 14));
 
-
-
                     //NEED TO DECIDE HOW BEST TO DO THIS
-                      double  d = distance(location.getLatitude(), location.getLongitude(), latestLocation.getLatitude(), latestLocation.getLongitude());
-                    //double dist = location.distanceTo(latestLocation);
+                    double  d = distance(location.getLatitude(), location.getLongitude(), latestLocation.getLatitude(), latestLocation.getLongitude());
                     Log.i("mytag", "latestLocation: " + latestLocation);
                     dist = dist + d;
                     //Is this needed?
                     latestLocation = location;
 
                     //PROPOSED IDEA
-                 //   if(activitySpeed < 1.4){
+                    if(db_mode.equals("Walking")){
                          walked = walkingDist + d;
-                  //  }// else{
-                     //    ran = runningDist + d;
-                  //  }
+                         walkedDist = getDistance(walked);
+                        walkingDis.setText(walkedDist);
+                        double walkingSpeed = location.getSpeed();
 
-                    String walkedDist = getDistance(walked);
-                    walkingDis.setText(walkedDist);
+                    } else if(db_mode.equals("Running")){
+                         ran = runningDist + d;
+                         ranDist = getDistance(ran);
+                        runningDis.setText(ranDist);
+                        double runningSpeed = location.getSpeed();
+                    }
 
-                    String ranDist = getDistance(ran);
-                    runningDis.setText(ranDist);
+
+
+
 
                     Log.i("mytag", "dist: " + dist);
                     Log.i("mytag", "latestLocation-location: " + latestLocation);
 
-                //    if (activitySpeed < 1.4) {
                     String walkingDistance = getDistance(walked);
-                      //  walkingDist = walkingDist + dist;
-                        distance.setText(walkingDistance);
-                //   }
+                    distance.setText(walkingDistance);
                     totalDistance = walkingDistance;
-                 //  else {
-                     //   String runningDist = getDistance(ran);
-                     //   runningDis.setText(runningDist);
-                  //  }
 
                     // updating the max speed
                     double newSpeed = location.getSpeed();
@@ -720,6 +755,9 @@ String totalDistance;
 
             // Log.v("mytag", "totalTime"+ totalTime2);
             Log.v("mytag", "distanc"+ distanc);
+            Log.v("mytag", "walkedDist"+ walkedDist);
+            Log.v("mytag", "ranDist"+ ranDist);
+
             intent.putExtra("distance", totalDistance);
             //intent.putExtra("time", totalTime2);
             intent.putExtra("timeOfRun", calendarDate);
@@ -727,6 +765,9 @@ String totalDistance;
             intent.putExtra("hours", hoursTaken);
             intent.putExtra("minutes", minutesTaken);
             intent.putExtra("seconds", secondsTaken);
+            intent.putExtra("walkedDist", walkedDist);
+            intent.putExtra("ranDist", ranDist);
+
             startActivity(intent);
         }
 
