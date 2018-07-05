@@ -73,8 +73,21 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     TextView walkingDis, runningDis;
 
     long stime; // start time in milliseconds
-    long etime; // end time in milliseconds
-    long dtime; // duration in milliseconds
+    long etime, walketime, runetime; // end time in milliseconds
+    long dtime, walkTime, runTime; // duration in milliseconds
+    long walkStartTime;
+    long timeBuff;
+    long MillisecondTime;
+
+    long startTime;
+    long UpdateTime = 0;
+
+    long walkTimeBuff, walkingTime, updateWalkingTime, walkingMilliSeconds;
+    long runTimeBuff, runningTime, updateRunningTime, runningMilliSeconds;
+
+    int Seconds, Minutes, MilliSeconds;
+    int walkingSeconds, walkingMinutes;
+    int runningSeconds, runningMinutes;
 
     double total = 0;
     double totalTime=0;
@@ -84,6 +97,13 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     double hh = 0;
     double mn = 0;
     double s = 0;
+    double rh = 0;
+    double rmn = 0;
+    double rs = 0;
+    double wh = 0;
+    double wmn = 0;
+    double ws = 0;
+
 String totalDistance;
     int type;
     int confidence;
@@ -95,6 +115,7 @@ String totalDistance;
 
     String walkedDist;
     String ranDist;
+    String totalDist;
     double speed=0;
     double dist;
     double walked;
@@ -118,7 +139,10 @@ String totalDistance;
     public int hour = 0;
     Spinner mode;
     String db_mode;
-
+    Chronometer runStart;
+    Chronometer walkStart;
+    long timeWhenStopped = 0;
+    long timeWhenStoppedRun = 0;
 
     private String TAG = RecordingActivity.class.getSimpleName();
 
@@ -201,6 +225,8 @@ String totalDistance;
         db_username = in.getStringExtra("Username");
         Log.i("mytag", "username" + db_username);
         db = new SQLiteHelper(this);
+         walkStart = (Chronometer) findViewById(R.id.chronometer);
+         runStart = (Chronometer) findViewById(R.id.chronometer);
 
         //startime = (TextView) findViewById(R.id.startime);
         distance = (TextView) findViewById(R.id.distance);
@@ -235,13 +261,6 @@ String totalDistance;
             Log.v("mytag", "No location");
          }
 
-
-//        BottomNavigationView item = findViewById(R.id.navigation_bin);
-//        setIcon.item= R.drawable.bin;
-
-
-
-      //  navigation.getMenu().findItem(R.id.navigation_record).getIcon().setColorFilter(Color.RED,PorterDuff.Mode.SRC_IN);
 
         // Click and start journey
         start.setOnClickListener(new View.OnClickListener() {
@@ -281,12 +300,17 @@ String totalDistance;
                 timetaken.setText(hh+" h(s), " + mn +" mn(s) " + s + "s");
 
                 //Get the date
-                 ymd = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss", Locale.getDefault()).format(new Date());
+                 ymd = new SimpleDateFormat("EEE, d MMM yyyy 'at' HH:mm", Locale.getDefault()).format(new Date());
 
+                //Get total run time
+
+
+                //Get total walk time
 
                 //Get end location
                 if(latestLocationString!=null) {
                 //    endlocation.setText(latestLocationString);
+
 
                  //   dist = latestLocation.distanceTo(startLocation);
                 }
@@ -328,6 +352,7 @@ String totalDistance;
                     runPace = dtime / runningDist;
                     runningPace.setText("" + runningPace);
                 }
+
 
             }
 
@@ -428,34 +453,49 @@ String totalDistance;
                     //NEED TO DECIDE HOW BEST TO DO THIS
                     double  d = distance(location.getLatitude(), location.getLongitude(), latestLocation.getLatitude(), latestLocation.getLongitude());
                     Log.i("mytag", "latestLocation: " + latestLocation);
-                    dist = dist + d;
                     //Is this needed?
                     latestLocation = location;
 
                     //PROPOSED IDEA
                     if(db_mode.equals("Walking")){
+                        getWalkTime();
+                        walkTime = walketime - stime;
+                        Log.i("walktime", "walktime1" + walkTime);
+                        wh = TimeUnit.MILLISECONDS.toHours(walkTime);
+                        wmn = TimeUnit.MILLISECONDS.toMinutes(walkTime) - wh *60;
+                        ws = TimeUnit.MILLISECONDS.toSeconds(walkTime) - wh *60 * 60 - wmn * 60;
+                        Log.i("walktime", "walktime" + walketime);
+                        Log.i("walktime","walking" + wh+" h(s), " + wmn +" mn(s) " + ws + "s");
+
                          walked = walkingDist + d;
                          walkedDist = getDistance(walked);
                         walkingDis.setText(walkedDist);
                         double walkingSpeed = location.getSpeed();
 
                     } else if(db_mode.equals("Running")){
-                         ran = runningDist + d;
+                        getRunTime();
+                        runTime = runetime - stime;
+                        Log.i("runTime", "runTime" + runTime);
+                        rh = TimeUnit.MILLISECONDS.toHours(runTime);
+                        rmn = TimeUnit.MILLISECONDS.toMinutes(runTime) - rh *60;
+                        rs = TimeUnit.MILLISECONDS.toSeconds(runTime) - rh *60 * 60 - rmn * 60;
+                        Log.i("runtime", "runtime" + runTime);
+                        Log.i("runtime","running" + rh+" h(s), " + rmn +" mn(s) " + rs + "s");
+
+
+
+                        ran = runningDist + d;
                          ranDist = getDistance(ran);
                         runningDis.setText(ranDist);
                         double runningSpeed = location.getSpeed();
                     }
 
-
-
-
-
                     Log.i("mytag", "dist: " + dist);
                     Log.i("mytag", "latestLocation-location: " + latestLocation);
+                    totalDistance = getDistance(walked+ran);
 
-                    String walkingDistance = getDistance(walked);
-                    distance.setText(walkingDistance);
-                    totalDistance = walkingDistance;
+
+
 
                     // updating the max speed
                     double newSpeed = location.getSpeed();
@@ -568,11 +608,6 @@ String totalDistance;
         startActivity(intent);
     }
 
-//    public void broadcastIntent(View view){
-//        Intent intent = new Intent();
-//        intent.setAction("com.tutorialspoint.CUSTOM_INTENT");
-//        sendBroadcast(intent);
-//    }
 
     public void handleUserActivity(int type, int confidence) {
         String label = getString(R.string.activity_unknown);
@@ -737,6 +772,12 @@ String totalDistance;
             //Other way of doing start time
             startTime();
 
+            startTime = SystemClock.uptimeMillis();
+
+
+
+
+
             Log.i("myTag", "startLocationString" + startLocationString);
             startLocation(startLocationString);
 
@@ -746,6 +787,21 @@ String totalDistance;
             Intent intent = new Intent(RecordingActivity.this, SummaryActivity.class);
 
             String distanc = getValue(dist);
+            String walkHoursTaken = getValue(wh);
+            String walkMinutesTaken = getValue(wmn);
+            String walkSecondsTaken = getValue(ws);
+
+            intent.putExtra("walkHoursTaken", walkHoursTaken);
+            intent.putExtra("walkMinutesTaken", walkMinutesTaken);
+            intent.putExtra("walkSecondsTaken", walkSecondsTaken);
+
+            String runHoursTaken = getValue(rh);
+            String runMinutesTaken = getValue(rmn);
+            String runSecondsTaken = getValue(rs);
+
+            intent.putExtra("runHoursTaken", runHoursTaken);
+            intent.putExtra("runMinutesTaken", runMinutesTaken);
+            intent.putExtra("runSecondsTaken", runSecondsTaken);
 
             // String totalTime2 = getValue(totalTime);
             String hoursTaken = getValue(hh);
@@ -758,6 +814,10 @@ String totalDistance;
             Log.v("mytag", "walkedDist"+ walkedDist);
             Log.v("mytag", "ranDist"+ ranDist);
 
+
+            intent.putExtra("ranDist", ranDist);
+            intent.putExtra("walkedDist", walkedDist);
+
             intent.putExtra("distance", totalDistance);
             //intent.putExtra("time", totalTime2);
             intent.putExtra("timeOfRun", calendarDate);
@@ -765,7 +825,7 @@ String totalDistance;
             intent.putExtra("hours", hoursTaken);
             intent.putExtra("minutes", minutesTaken);
             intent.putExtra("seconds", secondsTaken);
-            intent.putExtra("walkedDist", walkedDist);
+         //   intent.putExtra("walkedDist", walkedDist);
             intent.putExtra("ranDist", ranDist);
 
             startActivity(intent);
@@ -779,9 +839,46 @@ String totalDistance;
             duration.start();
         }
 
+
+
         private void stopTime(){
             Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
             duration.stop();
+        }
+
+        private void runStopTime(){
+            runStart.stop();
+        }
+
+        private void walkStopTime(){
+            walkStart.stop();
+        }
+
+        private void runStartTime(){
+            stime = System.currentTimeMillis();
+            runStart.setBase(SystemClock.elapsedRealtime() + timeWhenStoppedRun);
+            runStart.start();
+        }
+
+        private void walkStartTime(){
+            stime = System.currentTimeMillis();
+            walkStart.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+            walkStart.start();
+        }
+
+        private void getTimeOfwalk(){
+            timeWhenStopped = (int) (SystemClock.elapsedRealtime() - walkStart.getBase());
+            walkStart.stop();
+        }
+
+        private void getTimeOfrun(){
+            timeWhenStoppedRun = (int) (SystemClock.elapsedRealtime() - runStart.getBase());
+            runStart.stop();
+        }
+
+        private long returnTimeRun(){
+        getTimeOfwalk();
+        return timeWhenStopped;
         }
 
 
@@ -804,22 +901,41 @@ String totalDistance;
             Calendar cl = Calendar.getInstance();
             etime = cl.getTimeInMillis();
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            //  endtime.setText(sdf.format(cl.getTime()));
+        }
+
+        private void getRunTime(){
+        Calendar cl = Calendar.getInstance();
+        runetime = cl.getTimeInMillis();
+        }
+
+        private void getWalkTime(){
+        Calendar cl = Calendar.getInstance();
+        walketime = cl.getTimeInMillis();
         }
 
 
-    private void redrawLine(){
+        private void redrawLine(){
 
-        //mMap.clear();  //clears all Markers and Polylines
+            //mMap.clear();  //clears all Markers and Polylines
 
-        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-        for (int i = 0; i < points.size(); i++) {
-            LatLng point = points.get(i);
-            options.add(point);
+            PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+            for (int i = 0; i < points.size(); i++) {
+                LatLng point = points.get(i);
+                options.add(point);
+            }
+           // addMarker(); //add Marker in current position
+            line = mMap.addPolyline(options); //add Polyline
         }
-       // addMarker(); //add Marker in current position
-        line = mMap.addPolyline(options); //add Polyline
-    }
+
+        private long pauseWalkTime(){
+          walkTimeBuff += MillisecondTime;
+          return walkTimeBuff;
+        }
+
+        private long pauseRunTime(){
+            runTimeBuff += MillisecondTime;
+            return runTimeBuff;
+        }
 
 
 

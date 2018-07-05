@@ -287,6 +287,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return userRow;
     }
 
+    public void deleteRun(String date){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(RunDetails.TABLE_NAME_1, RunDetails.Table1_Column_1_date + " = ?", new String[] {String.valueOf(date)});
+    }
+
 
 
 
