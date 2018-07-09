@@ -8,10 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.oob.SignUp;
@@ -42,7 +44,14 @@ public class SignUpActivity extends AppCompatActivity {
         sqLiteHelper = new SQLiteHelper(this);
         EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
-        // Adding click listener to register button.
+        TextView t2 = (TextView) findViewById(R.id.login);
+
+        t2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToLogin(v);
+            }
+        });
 
         Register.setOnClickListener(new View.OnClickListener() {
             @Override

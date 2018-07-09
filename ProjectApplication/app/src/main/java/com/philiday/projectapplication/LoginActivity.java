@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
@@ -30,6 +31,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        TextView t2 = (TextView) findViewById(R.id.signup);
+
+        t2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToSignUp(v);
+            }
+        });
 
         LogInButton = (Button)findViewById(R.id.loginButton);
 
@@ -115,6 +124,11 @@ public class LoginActivity extends AppCompatActivity {
         }
         temp = "NOT_FOUND" ;
 
+    }
+
+    public void goToSignUp(View view){
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
     }
 
 }

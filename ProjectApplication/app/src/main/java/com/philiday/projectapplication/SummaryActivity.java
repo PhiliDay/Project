@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.nio.DoubleBuffer;
 import java.text.DecimalFormat;
 
 import static com.philiday.projectapplication.SQLiteHelper.TABLE_NAME_1;
@@ -24,12 +25,13 @@ import static com.philiday.projectapplication.SQLiteHelper.Table1_Column_5_userI
 
 public class SummaryActivity extends AppCompatActivity {
 
-    String dista, time1, timeOfRun, userId, hours, minutes, seconds, walkingDist, ranDist, walkHours, walkMinutes, walkSeconds, runHours, runMinutes, runSeconds;
+    String dista, time1, timeOfRun, userId, hours, minutes, seconds, walkingDist, ranDist, walkHours, walkMinutes, walkSeconds, runHours, runMinutes, runSeconds, totalPace, runningPace, walkingPace;
 
-    TextView distance, time, date, username, walkTime, runTime, walkDist, runDist;
+    TextView distance, time, date, username, walkTime, runTime, walkDist, runDist, overallPace, oRunningPace, oWalkingPace;
     TextView startLocation;
     SQLiteHelper sqLiteHelper;
     SQLiteDatabase sqLiteDatabaseObj;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,9 @@ public class SummaryActivity extends AppCompatActivity {
         runTime = (TextView) findViewById(R.id.runTime);
         walkDist = (TextView) findViewById(R.id.walkDistance);
         runDist = (TextView) findViewById(R.id.runDistance);
+        overallPace = (TextView) findViewById(R.id.overallPace);
+        oWalkingPace = (TextView) findViewById(R.id.oWalkingPace);
+        oRunningPace = (TextView) findViewById(R.id.oRunningPace);
 
         Intent intent = getIntent();
         Bundle b = intent.getExtras();
@@ -78,7 +83,7 @@ public class SummaryActivity extends AppCompatActivity {
         runMinutes = (String) b.get("runMinutesTaken");
         runSeconds = (String) b.get("runSecondsTaken");
       //  time.setText(hours + minutes + seconds);
-
+        Log.i("dista", "dista" + dista);
         Log.i("username1", "username1" + userId);
         Log.i("hours", "hours " + hours);
         Log.i("minutes", "minutes" + minutes);
@@ -87,34 +92,66 @@ public class SummaryActivity extends AppCompatActivity {
         Log.i("runningTime", "runningTime" + runMinutes + "mn(s)" + runSeconds + "s");
         Log.i("walkingTime", "walkingTime" + walkMinutes + "mn(s)" + walkSeconds + "s");
 
+        dista = dista.replaceAll("miles","");
+
+        walkingDist = walkingDist.replaceAll("miles","");
+
+
+        ranDist = ranDist.replaceAll("miles","");
+
 
         //Only displays the relevant information - maybe make different TextViews to ensure correct positioning?
         if (hours.equals("0.0") && minutes.equals("0.0")) {
+
+            totalPace = Double.toString((Double.parseDouble(seconds)/60)/ Double.parseDouble(dista));
+
+            overallPace.setText(totalPace);
             time.setText(seconds + "s");
         } else if (hours.equals("0.0")) {
+
+            totalPace = Double.toString(Double.parseDouble(minutes)+ (Double.parseDouble(seconds)/60) / (Double.parseDouble(dista)));
+            overallPace.setText(totalPace);
             time.setText(minutes + "mn(s)" + seconds + "s");
         } else {
+
+            totalPace = Double.toString(Double.parseDouble(hours)+Double.parseDouble(minutes)+(Double.parseDouble(seconds)/60) / (Double.parseDouble(dista)));
+            overallPace.setText(totalPace);
             time.setText(hours + "h(s), " + minutes + "mn(s) " + seconds + "s");
         }
 
         if (walkHours.equals("0.0") && walkMinutes.equals("0.0")) {
+            walkingPace = Double.toString((Double.parseDouble(walkSeconds)/60)/ Double.parseDouble(walkingDist));
+            oWalkingPace.setText(walkingPace);
             walkTime.setText(walkSeconds + "s");
         } else if (walkHours.equals("0.0")) {
+            walkingPace = Double.toString(Double.parseDouble(walkMinutes)+ (Double.parseDouble(walkSeconds)/60) / (Double.parseDouble(walkingDist)));
+            oWalkingPace.setText(walkingPace);
+
             walkTime.setText(walkMinutes + "mn(s)" + walkSeconds + "s");
         } else {
+            walkingPace = Double.toString(Double.parseDouble(walkHours)+Double.parseDouble(walkMinutes)+(Double.parseDouble(walkSeconds)/60) / (Double.parseDouble(walkingDist)));
+            oWalkingPace.setText(walkingPace);
+
             walkTime.setText(walkHours + "h(s), " + walkMinutes + "mn(s) " + walkSeconds + "s");
         }
 
         if (runHours.equals("0.0") && runMinutes.equals("0.0")) {
-             runTime.setText(runSeconds + "s");
+            runningPace = Double.toString((Double.parseDouble(runSeconds)/60)/ Double.parseDouble(ranDist));
+            oRunningPace.setText(runningPace);
+            runTime.setText(runSeconds + "s");
         } else if (runHours.equals("0.0")) {
-               runTime.setText(runMinutes + "mn(s)" + runSeconds + "s");
+            runningPace = Double.toString(Double.parseDouble(runMinutes)+ (Double.parseDouble(runSeconds)/60) / (Double.parseDouble(ranDist)));
+            oRunningPace.setText(runningPace);
+
+            runTime.setText(runMinutes + "mn(s)" + runSeconds + "s");
         } else {
-              runTime.setText(runHours + "h(s), " + runMinutes + "mn(s) " + runSeconds + "s");
+            runningPace = Double.toString(Double.parseDouble(runHours)+Double.parseDouble(runMinutes)+(Double.parseDouble(runSeconds)/60) / (Double.parseDouble(ranDist)));
+            oRunningPace.setText(runningPace);
+            runTime.setText(runHours + "h(s), " + runMinutes + "mn(s) " + runSeconds + "s");
         }
 
         sqLiteHelper = new SQLiteHelper(getApplicationContext());
-        RunDetails run = new RunDetails(userId, timeOfRun, dista, hours + "h(s), " + minutes + "mn(s) " + seconds + "s", walkingDist, ranDist);
+        RunDetails run = new RunDetails(userId, timeOfRun, dista, hours + "h(s), " + minutes + "mn(s) " + seconds + "s", walkingDist, ranDist, walkHours + "h(s), " + walkMinutes + "mn(s) " + walkSeconds + "s",runHours + "h(s), " + runMinutes + "mn(s) " + runSeconds + "s", totalPace, walkingPace, runningPace );
         sqLiteHelper.getWritableDatabase();
         long insertingRun = sqLiteHelper.createRun(run);
 
@@ -167,6 +204,8 @@ public class SummaryActivity extends AppCompatActivity {
         intent.putExtra("Username", userId);
         startActivity(intent);
     }
+
+
 
 
 }

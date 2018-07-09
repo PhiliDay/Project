@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class ActivitiesAdapter extends BaseAdapter {
@@ -49,6 +51,11 @@ public class ActivitiesAdapter extends BaseAdapter {
             holder.distance = (TextView)convertView.findViewById(R.id.distance);
             holder.walkingDist = (TextView)convertView.findViewById(R.id.walkingDist);
             holder.ranDist = (TextView)convertView.findViewById(R.id.ranDist);
+            holder.walkingTime = (TextView)convertView.findViewById(R.id.walkingTime);
+            holder.runningTime = (TextView)convertView.findViewById(R.id.runningTime);
+            holder.overallPace = (TextView)convertView.findViewById(R.id.overallPace);
+            holder.walkingPace = (TextView)convertView.findViewById(R.id.walkingPace);
+            holder.runningPace = (TextView)convertView.findViewById(R.id.runningPace);
 
             convertView.setTag(holder);
         }
@@ -62,6 +69,12 @@ public class ActivitiesAdapter extends BaseAdapter {
         holder.distance.setText(stu.getDistance());
         holder.walkingDist.setText(stu.getWalkingDist());
         holder.ranDist.setText(stu.getRanDist());
+        holder.walkingTime.setText(stu.getWalkingTime());
+        holder.runningTime.setText(stu.getRunningTime());
+        holder.overallPace.setText(stu.getOverallPace());
+        holder.walkingPace.setText(stu.getWalkingPace());
+        holder.runningPace.setText(stu.getRunningPace());
+
         Log.i("date", "date" + stu.getDate());
 
         Log.i("walkingDist", "walkingDist2" + stu.getWalkingDist());
@@ -76,6 +89,11 @@ public class ActivitiesAdapter extends BaseAdapter {
         public TextView distance;
         public TextView walkingDist;
         public TextView ranDist;
+        public TextView walkingTime;
+        public TextView runningTime;
+        public TextView overallPace;
+        public TextView walkingPace;
+        public TextView runningPace;
 
     }
 }

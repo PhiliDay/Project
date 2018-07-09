@@ -7,22 +7,34 @@
     tools:context=".RecordingActivity">
 
     <!--<TextView-->
-        <!--android:id="@+id/startime"-->
-        <!--android:layout_width="105dp"-->
-        <!--android:layout_height="36dp"-->
-        <!--android:layout_marginBottom="308dp"-->
-        <!--android:layout_marginLeft="36dp"-->
-        <!--android:layout_marginStart="36dp"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent" />-->
+    <!--android:id="@+id/startime"-->
+    <!--android:layout_width="105dp"-->
+    <!--android:layout_height="36dp"-->
+    <!--android:layout_marginBottom="308dp"-->
+    <!--android:layout_marginLeft="36dp"-->
+    <!--android:layout_marginStart="36dp"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent" />-->
+    <Button
+        android:id="@+id/runorwalk"
+        style="@style/btn2"
+        android:layout_width="74dp"
+        android:layout_height="79dp"
+        android:layout_alignBaseline="@+id/pace"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="168dp"
+        android:layout_marginEnd="168dp"
+        android:layout_marginRight="168dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/username"
         android:layout_width="105dp"
         android:layout_height="36dp"
-        android:layout_marginBottom="308dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginBottom="532dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -38,28 +50,29 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <!--<TextView-->
-        <!--android:id="@+id/endtime"-->
-        <!--android:layout_width="106dp"-->
-        <!--android:layout_height="39dp"-->
-        <!--android:layout_marginLeft="36dp"-->
-        <!--android:layout_marginStart="36dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/startime" />-->
+    <!--android:id="@+id/endtime"-->
+    <!--android:layout_width="106dp"-->
+    <!--android:layout_height="39dp"-->
+    <!--android:layout_marginLeft="36dp"-->
+    <!--android:layout_marginStart="36dp"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/startime" />-->
 
     <TextView
         android:id="@+id/timetaken"
         android:layout_width="106dp"
         android:layout_height="39dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="36dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="200dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="210dp"
+        android:layout_marginLeft="152dp"
+        android:layout_marginStart="152dp"
         app:layout_constraintBottom_toTopOf="@+id/chronometer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_activity"
-        app:layout_constraintVertical_bias="0.0" />
-        <!--app:layout_constraintTop_toBottomOf="@+id/endtime" -->
+        app:layout_constraintVertical_bias="0.041" />
+    <!--app:layout_constraintTop_toBottomOf="@+id/endtime" -->
 
 
     <TextView
@@ -87,22 +100,23 @@
         android:layout_marginStart="204dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-        <!--app:layout_constraintTop_toBottomOf="@+id/endLocation" -->
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/button4" />
+    <!--app:layout_constraintTop_toBottomOf="@+id/endLocation" -->
 
 
     <!--<TextView-->
-        <!--android:id="@+id/endLocation"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:layout_marginLeft="204dp"-->
-        <!--android:layout_marginRight="8dp"-->
-        <!--android:layout_marginStart="204dp"-->
-        <!--android:layout_marginTop="20dp"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/starting" />-->
+    <!--android:id="@+id/endLocation"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginEnd="8dp"-->
+    <!--android:layout_marginLeft="204dp"-->
+    <!--android:layout_marginRight="8dp"-->
+    <!--android:layout_marginStart="204dp"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/starting" />-->
 
     <TextView
         android:id="@+id/pace"
@@ -131,31 +145,31 @@
         android:id="@+id/walkingDis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="48dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="36dp"
+        android:layout_alignBottom="@+id/runorwalk"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="72dp"
         android:textColor="@color/oldsilver"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/WALK" />
 
     <!--<TextView-->
-        <!--android:id="@+id/activity_type"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="188dp"-->
-        <!--android:layout_marginStart="188dp"-->
-        <!--android:layout_marginTop="152dp"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
+    <!--android:id="@+id/activity_type"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="188dp"-->
+    <!--android:layout_marginStart="188dp"-->
+    <!--android:layout_marginTop="152dp"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
 
 
     <TextView
         android:id="@+id/walkingPace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="216dp"
-        android:layout_marginStart="216dp"
-        android:layout_marginTop="208dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/walkingDis"
+        android:layout_marginBottom="154dp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -164,9 +178,8 @@
         android:id="@+id/runningPace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="216dp"
-        android:layout_marginStart="216dp"
-        android:layout_marginTop="292dp"
+        android:layout_above="@+id/walkingPace"
+        android:layout_alignStart="@+id/runningDis"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -175,9 +188,9 @@
         android:id="@+id/runningDis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="80dp"
-        android:layout_marginRight="80dp"
-        android:layout_marginTop="36dp"
+        android:layout_alignBottom="@+id/runorwalk"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="98dp"
         android:textColor="@color/oldsilver"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RUN" />
@@ -202,10 +215,11 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/end_run"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
+    <com.rey.material.widget.Button
         android:id="@+id/start"
         style="@style/btn2"
         android:layout_width="160dp"
@@ -215,15 +229,32 @@
         android:layout_marginStart="16dp"
         android:onClick="broadcastIntent"
         android:text="@string/record_run"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:rd_enable="true"
+        app:rd_style="@style/YourRippleDrawableStyle" />
+
+    <com.rey.material.widget.Button
+        android:id="@+id/button4"
+        style="@style/YourRippleDrawableStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="384dp"
+        android:text="BUTTON"
+        app:layout_constraintBottom_toTopOf="@+id/switches"
+        app:layout_constraintEnd_toStartOf="@+id/starting"
+        app:layout_constraintStart_toStartOf="@+id/starting"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rd_enable="true" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/mapView"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="411dp"
-        android:layout_height="141dp"
+        android:layout_height="210dp"
         android:layout_marginBottom="365dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -238,21 +269,17 @@
     <Button
         android:id="@+id/save"
         style="@style/btn2"
-        android:layout_width="263dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="157dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/switches"
+        android:layout_marginBottom="120dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:onClick="goToSummaryPage"
         android:text="@string/save_run"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stop"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/txt_activity"
@@ -292,6 +319,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="152dp"
         android:textColor="@color/grey"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/RUN"
         app:layout_constraintHorizontal_bias="0.602"
         app:layout_constraintStart_toEndOf="@+id/WALK"
@@ -301,9 +329,11 @@
         android:id="@+id/WALK"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/pace"
         android:layout_marginLeft="60dp"
         android:layout_marginStart="60dp"
-        android:layout_marginTop="192dp"
+        android:layout_marginTop="228dp"
+        android:layout_toEndOf="@+id/mode"
         android:text="@string/walk_run"
         android:textColor="@color/oldsilver"
         android:textSize="20sp"
@@ -314,9 +344,11 @@
         android:id="@+id/RUN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/pace"
+        android:layout_alignParentEnd="true"
         android:layout_marginEnd="84dp"
         android:layout_marginRight="84dp"
-        android:layout_marginTop="192dp"
+        android:layout_marginTop="228dp"
         android:text="@string/run_run"
         android:textColor="@color/oldsilver"
         android:textSize="20sp"
@@ -351,11 +383,30 @@
         android:id="@+id/chronometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="88dp"
         android:textColor="@color/oldsilver"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.546"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mode" />
+
+    <com.github.angads25.toggle.LabeledSwitch
+        android:id="@+id/switches"
+        android:layout_width="160dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/start"
+        android:layout_marginBottom="120dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:textSize="14sp"
+        app:colorBorder="@color/colorPrimary"
+        app:colorOff="@color/white"
+        app:colorOn="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:on="false"
+        app:textOff="@string/pause_run"
+        app:textOn="@string/record_run" />
 
 </android.support.constraint.ConstraintLayout>

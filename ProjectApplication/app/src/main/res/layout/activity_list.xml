@@ -1,66 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<HorizontalScrollView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="50dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <TableRow android:layout_width="fill_parent"
-        android:id="@+id/TableRow01"
-        android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:stretchColumns="*"
+    android:padding="15dp">
 
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@+id/date"
-        android:layout_weight="1"
-        android:textColor="@color/oldsilver"
-        android:textSize="20sp"></TextView>
-    </TableRow>
-
-    <TableRow android:layout_height="wrap_content"
-        android:layout_width="fill_parent">
-
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@+id/time"
-        android:textColor="@color/oldsilver"
-        android:gravity="center_horizontal"
-        android:textSize="15sp"></TextView>
-
-    <TextView
-        android:id="@+id/distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@+id/time"
-        android:gravity="center_horizontal"
-        android:textColor="@color/oldsilver"
-        android:textSize="15sp"></TextView>
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
 
         <TextView
-            android:id="@+id/walkingDist"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@+id/time"
-            android:gravity="center_horizontal"
+            android:text="@+id/date"
             android:textColor="@color/oldsilver"
-            android:textSize="15sp"></TextView>
+            android:textSize="20sp"></TextView>
+        </TableRow>
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+
+                <TextView
+                    android:id="@+id/overall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/overall"
+                    android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
+
+                <TextView
+                    android:id="@+id/distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@+id/time"
+                    android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@+id/time"
+                    android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
+
+                <TextView
+                    android:id="@+id/overallPace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@+id/time"
+                    android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
+
+        </TableRow>
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
 
         <TextView
-            android:id="@+id/ranDist"
+                    android:id="@+id/walkingOverall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/walkOverall"
+                        android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
+
+                <TextView
+                    android:id="@+id/walkingDist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@+id/time"
+                    android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
+
+                <TextView
+                    android:id="@+id/walkingTime"
+                    android:layout_width="fill_parent"
+                    android:layout_height="25dp"
+                    android:text="@+id/time"
+                    android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
+
+                <TextView
+                    android:id="@+id/walkingPace"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@+id/time"
+                    android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
+
+        </TableRow>
+        <TableRow
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@+id/time"
-            android:gravity="center_horizontal"
+            android:layout_height="wrap_content" >
+
+        <TextView
+                    android:id="@+id/runningOverall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/runOverall"
             android:textColor="@color/oldsilver"
-            android:textSize="15sp"></TextView>
+                    android:textSize="15sp"></TextView>
 
-    </TableRow>
+                <TextView
+                    android:id="@+id/ranDist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@+id/time"
+                    android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
 
-    </TableLayout>
+                <TextView
+                    android:id="@+id/runningTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@+id/time"
+                    android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
 
-
+                <TextView
+                    android:id="@+id/runningPace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@+id/time"
+                    android:textColor="@color/oldsilver"
+                    android:textSize="15sp"></TextView>
+        </TableRow>
+        </TableLayout>
+</HorizontalScrollView>

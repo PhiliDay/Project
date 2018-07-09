@@ -90,6 +90,42 @@
         app:layout_constraintTop_toBottomOf="@+id/time" />
 
     <TextView
+        android:id="@+id/overallPace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="264dp"
+        android:layout_marginStart="264dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/pace"
+        app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pacePlaceholder" />
+
+    <TextView
+        android:id="@+id/oWalkingPace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="264dp"
+        android:layout_marginStart="264dp"
+        android:layout_marginTop="88dp"
+        android:text="@string/pace"
+        app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pacePlaceholder" />
+
+    <TextView
+        android:id="@+id/oRunningPace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="264dp"
+        android:layout_marginStart="264dp"
+        android:layout_marginTop="152dp"
+        android:text="@string/pace"
+        app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pacePlaceholder" />
+
+    <TextView
         android:id="@+id/walkTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -178,6 +214,7 @@
         android:layout_marginStart="56dp"
         android:layout_marginTop="300dp"
         android:textSize="45sp"
+        android:visibility="gone"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -190,6 +227,7 @@
         android:layout_marginStart="56dp"
         android:layout_marginTop="384dp"
         android:textSize="45sp"
+        android:visibility="gone"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -240,5 +278,37 @@
         app:layout_constraintBottom_toBottomOf="@+id/toolbar2"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <TextView
+        android:id="@+id/overall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="208dp"
+        android:text="@string/overall"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/walk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="276dp"
+        android:text="@string/walkOverall"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/run"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="340dp"
+        android:text="@string/runOverall"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

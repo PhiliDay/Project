@@ -124,8 +124,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             rd.setDistance(c.getString(c.getColumnIndex(RunDetails.Table1_Column_2_distance)));
             rd.setDate(c.getString(c.getColumnIndex(RunDetails.Table1_Column_1_date)));
             rd.setTime(c.getString(c.getColumnIndex(RunDetails.Table1_Column_3_time)));
-            // insert pace when needed
-
+            rd.setWalkingDist(c.getString(c.getColumnIndex(RunDetails.Table1_Column_6_walkingDist)));
+            rd.setRanDist(c.getString(c.getColumnIndex(RunDetails.Table1_Column_7_ranDist)));
+            rd.setWalkingTime(c.getString(c.getColumnIndex(RunDetails.Table1_Column_8_walkingTime)));
+            rd.setRunningTime(c.getString(c.getColumnIndex(RunDetails.Table1_Column_9_runningTime)));
+            rd.setOverallPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_10_overallPace)));
+            rd.setWalkingPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_11_walkingPace)));
+            rd.setRunningPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_12_runningPace)));
 
             return rd;
 
@@ -149,6 +154,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 rd.setTime(c.getString(c.getColumnIndex(RunDetails.Table1_Column_3_time)));
                 rd.setWalkingDist(c.getString(c.getColumnIndex(RunDetails.Table1_Column_6_walkingDist)));
                 rd.setRanDist(c.getString(c.getColumnIndex(RunDetails.Table1_Column_7_ranDist)));
+                rd.setWalkingTime(c.getString(c.getColumnIndex(RunDetails.Table1_Column_8_walkingTime)));
+                rd.setRunningTime(c.getString(c.getColumnIndex(RunDetails.Table1_Column_9_runningTime)));
+                rd.setOverallPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_10_overallPace)));
+                rd.setWalkingPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_11_walkingPace)));
+                rd.setRunningPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_12_runningPace)));
 
                 runs.add(rd);
             }while (c.moveToNext());
@@ -272,6 +282,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         contentValues.put("time", run.getTime());
         contentValues.put("walkingDist", run.getWalkingDist());
         contentValues.put("ranDist", run.getRanDist());
+        contentValues.put("walkingTime", run.getWalkingTime());
+        contentValues.put("runningTime", run.getRunningTime());
+        contentValues.put("overallPace", run.getOverallPace());
+        contentValues.put("walkingPace", run.getWalkingPace());
+        contentValues.put("runningPace", run.getRunningPace());
 
         Log.i("userId", "userId" + run);
         Log.i("userId", "userId" + run.getTime());

@@ -115,15 +115,17 @@
 
     <ListView
         android:id="@+id/runList"
-        style="@android:style/Widget.ListView"
-        android:layout_width="wrap_content"
-        android:layout_height="350dp"
-        android:layout_marginBottom="96dp"
+        style="@android:style/Widget.ListView.Menu"
+        android:layout_width="419dp"
+        android:layout_height="427dp"
+        android:layout_marginTop="8dp"
         android:divider="@color/lightBlue"
         android:lineSpacingExtra="30sp"
         android:text="@string/welcome"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:layout_constraintStart_toStartOf="parent"></ListView>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"></ListView>
 
 </android.support.constraint.ConstraintLayout>
