@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +21,7 @@ import com.google.android.gms.common.oob.SignUp;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    EditText Email, Password, Password2;
+    EditText Email, Password, Password2, FirstName;
     Button Register;
     String EmailHolder, PasswordHolder, PasswordHolder2;
     Boolean EditTextHolder;
@@ -29,6 +30,8 @@ public class SignUpActivity extends AppCompatActivity {
     Cursor cursor;
     String Email_find = "Not_Found";
     String Password_find = "Not_Found";
+    String NameHolder;
+
 
 
     @Override
@@ -41,9 +44,8 @@ public class SignUpActivity extends AppCompatActivity {
         Email = (EditText)findViewById(R.id.email);
         Password = (EditText)findViewById(R.id.password);
         Password2 = (EditText)findViewById(R.id.password2);
+        FirstName = (EditText)findViewById(R.id.nameHolder);
         sqLiteHelper = new SQLiteHelper(this);
-        EmailHolder = Email.getText().toString();
-        PasswordHolder = Password.getText().toString();
         TextView t2 = (TextView) findViewById(R.id.login);
 
         t2.setOnClickListener(new View.OnClickListener() {
@@ -58,7 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-            UserDetails user = new UserDetails(EmailHolder, PasswordHolder);
+            UserDetails user = new UserDetails(EmailHolder, PasswordHolder, NameHolder);
 
              //   compareEditText();
                 db = sqLiteHelper.getWritableDatabase();
@@ -67,10 +69,13 @@ public class SignUpActivity extends AppCompatActivity {
                 compareEditText();
                 CheckingEmailAlreadyExistsOrNot();
 
-                if(runSearch() == false) {
+                if(runSearch() == false && validate(EmailHolder, PasswordHolder)==true) {
                     Log.i("getsTohere", "getsTohere");
                     user.setEmail(EmailHolder);
                     user.setPassword(PasswordHolder);
+                    user.setFirstName(NameHolder);
+                    Log.i("getsTohere", "nameholder" + NameHolder);
+
                     long insertingUser = sqLiteHelper.createUserInDatabase(user);
                     Log.d("User Count", "User Count: " + sqLiteHelper.getAllUsers().size());
                     goToLogin(view);
@@ -100,6 +105,7 @@ public class SignUpActivity extends AppCompatActivity {
         EmailHolder = Email.getText().toString();
         PasswordHolder = Password.getText().toString();
         PasswordHolder2 = Password2.getText().toString();
+        NameHolder = FirstName.getText().toString();
         Log.i("p1", "p1" + PasswordHolder);
         Log.i("p1", "p2" + PasswordHolder2);
         if(!PasswordHolder.equals(PasswordHolder2)) {
@@ -183,6 +189,32 @@ public class SignUpActivity extends AppCompatActivity {
         Password_find = "Not_Found";
         Email_find = "Not_Found" ;
         return true;
+    }
+
+    public boolean validate(String email, String password){
+        boolean valid = false;
+
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            valid = false;
+            Toast.makeText(SignUpActivity.this,"Please enter a valid email!",Toast.LENGTH_LONG).show();
+        } else{
+            valid = true;
+        }
+
+        if(password.isEmpty()){
+            valid = false;
+            Toast.makeText(SignUpActivity.this,"Please enter a valid password!",Toast.LENGTH_LONG).show();
+        } else{
+            if(password.length() > 5){
+                valid = true;
+            } else{
+                valid = false;
+                Toast.makeText(SignUpActivity.this,"Password is too short",Toast.LENGTH_LONG).show();
+
+            }
+        }
+        return valid;
+
     }
 
 

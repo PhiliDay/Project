@@ -7,7 +7,7 @@ public class UserDetails {
     public static final String TABLE_NAME = "user";
 
     public static final String Table_Column_ID="userId";
-    public static final String Table_Column_1_Name="name";
+    public static final String Table_Column_1_Name="firstName";
     public static final String Table_Column_2_Email="email";
     public static final String Table_Column_3_Password="password";
 
@@ -15,13 +15,14 @@ public class UserDetails {
      String name;
      String email;
      String password;
+     String firstName;
 
 
 
     // Create table SQL query
     public static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("
           //  +Table_Column_ID+" VARCHAR, "
-           // + Table_Column_1_Name+" VARCHAR, "
+            + Table_Column_1_Name+" VARCHAR, "
             +Table_Column_2_Email+" VARCHAR, "
             +Table_Column_3_Password+" VARCHAR)";
 
@@ -29,9 +30,9 @@ public class UserDetails {
 
     }
 
-    public UserDetails(String email, String password) {
+    public UserDetails(String email, String password, String firstName) {
        // this.userId = userId;
-   //     this.name = name;
+        this.firstName = firstName;
         this.email = email;
         this.password = password;
     }
@@ -39,6 +40,10 @@ public class UserDetails {
     public String getId() {
         return userId;
     }
+
+    public String getFirstName(){ return firstName;}
+
+    public void setFirstName(String firstName){this.firstName = firstName;}
 
     public void setId(String userId){
         this.userId = userId;

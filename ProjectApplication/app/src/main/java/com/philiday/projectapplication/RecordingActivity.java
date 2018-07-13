@@ -64,6 +64,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class RecordingActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
@@ -73,8 +74,11 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     Button start, stop, save;
     TextView startime, timetaken, startlocation, endlocation, currentLoc,  pace, endtime, distance, currentPace, tv, walkingPace, username, runningPace, txtActivity, txtConfidence;
     TextView walkingDis, runningDis;
+    int count;
 
-    long stime; // start time in milliseconds
+    long stime;
+    long walkstime;
+    long runstime;// start time in milliseconds
     long etime, walketime, runetime; // end time in milliseconds
     long dtime, walkTime, runTime; // duration in milliseconds
     long MillisecondTime;
@@ -97,6 +101,10 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     double ws = 0;
 
 String totalDistance;
+String whms;
+String rhms;
+String ohms;
+
     int type;
     int confidence;
 
@@ -139,7 +147,8 @@ String totalDistance;
 
     private String TAG = RecordingActivity.class.getSimpleName();
     private Button btn;
-
+    String finalActivity;
+    String finalConfidence;
    // public static final String DETECTED_ACTIVITY = ".DETECTED ACTIVITY";
   //  private ActivityRecognitionClient mActivityRecognitionClient;
   //  private ActivitiesAdapter mAdapter;
@@ -168,7 +177,7 @@ String totalDistance;
 
         if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
-        } else setUpLocation();
+        }else {setUpLocation();}
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -186,6 +195,10 @@ String totalDistance;
         btn.setBackgroundResource(R.drawable.walk);
         btn.setTextColor(getApplication().getResources().getColor(R.color.colorPrimary));
         db_result = "Walking";
+        getWalkTime();
+
+        initViews();
+        btn.setText("Walking");
 
 
         ArrayAdapter<String> dataadapter = new ArrayAdapter<String>(this,
@@ -230,36 +243,11 @@ String totalDistance;
         db_username = in.getStringExtra("Username");
         Log.i("mytag", "username" + db_username);
         db = new SQLiteHelper(this);
-         walkStart = (Chronometer) findViewById(R.id.chronometer);
-         runStart = (Chronometer) findViewById(R.id.chronometer);
 
-        //startime = (TextView) findViewById(R.id.startime);
-        distance = (TextView) findViewById(R.id.distance);
-        start = (Button) findViewById(R.id.start);
-        stop = (Button) findViewById(R.id.stop);
-        save = (Button) findViewById(R.id.save);
-       // endtime = (TextView) findViewById(R.id.endtime);
-        timetaken = (TextView) findViewById(R.id.timetaken);
-        distance = (TextView) findViewById(R.id.distance);
-        startlocation = (TextView) findViewById(R.id.starting);
-       // endlocation = (TextView) findViewById(R.id.endLocation);
-       //
-         currentLoc = (TextView) findViewById(R.id.updating);
-        pace = (TextView) findViewById(R.id.pace);
-        currentPace = (TextView) findViewById(R.id.currentPace);
-        tv = (TextView) findViewById(R.id.timer);
-        walkingPace = (TextView) findViewById(R.id.walkingPace);
-        runningPace = (TextView) findViewById(R.id.runningPace);
-
-        walkingDis = (TextView) findViewById(R.id.walkingDis);
-        runningDis = (TextView) findViewById(R.id.runningDis);
-        username = (TextView) findViewById(R.id.username);
-
-        txtActivity = findViewById(R.id.txt_activity);
-        txtConfidence = findViewById(R.id.txt_confidence);
 
         stop.setEnabled(false); // stop button is disabled
         save.setEnabled(false);
+        save.setVisibility(View.INVISIBLE);
 
 
         if (!isLocationEnabled()){
@@ -372,7 +360,9 @@ String totalDistance;
 
         public void onLocationChanged(Location location) {
         double oldDist = 0;
-
+            Toast.makeText(getApplicationContext(),
+                    "Location Changed",
+                    Toast.LENGTH_SHORT)                    .show();
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
             LatLng myCoordinates = new LatLng(latitude, longitude);
@@ -381,9 +371,19 @@ String totalDistance;
 
             redrawLine(); //added
 
+            Toast.makeText(getApplicationContext(),
+                    "Found location 1",
+                    Toast.LENGTH_SHORT)                    .show();
 
-            if (location != null) {
+
+            if (location != null) {   Toast.makeText(getApplicationContext(),
+                    "Found location 6",
+                    Toast.LENGTH_SHORT)                        .show();
                 if (startLocation == null) {
+                    Toast.makeText(getApplicationContext(),
+                            "Found location 2",
+                            Toast.LENGTH_SHORT)                        .show();
+
                     Log.v("mytag", "LOCATION NULL");
                     startLocation = location;
                     latestLocation = location;
@@ -415,8 +415,12 @@ String totalDistance;
                     latestLocation = location;
 
                     //PROPOSED IDEA
-                    if(db_result.equals("Walking")){
-                        getWalkTime();
+                 //   if(finalActivity.equals("walking")){
+                        Log.i("finalActivityWalking", "finalActivityWalking" + finalActivity);
+
+                         if(db_result.equals("Walking")){
+                           //  walkStartTime();
+
                         walkTime = walketime - stime;
                         Log.i("walktime", "walktime1" + walkTime);
                         wh = TimeUnit.MILLISECONDS.toHours(walkTime);
@@ -425,23 +429,37 @@ String totalDistance;
                         Log.i("walktime", "walktime" + walketime);
                         Log.i("walktime","walking" + wh+" h(s), " + wmn +" mn(s) " + ws + "s");
 
+                         whms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(walkTime),
+                                TimeUnit.MILLISECONDS.toMinutes(walkTime) % TimeUnit.HOURS.toMinutes(1),
+                                TimeUnit.MILLISECONDS.toSeconds(walkTime) % TimeUnit.MINUTES.toSeconds(1));
+
                          walked += walkingDist + d;
                          walkedDist = getDistance(walked);
                         walkingDis.setText(walkedDist);
                         double walkingSpeed = location.getSpeed();
 
                     }
+                 //   if(finalActivity.equals("running")){
+                        Log.i("finalActivityRunning", "finalActivityRunning" + finalActivity);
 
-                    if(db_result.equals("Running")){
-                        getRunTime();
+                            if(db_result.equals("Running")){
+                             //   runStartTime();
+
+                                getRunTime();
                         runTime = runetime - stime;
+                        runTime -= walkTime;
+
                         Log.i("runTime", "runTime" + runTime);
                         rh = TimeUnit.MILLISECONDS.toHours(runTime);
                         rmn = TimeUnit.MILLISECONDS.toMinutes(runTime) - rh *60;
                         rs = TimeUnit.MILLISECONDS.toSeconds(runTime) - rh *60 * 60 - rmn * 60;
-                        Log.i("runtime", "runtime" + runTime);
-                        Log.i("runtime","running" + rh+" h(s), " + rmn +" mn(s) " + rs + "s");
+                        Log.i("runtime", "runtime" + runetime);
+                                Log.i("runtime", "runtime2" + runstime);
 
+                                Log.i("runtime","running" + rh+" h(s), " + rmn +" mn(s) " + rs + "s");
+                                rhms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(runTime),
+                                        TimeUnit.MILLISECONDS.toMinutes(runTime) % TimeUnit.HOURS.toMinutes(1),
+                                        TimeUnit.MILLISECONDS.toSeconds(runTime) % TimeUnit.MINUTES.toSeconds(1));
 
 
                         ran += runningDist + d;
@@ -449,6 +467,9 @@ String totalDistance;
                         runningDis.setText(ranDist);
                         double runningSpeed = location.getSpeed();
                     }
+//                    if(finalActivity.equals("still")){
+//                        Log.i("finalActivityStill", "finalActivityStill" + finalActivity);
+//                    }
 
                     Log.i("mytag", "dist: " + dist);
                     Log.i("mytag", "latestLocation-location: " + latestLocation);
@@ -493,10 +514,14 @@ String totalDistance;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        Toast.makeText(getApplicationContext(),
+                "Found location 3",
+                Toast.LENGTH_SHORT)                        .show();
+
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 1000,
-                5,
+                3,
                 this);
 
     }
@@ -613,7 +638,24 @@ String totalDistance;
 
         if (confidence > Constants.CONFIDENCE) {
             txtActivity.setText(label);
-            txtConfidence.setText(conLabel);
+            finalActivity = String.valueOf(label);
+            Log.i("finalActivity", "finalActivity" + finalActivity);
+//            txtConfidence.setText(confidence);
+          //  finalConfidence = confidence;
+        }
+    }
+
+
+    private String whichActivity(String label){
+        String Running = "";
+        String Walking = "";
+        String Still  = "";
+        if(label == "Running"){
+            return  Running;
+        }else if(label == "Walking"){
+            return Walking;
+        }else {
+            return Still;
         }
     }
 
@@ -705,7 +747,7 @@ String totalDistance;
 
     public void clickStart() {
 
-
+            save.setVisibility(View.INVISIBLE);
             boolean gpsEnabled = false;
             start.setEnabled(false);
             stop.setEnabled(true);
@@ -751,9 +793,11 @@ String totalDistance;
             String walkSecondsTaken = getValue(ws);
             Log.i("dista", "dista" + distanc);
 
+
             intent.putExtra("walkHoursTaken", walkHoursTaken);
             intent.putExtra("walkMinutesTaken", walkMinutesTaken);
             intent.putExtra("walkSecondsTaken", walkSecondsTaken);
+          //  intent.putExtra("walkingTime", whms);
 
             String runHoursTaken = getValue(rh);
             String runMinutesTaken = getValue(rmn);
@@ -762,6 +806,7 @@ String totalDistance;
             intent.putExtra("runHoursTaken", runHoursTaken);
             intent.putExtra("runMinutesTaken", runMinutesTaken);
             intent.putExtra("runSecondsTaken", runSecondsTaken);
+         //   intent.putExtra("runningTime", rhms);
 
             // String totalTime2 = getValue(totalTime);
             String hoursTaken = getValue(hh);
@@ -785,6 +830,7 @@ String totalDistance;
             intent.putExtra("hours", hoursTaken);
             intent.putExtra("minutes", minutesTaken);
             intent.putExtra("seconds", secondsTaken);
+         //   intent.putExtra("overallTime", ohms);
          //   intent.putExtra("walkedDist", walkedDist);
             intent.putExtra("ranDist", ranDist);
 
@@ -799,48 +845,24 @@ String totalDistance;
             duration.start();
         }
 
+    private void walkStartTime(){
+        Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
+        walkstime = System.currentTimeMillis();
+        duration.setBase(SystemClock.elapsedRealtime());
+        duration.start();
+    }
 
+    private void runStartTime(){
+      //  Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
+        runstime = System.currentTimeMillis();
+        //duration.setBase(SystemClock.elapsedRealtime());
+       // duration.start();
+    }
 
         private void stopTime(){
             Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
             duration.stop();
         }
-
-        private void runStopTime(){
-            runStart.stop();
-        }
-
-        private void walkStopTime(){
-            walkStart.stop();
-        }
-
-        private void runStartTime(){
-            stime = System.currentTimeMillis();
-            runStart.setBase(SystemClock.elapsedRealtime() + timeWhenStoppedRun);
-            runStart.start();
-        }
-
-        private void walkStartTime(){
-            stime = System.currentTimeMillis();
-            walkStart.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
-            walkStart.start();
-        }
-
-        private void getTimeOfwalk(){
-            timeWhenStopped = (int) (SystemClock.elapsedRealtime() - walkStart.getBase());
-            walkStart.stop();
-        }
-
-        private void getTimeOfrun(){
-            timeWhenStoppedRun = (int) (SystemClock.elapsedRealtime() - runStart.getBase());
-            runStart.stop();
-        }
-
-        private long returnTimeRun(){
-        getTimeOfwalk();
-        return timeWhenStopped;
-        }
-
 
         //Is this being used?
         private void calendarTime(){
@@ -861,18 +883,22 @@ String totalDistance;
             Calendar cl = Calendar.getInstance();
             etime = cl.getTimeInMillis();
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
         }
 
         private void getRunTime(){
         Calendar cl = Calendar.getInstance();
         runetime = cl.getTimeInMillis();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
         }
 
         private void getWalkTime(){
         Calendar cl = Calendar.getInstance();
         walketime = cl.getTimeInMillis();
-        }
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
+        }
 
         private void redrawLine(){
 
@@ -887,17 +913,9 @@ String totalDistance;
             line = mMap.addPolyline(options); //add Polyline
         }
 
-        private long pauseWalkTime(){
-          walkTimeBuff += MillisecondTime;
-          return walkTimeBuff;
-        }
-
-        private long pauseRunTime(){
-            runTimeBuff += MillisecondTime;
-            return runTimeBuff;
-        }
-
         private void clickStop(){
+            save.setVisibility(View.VISIBLE);
+
             stop.setEnabled(false);
             start.setEnabled(true);
             save.setEnabled(true);
@@ -910,10 +928,6 @@ String totalDistance;
             // Get end time
             getEndTime();
 
-            //another way to get the duration
-            //   int totalDuration = (int) (SystemClock.elapsedRealtime() - duration.getBase()) / 1000; //convert from ms to s
-
-
             // Get the duration
             dtime =etime -stime;
             hh = TimeUnit.MILLISECONDS.toHours(dtime);
@@ -924,11 +938,6 @@ String totalDistance;
 
             //Get the date
             ymd = new SimpleDateFormat("EEE, d MMM yyyy 'at' HH:mm", Locale.getDefault()).format(new Date());
-
-            //Get total run time
-
-
-            //Get total walk time
 
             //Get end location
             if(latestLocationString!=null) {
@@ -941,21 +950,13 @@ String totalDistance;
                 dist = 0;
             }
 
-            //distance.setText(getDistance(dist));
-            // walkingDist = 1609.34;
-
-            //Finding out the pace that you completed your walk. Need to do 0 otherwise you get infinity
-            //  if(walkingDist == 0){
-            //       walkingPace.setText("distanceiszero");
-            //  }else {
             h = TimeUnit.MILLISECONDS.toHours(dtime);
             n = TimeUnit.MILLISECONDS.toMinutes(dtime) - h *60;
             ss = TimeUnit.MILLISECONDS.toSeconds(dtime) - h *60 * 60 - n * 60;
 
-            //         double seconds = ss*0.016667;
-
-            ///Need to add here what happens if i get to the hour mark? - * 60 cause otherwise it just adds 2
-            //   total = h+n+ss;
+            ohms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(dtime),
+                    TimeUnit.MILLISECONDS.toMinutes(dtime) % TimeUnit.HOURS.toMinutes(1),
+                    TimeUnit.MILLISECONDS.toSeconds(dtime) % TimeUnit.MINUTES.toSeconds(1));
 
             double mileage = getMiles(walkingDist);
             walkPace = (total / mileage)/60;
@@ -976,6 +977,36 @@ String totalDistance;
                 runningPace.setText("" + runningPace);
             }
 
+        }
+
+        private void initViews(){
+            walkStart = (Chronometer) findViewById(R.id.chronometer);
+            runStart = (Chronometer) findViewById(R.id.chronometer);
+
+            //startime = (TextView) findViewById(R.id.startime);
+            distance = (TextView) findViewById(R.id.distance);
+            start = (Button) findViewById(R.id.start);
+            stop = (Button) findViewById(R.id.stop);
+            save = (Button) findViewById(R.id.save);
+            // endtime = (TextView) findViewById(R.id.endtime);
+            timetaken = (TextView) findViewById(R.id.timetaken);
+            distance = (TextView) findViewById(R.id.distance);
+            startlocation = (TextView) findViewById(R.id.starting);
+            // endlocation = (TextView) findViewById(R.id.endLocation);
+            //
+            currentLoc = (TextView) findViewById(R.id.updating);
+            pace = (TextView) findViewById(R.id.pace);
+            currentPace = (TextView) findViewById(R.id.currentPace);
+            tv = (TextView) findViewById(R.id.timer);
+            walkingPace = (TextView) findViewById(R.id.walkingPace);
+            runningPace = (TextView) findViewById(R.id.runningPace);
+
+            walkingDis = (TextView) findViewById(R.id.walkingDis);
+            runningDis = (TextView) findViewById(R.id.runningDis);
+            username = (TextView) findViewById(R.id.username);
+
+            txtActivity = findViewById(R.id.txt_activity);
+            txtConfidence = findViewById(R.id.txt_confidence);
         }
 
 

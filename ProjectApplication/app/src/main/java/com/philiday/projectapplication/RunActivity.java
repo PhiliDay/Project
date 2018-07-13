@@ -8,10 +8,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -49,6 +52,7 @@ public class RunActivity extends AppCompatActivity implements OnMapReadyCallback
         if (!isLocationEnabled())
             Log.v("mytag","No location");
         //showAlert(1);
+        initMap();
     }
 
     @Override
@@ -117,5 +121,27 @@ public class RunActivity extends AppCompatActivity implements OnMapReadyCallback
             return false;
         }
     }
+
+    private void initMap() {
+        Log.v("mylog", "init map");
+
+        int googlePlayStatus = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (googlePlayStatus != ConnectionResult.SUCCESS) {
+            GooglePlayServicesUtil.getErrorDialog(googlePlayStatus, this, -1).show();
+            finish();
+        } else {
+            if (mMap != null) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setAllGesturesEnabled(true);
+            }
+        }
+    }
+
+
+
+
+
+
 
 }

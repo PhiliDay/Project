@@ -25,7 +25,7 @@ import static com.philiday.projectapplication.SQLiteHelper.Table1_Column_5_userI
 
 public class SummaryActivity extends AppCompatActivity {
 
-    String dista, time1, timeOfRun, userId, hours, minutes, seconds, walkingDist, ranDist, walkHours, walkMinutes, walkSeconds, runHours, runMinutes, runSeconds, totalPace, runningPace, walkingPace;
+    String dista, time1, timeOfRun, userId, hours, minutes, seconds, walkingDist, ranDist, overallTime, runningTime, walkingTime, walkHours, walkMinutes, walkSeconds, runHours, runMinutes, runSeconds, totalPace, runningPace, walkingPace;
 
     TextView distance, time, date, username, walkTime, runTime, walkDist, runDist, overallPace, oRunningPace, oWalkingPace;
     TextView startLocation;
@@ -78,10 +78,12 @@ public class SummaryActivity extends AppCompatActivity {
         walkHours = (String) b.get("walkHoursTaken");
         walkMinutes = (String) b.get("walkMinutesTaken");
         walkSeconds = (String) b.get("walkSecondsTaken");
+       // walkingTime = (String) b.get("walkingTime");
 
         runHours = (String) b.get("runHoursTaken");
         runMinutes = (String) b.get("runMinutesTaken");
         runSeconds = (String) b.get("runSecondsTaken");
+      //  runningTime = (String) b.get("runningTime");
       //  time.setText(hours + minutes + seconds);
         Log.i("dista", "dista" + dista);
         Log.i("username1", "username1" + userId);
@@ -93,11 +95,9 @@ public class SummaryActivity extends AppCompatActivity {
         Log.i("walkingTime", "walkingTime" + walkMinutes + "mn(s)" + walkSeconds + "s");
 
         dista = dista.replaceAll("miles","");
-
         walkingDist = walkingDist.replaceAll("miles","");
-
-
         ranDist = ranDist.replaceAll("miles","");
+   //     overallTime = (String) b.get("overallTime");
 
 
         //Only displays the relevant information - maybe make different TextViews to ensure correct positioning?
@@ -151,7 +151,7 @@ public class SummaryActivity extends AppCompatActivity {
         }
 
         sqLiteHelper = new SQLiteHelper(getApplicationContext());
-        RunDetails run = new RunDetails(userId, timeOfRun, dista, hours + "h(s), " + minutes + "mn(s) " + seconds + "s", walkingDist, ranDist, walkHours + "h(s), " + walkMinutes + "mn(s) " + walkSeconds + "s",runHours + "h(s), " + runMinutes + "mn(s) " + runSeconds + "s", totalPace, walkingPace, runningPace );
+        RunDetails run = new RunDetails(userId, timeOfRun, dista, hours + "h," + minutes + "min" + seconds + "s", walkingDist, ranDist, walkHours + "h," + walkMinutes + "min" + walkSeconds + "s",runHours + "h," + runMinutes + "min" + runSeconds + "s", totalPace, walkingPace, runningPace );
         sqLiteHelper.getWritableDatabase();
         long insertingRun = sqLiteHelper.createRun(run);
 

@@ -20,7 +20,7 @@
     </style>
 
     <style name="GreyText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/oldsilver</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

@@ -5,20 +5,27 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.rey.material.widget.Button;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -57,9 +64,10 @@ public class timelineActivity extends AppCompatActivity {
 
         UserDetails userList = db.displayUser(EmailHolder);
 
-        Email.setText(userList.getEmail());
-
+        Email.setText(userList.getFirstName());
        }
+
+
 
 
     public boolean onOptionsItemSelected(MenuItem item) {

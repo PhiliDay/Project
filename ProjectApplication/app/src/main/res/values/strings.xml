@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name"></string>
     <string name="app_name2">OSCILLATE</string>
+    <string name="name_name">Name</string>
+
 
     <string name="button_login">Login</string>
     <string name="button_signup">Sign Up</string>
@@ -19,9 +21,12 @@
     <string name="overall_run">Run Summary</string>
     <string name="welcome">Welcome </string>
     <string name="distance">Distance </string>
+    <string name="distance2">Distance (miles)</string>
+
     <string name="time">Time </string>
     <string name="day">Date </string>
     <string name="pace">Pace </string>
+    <string name="pace2">Pace (min/mile)</string>
     <string name="finish">Finish </string>
     <string name="activity_unknown">unknown </string>
     <string name="activity_running">running </string>

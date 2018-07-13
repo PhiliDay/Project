@@ -28,7 +28,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="40dp"
         android:text="@string/password_display"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        android:textColor="@color/oldsilver"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -41,7 +41,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="180dp"
         android:text="@string/email_display"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        android:textColor="@color/oldsilver"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -94,7 +94,7 @@
         android:layout_marginRight="136dp"
         android:layout_marginTop="60dp"
         android:text="@string/pace"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        android:textColor="@color/colorPrimary"
         android:textSize="60sp"
         app:fontFamily="@font/lobster"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,15 +105,11 @@
         style="@style/GreyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="76dp"
+        android:layout_marginLeft="108dp"
 
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="76dp"
+        android:layout_marginStart="108dp"
         android:layout_marginTop="404dp"
         android:text="@string/notamember"
-        app:layout_constraintEnd_toStartOf="@+id/signup"
-        app:layout_constraintHorizontal_bias="0.708"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -122,10 +118,12 @@
         style="@style/GreyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="256dp"
+        android:layout_marginStart="256dp"
         android:layout_marginTop="404dp"
         android:text="@string/title_signup"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="228dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

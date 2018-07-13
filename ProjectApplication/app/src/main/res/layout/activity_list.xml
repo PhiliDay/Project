@@ -1,41 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<HorizontalScrollView android:layout_width="wrap_content"
+<HorizontalScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="50dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:stretchColumns="*"
-    android:padding="15dp">
 
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/date"
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@+id/date"
-            android:textColor="@color/oldsilver"
-            android:textSize="20sp"></TextView>
-        </TableRow>
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:orientation="horizontal"
+            android:stretchColumns="*">
 
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@+id/date"
+                android:textColor="@color/headingText"
+                android:textSize="20sp"></TextView>
 
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
                 <TextView
-                    android:id="@+id/overall"
+                    android:id="@+id/empty"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/overall"
-                    android:textColor="@color/oldsilver"
-                    android:textSize="15sp"></TextView>
+                    ></TextView>
+
+                <TextView
+                    android:id="@+id/distanceHead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/distance2"
+                    android:textColor="@color/headingText"
+                    android:textSize="15sp"
+                    app:fontFamily="@font/roboto_light"></TextView>
+
+                <TextView
+                    android:id="@+id/timeHead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time"
+                    android:textColor="@color/headingText"
+                    android:textSize="15sp"
+                    app:fontFamily="@font/roboto_light"></TextView>
+
+                <TextView
+                    android:id="@+id/paceHead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pace2"
+                    android:textColor="@color/headingText"
+                    android:textSize="15sp"
+                    app:fontFamily="@font/roboto_light"></TextView>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!--<TextView-->
+                    <!--android:id="@+id/overall"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@string/overall"-->
+                    <!--android:textColor="@color/oldsilver"-->
+                    <!--android:textSize="15sp"></TextView>-->
+
+                <ImageView
+                    android:id="@+id/overallHead"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/footprint">
+
+                </ImageView>
 
                 <TextView
                     android:id="@+id/distance"
@@ -61,18 +102,26 @@
                     android:textColor="@color/oldsilver"
                     android:textSize="15sp"></TextView>
 
-        </TableRow>
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            </TableRow>
 
-        <TextView
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!--<TextView-->
+                    <!--android:id="@+id/walkingOverall"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@string/walkOverall"-->
+                    <!--android:textColor="@color/oldsilver"-->
+                    <!--android:textSize="15sp"></TextView>-->
+                <ImageView
                     android:id="@+id/walkingOverall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/walkOverall"
-                        android:textColor="@color/oldsilver"
-                    android:textSize="15sp"></TextView>
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/turtle">
+
+                </ImageView>
 
                 <TextView
                     android:id="@+id/walkingDist"
@@ -98,19 +147,24 @@
                     android:textColor="@color/oldsilver"
                     android:textSize="15sp"></TextView>
 
-        </TableRow>
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            </TableRow>
 
-        <TextView
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!--<TextView-->
+                    <!--android:id="@+id/runningOverall"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@string/runOverall"-->
+                    <!--android:textColor="@color/oldsilver"-->
+                    <!--android:textSize="15sp"></TextView>-->
+                <ImageView
                     android:id="@+id/runningOverall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/runOverall"
-            android:textColor="@color/oldsilver"
-                    android:textSize="15sp"></TextView>
-
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/rabbit"></ImageView>
                 <TextView
                     android:id="@+id/ranDist"
                     android:layout_width="wrap_content"
@@ -134,6 +188,6 @@
                     android:text="@+id/time"
                     android:textColor="@color/oldsilver"
                     android:textSize="15sp"></TextView>
-        </TableRow>
+            </TableRow>
         </TableLayout>
 </HorizontalScrollView>

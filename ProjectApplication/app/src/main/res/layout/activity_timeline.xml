@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".timelineActivity">
 
     <android.support.v7.widget.Toolbar
@@ -115,9 +116,9 @@
 
     <ListView
         android:id="@+id/runList"
-        style="@android:style/Widget.ListView.Menu"
+        style="@android:style/Widget.ListView"
         android:layout_width="419dp"
-        android:layout_height="427dp"
+        android:layout_height="349dp"
         android:layout_marginTop="8dp"
         android:divider="@color/lightBlue"
         android:lineSpacingExtra="30sp"

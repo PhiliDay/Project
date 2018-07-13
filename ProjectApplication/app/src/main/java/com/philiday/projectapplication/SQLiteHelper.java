@@ -8,6 +8,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+//import net.sqlcipher.database.SQLiteDatabase;
+//import net.sqlcipher.database.SQLiteOpenHelper;
+
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,6 +44,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     // private ContentValues cValues;
     SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
     SQLiteDatabase sqLiteDatabaseObj;
+    private static SQLiteHelper instance;
+
 
 
     public SQLiteHelper(Context context) {
@@ -181,12 +186,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
      //   contentValues.put(Table1_Column_5_userId, user.getId());
-        contentValues.put(Table_Column_2_Email, user.getEmail());
+        contentValues.put(UserDetails.Table_Column_2_Email, user.getEmail());
         Log.i("userRow", "help" + user.getEmail());
-
-        contentValues.put(Table_Column_3_Password, user.getPassword());
+        contentValues.put(UserDetails.Table_Column_3_Password, user.getPassword());
+        contentValues.put(UserDetails.Table_Column_1_Name, user.getFirstName());
         long userRow = db.insert(UserDetails.TABLE_NAME, null, contentValues);
         Log.i("userRow", "help2" + user.getPassword());
+        Log.i("userRow", "help2" + user.getFirstName());
 
 
         if (userRow > 0) {
@@ -214,6 +220,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         if(c.moveToFirst()){
             do{
                 UserDetails u = new UserDetails();
+                u.setFirstName(c.getString(c.getColumnIndex(UserDetails.Table_Column_1_Name)));
                 u.setEmail(c.getString((c.getColumnIndex(UserDetails.Table_Column_2_Email))));
                 u.setPassword(c.getString((c.getColumnIndex(UserDetails.Table_Column_3_Password))));
 
@@ -256,11 +263,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             c.moveToFirst();
         Log.i("hello", "hello");
         UserDetails ud = new UserDetails();
-        ud.setEmail(c.getString(c.getColumnIndex(UserDetails.Table_Column_2_Email)));
-        ud.setPassword(c.getString(c.getColumnIndex(UserDetails.Table_Column_3_Password)));
+        if(isEmailExists(name) == true) {
+            ud.setFirstName(c.getString(c.getColumnIndex(UserDetails.Table_Column_1_Name)));
+            ud.setEmail(c.getString(c.getColumnIndex(UserDetails.Table_Column_2_Email)));
+            ud.setPassword(c.getString(c.getColumnIndex(UserDetails.Table_Column_3_Password)));
 
-        // ud.setId(c.getString(c.getColumnIndex(UserDetails.Table_Column_ID)));
-
+            // ud.setId(c.getString(c.getColumnIndex(UserDetails.Table_Column_ID)));
+        }
 
         return ud;
 
@@ -307,7 +316,14 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.delete(RunDetails.TABLE_NAME_1, RunDetails.Table1_Column_1_date + " = ?", new String[] {String.valueOf(date)});
     }
 
-
-
-
+    public boolean isEmailExists(String email){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(UserDetails.TABLE_NAME, new String[]{UserDetails.Table_Column_2_Email, UserDetails.Table_Column_3_Password},
+                UserDetails.Table_Column_2_Email + "=?",
+                new String[]{email}, null, null, null);
+        if(cursor != null && cursor.moveToFirst() && cursor.getCount()>0){
+            return true;
+        }
+        return false;
+    }
 }
