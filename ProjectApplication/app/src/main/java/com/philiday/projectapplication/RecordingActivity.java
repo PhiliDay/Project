@@ -7,14 +7,24 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorEventListener2;
+import android.hardware.SensorManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
@@ -41,6 +51,9 @@ import com.github.angads25.toggle.LabeledSwitch;
 import com.github.angads25.toggle.interfaces.OnToggledListener;
 import com.google.android.gms.location.ActivityRecognitionClient;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -60,14 +73,19 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-public class RecordingActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
+import static android.hardware.Sensor.TYPE_GYROSCOPE;
+import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
+
+public class RecordingActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback, SensorEventListener {
 
     private LocationManager locationManager;
 
@@ -75,7 +93,12 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     TextView startime, timetaken, startlocation, endlocation, currentLoc,  pace, endtime, distance, currentPace, tv, walkingPace, username, runningPace, txtActivity, txtConfidence;
     TextView walkingDis, runningDis;
     int count;
+    Intent intent;
+    private float mLastX, mLastY, mLastZ;
 
+
+    SensorManager _sensorManager;
+    TextView _sensorTextView;
     long stime;
     long walkstime;
     long runstime;// start time in milliseconds
@@ -85,6 +108,10 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     long startTime;
     long walkTimeBuff, walkingTime;
     long runTimeBuff, runningTime;
+    byte[] bArray;
+    ArrayList<Integer> xValuesAccelerometer = new ArrayList<>();
+    ArrayList<Integer> yValuesAccelerometer = new ArrayList<>();
+    ArrayList<Integer> zValuesAccelerometer = new ArrayList<>();
 
     double total = 0;
     double h= 0;
@@ -154,6 +181,16 @@ String ohms;
   //  private ActivitiesAdapter mAdapter;
   //  private Context mContext;
 
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private Vibrator v;
+
+    private float deltaX = 0;
+    private float deltaY = 0;
+    private float deltaZ = 0;
+
+    private float vibrateThreshold = 0;
+
     private ArrayList<LatLng> points; //added
     Polyline line; //added
 
@@ -170,14 +207,25 @@ String ohms;
 
     LocationListener listener;
 
+    private boolean mInitialized;
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private Sensor mGyroscope;
+    private final float NOISE = (float) 2.0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
-
         if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
         }else {setUpLocation();}
+
+        mInitialized = false;
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mGyroscope = mSensorManager.getDefaultSensor(TYPE_GYROSCOPE);
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -217,7 +265,6 @@ String ohms;
                         parent.getItemAtPosition(pos).toString(),
                         Toast.LENGTH_LONG).show();
 
-
             }
 
             public void onNothingSelected(AdapterView<?> paren) {
@@ -231,12 +278,6 @@ String ohms;
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mo = new MarkerOptions().position(new LatLng(0, 0)).title("Current location");
-//        if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
-//            requestPermissions(PERMISSIONS, PERMISSION_ALL);
-//        } else setUpLocation();
-       // askPermission();
-
-     //   setUpLocation();
 
         //This gets the username from the login and puts it in the db_username
         Intent in = getIntent();
@@ -252,6 +293,9 @@ String ohms;
 
         if (!isLocationEnabled()){
             Log.v("mytag", "No location");
+            Toast.makeText(getApplicationContext(),
+                    "Please Enable GPS",
+                    Toast.LENGTH_SHORT).show();
          }
 
 
@@ -308,6 +352,8 @@ String ohms;
             @Override
             public void onClick(View v) {
                 clickSave(v);
+
+
             }
         });
 
@@ -349,12 +395,6 @@ String ohms;
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         marker = mMap.addMarker(mo);
-        // Add a marker
-        // and move the map's camera to the same location.
-//        LatLng startPos = new LatLng(51.4558654, -2.6034682);
-//        googleMap.addMarker(new MarkerOptions().position(startPos)
-//                .title("Start Position"));
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(startPos));
     }
 
 
@@ -413,14 +453,16 @@ String ohms;
                     Log.i("mytag", "latestLocation: " + latestLocation);
                     //Is this needed?
                     latestLocation = location;
-
                     //PROPOSED IDEA
-                 //   if(finalActivity.equals("walking")){
+
+                    changingActivity();
+
+                        if(finalActivity.equals("walking")){
                         Log.i("finalActivityWalking", "finalActivityWalking" + finalActivity);
 
-                         if(db_result.equals("Walking")){
+                       //  if(db_result.equals("Walking")){
                            //  walkStartTime();
-
+                        getWalkTime();
                         walkTime = walketime - stime;
                         Log.i("walktime", "walktime1" + walkTime);
                         wh = TimeUnit.MILLISECONDS.toHours(walkTime);
@@ -439,10 +481,10 @@ String ohms;
                         double walkingSpeed = location.getSpeed();
 
                     }
-                 //   if(finalActivity.equals("running")){
+                    if(finalActivity.equals("running")){
                         Log.i("finalActivityRunning", "finalActivityRunning" + finalActivity);
 
-                            if(db_result.equals("Running")){
+                          //  if(db_result.equals("Running")){
                              //   runStartTime();
 
                                 getRunTime();
@@ -532,6 +574,10 @@ String ohms;
     @Override
     protected void onResume() {
         super.onResume();
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             return;
@@ -556,6 +602,8 @@ String ohms;
 //        PreferenceManager.getDefaultSharedPreferences(this)
 //                .unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
+        mSensorManager.unregisterListener(this);
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             return;
@@ -709,7 +757,7 @@ String ohms;
     private void askPermission(){
         if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
-        } else setUpLocation();
+        }
     }
 
     private void startTracking() {
@@ -784,15 +832,72 @@ String ohms;
 
     }
 
-        private void clickSave(View v){
-            Intent intent = new Intent(RecordingActivity.this, SummaryActivity.class);
+    private void takeScreenshot() {
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpg";
+
+            // create bitmap screen capture
+            View v1 = getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            openScreenshot(imageFile);
+        } catch (Throwable e) {
+            // Several error may come out with file handling or DOM
+            e.printStackTrace();
+        }
+    }
+
+    private void openScreenshot(File imageFile) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(imageFile);
+        intent.setDataAndType(uri, "image/*");
+        startActivity(intent);
+    }
+
+    public Bitmap screenShot(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),
+                view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
+
+
+
+    private void clickSave(View v){
+             intent = new Intent(RecordingActivity.this, SummaryActivity.class);
+
+        final GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
+            @Override
+            public void onSnapshotReady(Bitmap snapshot) {
+                Bitmap image = snapshot;
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                intent.putExtra("mapPhoto", byteArray);
+            }
+        };
 
             String distanc = getValue(dist);
             String walkHoursTaken = getValue(wh);
             String walkMinutesTaken = getValue(wmn);
             String walkSecondsTaken = getValue(ws);
             Log.i("dista", "dista" + distanc);
-
 
             intent.putExtra("walkHoursTaken", walkHoursTaken);
             intent.putExtra("walkMinutesTaken", walkMinutesTaken);
@@ -1008,6 +1113,200 @@ String ohms;
             txtActivity = findViewById(R.id.txt_activity);
             txtConfidence = findViewById(R.id.txt_confidence);
         }
+
+
+
+
+
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        String sensorName = event.sensor.getName();
+
+        float x = event.values[0];
+        int xVal = (int) x;
+        float y = event.values[1];
+        int yVal = (int) y;
+        float z = event.values[2];
+        int zVal = (int) z;
+        if (!mInitialized) {
+            mLastX = x;
+            mLastY = y;
+            mLastZ = z;
+
+            mInitialized = true;
+        } else {
+            float deltaX = Math.abs(mLastX - x);
+            float deltaY = Math.abs(mLastY - y);
+            float deltaZ = Math.abs(mLastZ - z);
+
+            if (deltaX < NOISE) deltaX = (float) 0.0;
+            if (deltaY < NOISE) deltaY = (float) 0.0;
+            if (deltaZ < NOISE) deltaZ = (float) 0.0;
+
+            int xDel = (int) deltaX;
+            int yDel = (int) deltaY;
+            int zDel = (int) deltaZ;
+            mLastX = x;
+            mLastY = y;
+            mLastZ = z;
+
+
+            xValuesAccelerometer.add(xVal);
+            yValuesAccelerometer.add(yVal);
+            zValuesAccelerometer.add(zVal);
+
+//            xValuesAccelerometer.add(xDel);
+//            yValuesAccelerometer.add(yDel);
+//            zValuesAccelerometer.add(zDel);
+
+            changingActivity();
+//        Log.i("myLastX", "myLastX " + mLastX);
+//            Log.i("myLastY", "myLastY " + mLastY);
+//            Log.i("myLastZ", "myLastZ " + mLastZ);
+//            Log.i("deltaX", "deltaX " +deltaX);
+//            Log.i("deltaY", "deltaY " + deltaY);
+//            Log.i("deltaZ", "deltaZ " + deltaZ);
+
+
+        }
+    }
+
+    private double calculateAverage(ArrayList<Integer> values){
+        Integer sum = 0;
+        if(!values.isEmpty()){
+            for(Integer value: values){
+                sum += value;
+            }
+            return sum.doubleValue() / values.size();
+        }
+        return sum;
+    }
+
+    private double calculateAverageInt(double max, double min){
+
+            return (max + min)/2;
+
+    }
+
+        public float getActivityAce(float xValue, float yValue, float zValue){
+
+           float acc_ave = myPow(((myPow(xValue, 2))+(myPow(yValue, 2))+(myPow(zValue, 2))), 0.5f);
+
+           return acc_ave;
+        }
+
+    public float myPow(float x, float p) {
+        double dblResult = Math.pow(x, p);
+        float floatResult = (float)dblResult; // <-- Change to something safe. It may easily overflow.
+        return floatResult;
+    }
+
+    public void changingActivity(){
+        float accelerometer = getActivityAce(mLastX, mLastY, mLastZ);
+        double averageX = calculateAverage(xValuesAccelerometer);
+        double averageY = calculateAverage(yValuesAccelerometer);
+        double averageZ = calculateAverage(zValuesAccelerometer);
+        double varianceX = variance(xValuesAccelerometer);
+        double varianceY = variance(yValuesAccelerometer);
+        double varianceZ = variance(zValuesAccelerometer);
+        Log.i("averageX", "averageX" + averageX);
+        Log.i("averageY", "averageY" + averageY);
+        Log.i("averageZ", "averageZ" + averageZ);
+        Log.i("varianceX", "varianceX" + varianceX);
+        Log.i("varianceY", "varianceY" + varianceY);
+        Log.i("varianceZ", "varianceZ" + varianceZ);
+        sortList(xValuesAccelerometer);
+        sortList(yValuesAccelerometer);
+        sortList(zValuesAccelerometer);
+
+        double maxX = maxList(xValuesAccelerometer);
+        double maxY = maxList(yValuesAccelerometer);
+        double maxZ = maxList(zValuesAccelerometer);
+
+        double minX = minList(xValuesAccelerometer);
+        double minY = minList(yValuesAccelerometer);
+        double minZ = minList(zValuesAccelerometer);
+
+        double Q1X =  calculateAverageInt(averageX, minX);
+        double Q3X = calculateAverageInt(maxX, averageX);
+
+        double Q1Y = calculateAverageInt(averageY, minY);
+        double Q3Y = calculateAverageInt(maxY, averageY);
+
+        double Q1Z = calculateAverageInt(averageZ, minZ);
+        double Q3Z = calculateAverageInt(maxZ, averageZ);
+
+        double finalY = Q1Y + Q3Y;
+
+        float accelerometer_bounds = 20;
+        float gyrometer = 0;
+        float gyrometer_bounds =0;
+        float stable_bounds = 0;
+        if(averageX > averageY &&
+                 averageX > 0 && averageY < 0){
+            finalActivity = "walking";
+            Toast.makeText(getApplicationContext(),
+                    "Walking!",
+                    Toast.LENGTH_SHORT)
+                    .show();
+            Log.i("finalAct", "finalAct" + finalActivity);
+        }else if(finalY < Q1X && finalY > Q3Y){
+            finalActivity = "running";
+            Log.i("finalAct", "finalAct" + finalActivity);
+            Toast.makeText(getApplicationContext(),
+                    "Running!",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }else{
+            finalActivity = "still";
+            Log.i("finalAct", "finalAct" + finalActivity);
+            Toast.makeText(getApplicationContext(),
+                    "Still!",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+    public double variance(ArrayList<Integer> values){
+        double sumDiffsSquared = 0.0;
+        double avg = calculateAverage(values);
+        for(int value: values){
+            double diff = value - avg;
+            diff *= diff;
+            sumDiffsSquared += diff;
+
+        }
+        return sumDiffsSquared / (values.size()-1);
+    }
+
+    public void sortList(ArrayList<Integer> values){
+        Collections.sort(values);
+    }
+
+    public int maxList(ArrayList<Integer> values){
+        return Collections.max(values);
+    }
+
+    public int minList(ArrayList<Integer> values){
+        return Collections.min(values);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -189,5 +189,13 @@
                     android:textColor="@color/oldsilver"
                     android:textSize="15sp"></TextView>
             </TableRow>
+
+            <ImageView
+                android:id="@+id/map"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                >
+            </ImageView>
+
         </TableLayout>
 </HorizontalScrollView>

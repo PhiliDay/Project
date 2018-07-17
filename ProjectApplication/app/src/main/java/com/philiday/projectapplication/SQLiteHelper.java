@@ -136,6 +136,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             rd.setOverallPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_10_overallPace)));
             rd.setWalkingPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_11_walkingPace)));
             rd.setRunningPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_12_runningPace)));
+            rd.setImage(c.getBlob(1));
 
             return rd;
 
@@ -164,6 +165,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 rd.setOverallPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_10_overallPace)));
                 rd.setWalkingPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_11_walkingPace)));
                 rd.setRunningPace(c.getString(c.getColumnIndex(RunDetails.Table1_Column_12_runningPace)));
+                rd.setImage(c.getBlob(1));
 
                 runs.add(rd);
             }while (c.moveToNext());
@@ -296,6 +298,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         contentValues.put("overallPace", run.getOverallPace());
         contentValues.put("walkingPace", run.getWalkingPace());
         contentValues.put("runningPace", run.getRunningPace());
+        contentValues.put("image", run.getImage());
 
         Log.i("userId", "userId" + run);
         Log.i("userId", "userId" + run.getTime());

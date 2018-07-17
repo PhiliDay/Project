@@ -21,6 +21,7 @@ public class RunDetails {
     public static final String Table1_Column_10_overallPace="overallPace";
     public static final String Table1_Column_11_walkingPace="walkingPace";
     public static final String Table1_Column_12_runningPace="runningPace";
+    public static final String Table1_Column_13_image="image";
 
 
     private String runId;
@@ -35,6 +36,7 @@ public class RunDetails {
     private String overallPace;
     private String walkingPace;
     private String runningPace;
+    private byte[] image;
 
 
     public static final String CREATE_TABLE_2="CREATE TABLE IF NOT EXISTS "+ TABLE_NAME_1+" ("
@@ -49,6 +51,7 @@ public class RunDetails {
             +Table1_Column_10_overallPace+" VARCHAR, "
             +Table1_Column_11_walkingPace+" VARCHAR, "
             +Table1_Column_12_runningPace+" VARCHAR, "
+            +Table1_Column_13_image+" BLOB, "
             //   +Table1_Column_4_pace+"INTEGER NOT NULL,"
             +Table1_Column_5_userId+" VARCHAR NOT NULL, FOREIGN KEY (" +Table1_Column_5_userId+ ") REFERENCES " + UserDetails.TABLE_NAME + "(" + UserDetails.Table_Column_1_Name + "));";
 
@@ -58,7 +61,7 @@ public class RunDetails {
 
 
 
-    public RunDetails(String userId, String date, String distance, String time, String walkingDist, String ranDist, String walkingTime, String runningTime, String overallPace, String walkingPace, String runningPace) {
+    public RunDetails(String userId, String date, String distance, String time, String walkingDist, String ranDist, String walkingTime, String runningTime, String overallPace, String walkingPace, String runningPace, byte[] image) {
         this.userId = userId;
         this.date = date;
         this.distance = distance;
@@ -70,6 +73,7 @@ public class RunDetails {
         this.overallPace = overallPace;
         this.walkingPace = walkingPace;
         this.runningPace = runningPace;
+        this.image = image;
     }
 
     public String getrunId() {
@@ -142,6 +146,12 @@ public class RunDetails {
 
     public void setRunningPace(String runningPace){this.runningPace = runningPace;}
     public String getRunningPace(){return runningPace;}
+
+    public void setImage(byte[] image){
+        this.image = image;
+    }
+
+    public byte[] getImage(){return image;}
 
 
 

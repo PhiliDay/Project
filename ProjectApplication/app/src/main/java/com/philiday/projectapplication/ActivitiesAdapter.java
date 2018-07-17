@@ -1,11 +1,14 @@
 package com.philiday.projectapplication;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -56,6 +59,7 @@ public class ActivitiesAdapter extends BaseAdapter {
             holder.overallPace = (TextView)convertView.findViewById(R.id.overallPace);
             holder.walkingPace = (TextView)convertView.findViewById(R.id.walkingPace);
             holder.runningPace = (TextView)convertView.findViewById(R.id.runningPace);
+            holder.image = (ImageView)convertView.findViewById(R.id.map);
 
             convertView.setTag(holder);
         }
@@ -64,6 +68,8 @@ public class ActivitiesAdapter extends BaseAdapter {
         }
 
         RunDetails stu = runList.get(position);
+        Bitmap bmp = BitmapFactory.decodeByteArray(stu.getImage(), 0, stu.getImage().length);
+
         holder.date.setText(stu.getDate());
         holder.time.setText(stu.getTime());
         holder.distance.setText(stu.getDistance());
@@ -74,6 +80,7 @@ public class ActivitiesAdapter extends BaseAdapter {
         holder.overallPace.setText(stu.getOverallPace());
         holder.walkingPace.setText(stu.getWalkingPace());
         holder.runningPace.setText(stu.getRunningPace());
+        holder.image.setImageBitmap(bmp);
 
         Log.i("date", "date" + stu.getDate());
 
@@ -94,6 +101,7 @@ public class ActivitiesAdapter extends BaseAdapter {
         public TextView overallPace;
         public TextView walkingPace;
         public TextView runningPace;
+        public ImageView image;
 
     }
 }

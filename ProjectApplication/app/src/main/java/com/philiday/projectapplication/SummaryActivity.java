@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.DoubleBuffer;
 import java.text.DecimalFormat;
 
@@ -31,6 +34,7 @@ public class SummaryActivity extends AppCompatActivity {
     TextView startLocation;
     SQLiteHelper sqLiteHelper;
     SQLiteDatabase sqLiteDatabaseObj;
+    byte[] screenshot;
 
 
     @Override
@@ -68,6 +72,9 @@ public class SummaryActivity extends AppCompatActivity {
         seconds = (String) b.get("seconds");
         walkingDist = (String) b.get("walkedDist");
         ranDist = (String) b.get("ranDist");
+        screenshot = b.getByteArray("mapPhoto");
+
+
         date.setText(timeOfRun);
         distance.setText(dista);
         username.setText(userId);
@@ -109,13 +116,13 @@ public class SummaryActivity extends AppCompatActivity {
             time.setText(seconds + "s");
         } else if (hours.equals("0.0")) {
 
-            totalPace = Double.toString(Double.parseDouble(minutes)+ (Double.parseDouble(seconds)/60) / (Double.parseDouble(dista)));
+            totalPace = Double.toString((((Double.parseDouble(minutes)*60) + Double.parseDouble(seconds)) / 60) / (Double.parseDouble(dista)));
+
             overallPace.setText(totalPace);
             time.setText(minutes + "mn(s)" + seconds + "s");
         } else {
 
-            totalPace = Double.toString(Double.parseDouble(hours)+Double.parseDouble(minutes)+(Double.parseDouble(seconds)/60) / (Double.parseDouble(dista)));
-            overallPace.setText(totalPace);
+            totalPace = Double.toString((Double.parseDouble(hours)*60)+ ((Double.parseDouble(minutes)) + (Double.parseDouble(seconds)/60) / (Double.parseDouble(dista))));            overallPace.setText(totalPace);
             time.setText(hours + "h(s), " + minutes + "mn(s) " + seconds + "s");
         }
 
@@ -151,7 +158,7 @@ public class SummaryActivity extends AppCompatActivity {
         }
 
         sqLiteHelper = new SQLiteHelper(getApplicationContext());
-        RunDetails run = new RunDetails(userId, timeOfRun, dista, hours + "h," + minutes + "min" + seconds + "s", walkingDist, ranDist, walkHours + "h," + walkMinutes + "min" + walkSeconds + "s",runHours + "h," + runMinutes + "min" + runSeconds + "s", totalPace, walkingPace, runningPace );
+        RunDetails run = new RunDetails(userId, timeOfRun, dista, hours + "h," + minutes + "min" + seconds + "s", walkingDist, ranDist, walkHours + "h," + walkMinutes + "min" + walkSeconds + "s",runHours + "h," + runMinutes + "min" + runSeconds + "s", totalPace, walkingPace, runningPace, screenshot);
         sqLiteHelper.getWritableDatabase();
         long insertingRun = sqLiteHelper.createRun(run);
 
@@ -204,6 +211,8 @@ public class SummaryActivity extends AppCompatActivity {
         intent.putExtra("Username", userId);
         startActivity(intent);
     }
+
+
 
 
 
