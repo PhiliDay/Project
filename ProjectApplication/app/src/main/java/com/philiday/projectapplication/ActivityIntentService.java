@@ -41,7 +41,7 @@ public class ActivityIntentService extends IntentService {
 
             ArrayList<DetectedActivity> detectedActivities = (ArrayList) result.getProbableActivities();
         for (DetectedActivity activity : detectedActivities) {
-            Log.e(TAG, "Detected activity: " + activity.getType() + ", " + activity.getConfidence());
+       //     Log.e(TAG, "Detected activity: " + activity.getType() + ", " + activity.getConfidence());
             broadcastActivity(activity);
         }
 

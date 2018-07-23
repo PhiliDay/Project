@@ -96,7 +96,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     Intent intent;
     private float mLastX, mLastY, mLastZ;
 
-
+    double time=0;
     SensorManager _sensorManager;
     TextView _sensorTextView;
     long stime;
@@ -144,9 +144,9 @@ String ohms;
     String ranDist;
     String totalDist;
     double speed=0;
-    double dist;
-    double walked;
-    double ran;
+    double dist = 0;
+    double walked = 0;
+    double ran = 0;
 
     double walkingDist = 0;
     double runningDist = 0;
@@ -174,7 +174,7 @@ String ohms;
 
     private String TAG = RecordingActivity.class.getSimpleName();
     private Button btn;
-    String finalActivity;
+    String finalActivity = "";
     String finalConfidence;
    // public static final String DETECTED_ACTIVITY = ".DETECTED ACTIVITY";
   //  private ActivityRecognitionClient mActivityRecognitionClient;
@@ -247,7 +247,9 @@ String ohms;
 
         initViews();
         btn.setText("Walking");
-
+        totalDistance = getDistance(dist);
+        ranDist = getDistance(ran);
+        walkedDist = getDistance(walked);
 
         ArrayAdapter<String> dataadapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, list);
@@ -328,23 +330,19 @@ String ohms;
         labeledSwitch.setOnToggledListener(new OnToggledListener() {
             @Override
             public void onSwitched(LabeledSwitch labeledSwitch, boolean isOn) {
-                if(isOn){
+                if (isOn) {
                     clickStart();
 
-                } else if(!isOn){
-                    //Click and stop journey
+                } else if (!isOn) {
                     clickStop();
                 }
             }
         });
 
-
-
-        //Click and stop journey
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             clickStop();
+                clickStop();
             }
         });
 
@@ -358,25 +356,19 @@ String ohms;
         });
 
 
-
-        //SHOULD TELL ME HOW WHETHER IM RUNNING OR WALKING !!!
         broadcastReceiver = new BroadcastReceiver() {
 
             @Override
-
             public void onReceive(Context context, Intent intent) {
-                Log.i("mytag", "broadcast2");
-
+                //Log.i("mytag", "broadcast2");
                 if (intent.getAction().equals(Constants.BROADCAST_DETECTED_ACTIVITY)) {
 
                     int type1 = intent.getIntExtra("type1", -1);
                     int confidence1 = intent.getIntExtra("confidence1", 0);
 
-                    Log.i("mytag", "type11" + type1);
-                    Log.i("mytag", "confidence22" + confidence1);
-
+                //    Log.i("mytag", "type11" + type1);
+                  //  Log.i("mytag", "confidence22" + confidence1);
                     handleUserActivity(type1, confidence1);
-
                 }
             }
         };
@@ -398,127 +390,144 @@ String ohms;
     }
 
 
-        public void onLocationChanged(Location location) {
-        double oldDist = 0;
-            Toast.makeText(getApplicationContext(),
-                    "Location Changed",
-                    Toast.LENGTH_SHORT)                    .show();
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            LatLng myCoordinates = new LatLng(latitude, longitude);
+    public void onLocationChanged(Location location) {
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        LatLng myCoordinates = new LatLng(latitude, longitude);
 
-            points.add(myCoordinates); //added
+        points.add(myCoordinates); //added
+        redrawLine(); //added
 
-            redrawLine(); //added
+            if (location != null) {
 
-            Toast.makeText(getApplicationContext(),
-                    "Found location 1",
-                    Toast.LENGTH_SHORT)                    .show();
-
-
-            if (location != null) {   Toast.makeText(getApplicationContext(),
-                    "Found location 6",
-                    Toast.LENGTH_SHORT)                        .show();
                 if (startLocation == null) {
-                    Toast.makeText(getApplicationContext(),
-                            "Found location 2",
-                            Toast.LENGTH_SHORT)                        .show();
-
                     Log.v("mytag", "LOCATION NULL");
                     startLocation = location;
                     latestLocation = location;
                     Log.v("mytag", "Latest Location" + latestLocation);
 
+                    //Moves the map to the current location
                     marker.setPosition(myCoordinates);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, 14));
+
                     startLocationString = "Coordinate: " + myCoordinates;
                     startlocation.setText(startLocationString);
-                    //Puts in my start location as current loc -- this is later updated
-                       currentLoc.setText(startLocationString);
+                    currentLoc.setText(startLocationString);
                     dist = 0;
+                    speed=0;
                 }
 
 
                 //While the user is still running get the distance
+                //Maybe change this stop.isEnabled()??? - to if toggle = lets go
                 if (stop.isEnabled()) {
-
-                    double activitySpeed = location.getSpeed();
+                   speed = (double) location.getSpeed();
                     //Add here also if gyroscope is this then walking
-                    Log.i("speed", "speed: " + activitySpeed);
+                    Log.i("speed", "speed: " + speed);
+
+                    double averageSpeed = speed;
                     marker.setPosition(myCoordinates);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, 14));
 
-                    //NEED TO DECIDE HOW BEST TO DO THIS
                     double  d = distance(location.getLatitude(), location.getLongitude(), latestLocation.getLatitude(), latestLocation.getLongitude());
-                    Log.i("mytag", "latestLocation: " + latestLocation);
+                //    Log.i("mytag", "latestLocation: " + latestLocation);
                     //Is this needed?
                     latestLocation = location;
                     //PROPOSED IDEA
+                    //this is 1 second to an hour 0.000277778
+
+//                    time++;
+//
+//                    speed = d / time;
+                  //  Log.i("speed", "speed " + speed);
 
                     changingActivity();
 
-                        if(finalActivity.equals("walking")){
-                        Log.i("finalActivityWalking", "finalActivityWalking" + finalActivity);
+                        if(finalActivity.equals("maybeWalking")) {
+                            if (averageSpeed < 2.5) {
+                                Log.i("finalActivityWalking", "finalActivityWalking1 " + finalActivity);
 
-                       //  if(db_result.equals("Walking")){
-                           //  walkStartTime();
-                        getWalkTime();
-                        walkTime = walketime - stime;
-                        Log.i("walktime", "walktime1" + walkTime);
-                        wh = TimeUnit.MILLISECONDS.toHours(walkTime);
-                        wmn = TimeUnit.MILLISECONDS.toMinutes(walkTime) - wh *60;
-                        ws = TimeUnit.MILLISECONDS.toSeconds(walkTime) - wh *60 * 60 - wmn * 60;
-                        Log.i("walktime", "walktime" + walketime);
-                        Log.i("walktime","walking" + wh+" h(s), " + wmn +" mn(s) " + ws + "s");
+                                //  if(db_result.equals("Walking")){
+                                //  walkStartTime();
+                                getWalkTime();
+                                walkTime = walketime - stime;
+                                Log.i("walktime", "walktime1" + walkTime);
+                                wh = TimeUnit.MILLISECONDS.toHours(walkTime);
+                                wmn = TimeUnit.MILLISECONDS.toMinutes(walkTime) - wh * 60;
+                                ws = TimeUnit.MILLISECONDS.toSeconds(walkTime) - wh * 60 * 60 - wmn * 60;
+                                Log.i("walktime", "walktime" + walketime);
+                                Log.i("walktime", "walking" + wh + " h(s), " + wmn + " mn(s) " + ws + "s");
 
-                         whms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(walkTime),
-                                TimeUnit.MILLISECONDS.toMinutes(walkTime) % TimeUnit.HOURS.toMinutes(1),
-                                TimeUnit.MILLISECONDS.toSeconds(walkTime) % TimeUnit.MINUTES.toSeconds(1));
+                                whms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(walkTime),
+                                        TimeUnit.MILLISECONDS.toMinutes(walkTime) % TimeUnit.HOURS.toMinutes(1),
+                                        TimeUnit.MILLISECONDS.toSeconds(walkTime) % TimeUnit.MINUTES.toSeconds(1));
 
-                         walked += walkingDist + d;
-                         walkedDist = getDistance(walked);
-                        walkingDis.setText(walkedDist);
-                        double walkingSpeed = location.getSpeed();
+                                walked += walkingDist + d;
+                                walkedDist = getDistance(walked);
+                                Log.i("walkedDist", "walkedDist" + walkedDist);
+                                walkingDis.setText(walkedDist);
+                                double walkingSpeed = location.getSpeed();
+                                Toast.makeText(getApplicationContext(),
+                                        "Walking!",
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        }
+                            if(finalActivity.equals("maybeRunning")) {
+                                //if (averageSpeed > 2.5) {
+                                    Log.i("finalActivityRunning", "finalActivityRunning1 " + finalActivity);
 
+                                    //  if(db_result.equals("Running")){
+                                    //   runStartTime();
+
+                                    getRunTime();
+                                    runTime = runetime - stime;
+                                    runTime -= walkTime;
+
+                                    Log.i("runTime", "runTime" + runTime);
+                                    rh = TimeUnit.MILLISECONDS.toHours(runTime);
+                                    rmn = TimeUnit.MILLISECONDS.toMinutes(runTime) - rh * 60;
+                                    rs = TimeUnit.MILLISECONDS.toSeconds(runTime) - rh * 60 * 60 - rmn * 60;
+                                    Log.i("runtime", "runtime" + runetime);
+                                    Log.i("runtime", "runtime2" + runstime);
+
+                                    Log.i("runtime", "running" + rh + " h(s), " + rmn + " mn(s) " + rs + "s");
+                                    rhms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(runTime),
+                                            TimeUnit.MILLISECONDS.toMinutes(runTime) % TimeUnit.HOURS.toMinutes(1),
+                                            TimeUnit.MILLISECONDS.toSeconds(runTime) % TimeUnit.MINUTES.toSeconds(1));
+
+
+                                    ran += runningDist + d;
+                                    ranDist = getDistance(ran);
+                                    Log.i("randDist", "ranDist" + ranDist);
+                                    runningDis.setText(ranDist);
+                                    double runningSpeed = location.getSpeed();
+                                    Toast.makeText(getApplicationContext(),
+                                            "Running!",
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                                Log.i("maybeRunning", "maybeRunning but not fast speed " + speed );
+
+                            //}
+                            Log.i("maybeWalking", "maybeWalking but too fast speed " + speed );
+
+
+                    if(finalActivity.equals("maybeStill") && !location.hasSpeed()){
+                        Log.i("finalActivityStill", "finalActivityStill1 " + finalActivity);
+                        Toast.makeText(getApplicationContext(),
+                                "Still!",
+                                Toast.LENGTH_SHORT)
+                                .show();
                     }
-                    if(finalActivity.equals("running")){
-                        Log.i("finalActivityRunning", "finalActivityRunning" + finalActivity);
 
-                          //  if(db_result.equals("Running")){
-                             //   runStartTime();
-
-                                getRunTime();
-                        runTime = runetime - stime;
-                        runTime -= walkTime;
-
-                        Log.i("runTime", "runTime" + runTime);
-                        rh = TimeUnit.MILLISECONDS.toHours(runTime);
-                        rmn = TimeUnit.MILLISECONDS.toMinutes(runTime) - rh *60;
-                        rs = TimeUnit.MILLISECONDS.toSeconds(runTime) - rh *60 * 60 - rmn * 60;
-                        Log.i("runtime", "runtime" + runetime);
-                                Log.i("runtime", "runtime2" + runstime);
-
-                                Log.i("runtime","running" + rh+" h(s), " + rmn +" mn(s) " + rs + "s");
-                                rhms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(runTime),
-                                        TimeUnit.MILLISECONDS.toMinutes(runTime) % TimeUnit.HOURS.toMinutes(1),
-                                        TimeUnit.MILLISECONDS.toSeconds(runTime) % TimeUnit.MINUTES.toSeconds(1));
-
-
-                        ran += runningDist + d;
-                         ranDist = getDistance(ran);
-                        runningDis.setText(ranDist);
-                        double runningSpeed = location.getSpeed();
-                    }
-//                    if(finalActivity.equals("still")){
-//                        Log.i("finalActivityStill", "finalActivityStill" + finalActivity);
-//                    }
-
-                    Log.i("mytag", "dist: " + dist);
+                  //  Log.i("mytag", "dist: " + dist);
                     Log.i("mytag", "latestLocation-location: " + latestLocation);
                     totalDistance = getDistance(walked+ran);
-
-
-
+                    Log.i("totalDistance", "totalDistance" + totalDistance);
+                    if(totalDistance.equals("null miles")){
+                        totalDistance = "0.0 miles";
+                    }
 
                     // updating the max speed
                     double newSpeed = location.getSpeed();
@@ -562,8 +571,8 @@ String ohms;
 
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                1000,
-                3,
+                100,
+                1,
                 this);
 
     }
@@ -650,7 +659,7 @@ String ohms;
         switch (type) {
             case DetectedActivity.RUNNING: {
                 label = getString(R.string.activity_running);
-                Log.v("mytag", "activityRun"+ label);
+           //     Log.v("mytag", "activityRun"+ label);
              //   txtActivity.setText("Type: " + label);
               //  txtConfidence.setText("Confidence: " + confidence);
                 break;
@@ -658,7 +667,7 @@ String ohms;
             case DetectedActivity.STILL: {
                 label = getString(R.string.activity_still);
                 conLabel = Integer.toString(confidence);
-                Log.v("mytag", "activityStill"+ label);
+              //  Log.v("mytag", "activityStill"+ label);
               //  txtActivity.setText("Type: " + label);
               //  txtConfidence.setText("Confidence: " + confidence);
                 break;
@@ -666,7 +675,7 @@ String ohms;
 
             case DetectedActivity.WALKING: {
                 label = getString(R.string.activity_walking);
-                Log.v("mytag", "activityWalk"+ label);
+             //   Log.v("mytag", "activityWalk"+ label);
            //     txtActivity.setText("Type: " + label);
               //  txtConfidence.setText("Confidence: " + confidence);
 
@@ -674,7 +683,7 @@ String ohms;
             }
             case DetectedActivity.UNKNOWN: {
                 label = getString(R.string.activity_unknown);
-                Log.v("mytag", "activityUnknown"+ label);
+               // Log.v("mytag", "activityUnknown"+ label);
             //    txtActivity.setText("Type: " + label);
               //  txtConfidence.setText("Confidence: " + confidence);
 
@@ -682,30 +691,17 @@ String ohms;
             }
         }
 
-        Log.e(TAG, "User activity: " + label + ", Confidence: " + confidence);
+      //  Log.e(TAG, "User activity: " + label + ", Confidence: " + confidence);
 
         if (confidence > Constants.CONFIDENCE) {
             txtActivity.setText(label);
-            finalActivity = String.valueOf(label);
-            Log.i("finalActivity", "finalActivity" + finalActivity);
+       //     finalActivity = String.valueOf(label);
+        //    Log.i("finalActivity", "finalActivity3" + finalActivity);
 //            txtConfidence.setText(confidence);
           //  finalConfidence = confidence;
         }
     }
 
-
-    private String whichActivity(String label){
-        String Running = "";
-        String Walking = "";
-        String Still  = "";
-        if(label == "Running"){
-            return  Running;
-        }else if(label == "Walking"){
-            return Walking;
-        }else {
-            return Still;
-        }
-    }
 
     private boolean isLocationEnabled(){
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
@@ -787,6 +783,8 @@ String ohms;
                         "Correctly Identified Logout!",
                         Toast.LENGTH_SHORT)
                         .show();
+                Intent logout = new Intent(this, LoginActivity.class);
+                startActivity(logout);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -799,6 +797,8 @@ String ohms;
             boolean gpsEnabled = false;
             start.setEnabled(false);
             stop.setEnabled(true);
+
+
 
             //Take this away when actually delivering the application
 //                startime.setText("starttime");
@@ -892,14 +892,20 @@ String ohms;
                 intent.putExtra("mapPhoto", byteArray);
             }
         };
-
             String distanc = getValue(dist);
+
             String walkHoursTaken = getValue(wh);
             String walkMinutesTaken = getValue(wmn);
             String walkSecondsTaken = getValue(ws);
             Log.i("dista", "dista" + distanc);
 
-            intent.putExtra("walkHoursTaken", walkHoursTaken);
+            if(walkHoursTaken.equals("null")){walkHoursTaken = "0.0";}
+             if (walkMinutesTaken.equals("null")) {walkMinutesTaken = "0.0";}
+             if(walkHoursTaken.equals("null")){walkHoursTaken = "0.0";}
+
+
+
+        intent.putExtra("walkHoursTaken", walkHoursTaken);
             intent.putExtra("walkMinutesTaken", walkMinutesTaken);
             intent.putExtra("walkSecondsTaken", walkSecondsTaken);
           //  intent.putExtra("walkingTime", whms);
@@ -907,6 +913,10 @@ String ohms;
             String runHoursTaken = getValue(rh);
             String runMinutesTaken = getValue(rmn);
             String runSecondsTaken = getValue(rs);
+
+        if(runSecondsTaken.equals("null")){runSecondsTaken = "0.0";}
+        if (runMinutesTaken.equals("null")) {runMinutesTaken = "0.0";}
+        if(runHoursTaken.equals("null")){runHoursTaken = "0.0";}
 
             intent.putExtra("runHoursTaken", runHoursTaken);
             intent.putExtra("runMinutesTaken", runMinutesTaken);
@@ -919,8 +929,11 @@ String ohms;
             String secondsTaken = getValue(s);
             String calendarDate = ymd;
 
-            // Log.v("mytag", "totalTime"+ totalTime2);
-            Log.v("mytag", "distanc"+ distance);
+       // if(totalDistance.equals("null")){totalDistance = "0.0 miles"; }
+            String finalDistance = totalDistance;
+
+        // Log.v("mytag", "totalTime"+ totalTime2);
+            Log.v("mytag", "distanc"+ finalDistance);
             Log.v("mytag", "walkedDist"+ walkedDist);
             Log.v("mytag", "ranDist"+ ranDist);
 
@@ -1009,7 +1022,7 @@ String ohms;
 
             //mMap.clear();  //clears all Markers and Polylines
 
-            PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+            PolylineOptions options = new PolylineOptions().width(5).color(Color.GREEN).geodesic(true);
             for (int i = 0; i < points.size(); i++) {
                 LatLng point = points.get(i);
                 options.add(point);
@@ -1162,7 +1175,6 @@ String ohms;
 //            yValuesAccelerometer.add(yDel);
 //            zValuesAccelerometer.add(zDel);
 
-            changingActivity();
 //        Log.i("myLastX", "myLastX " + mLastX);
 //            Log.i("myLastY", "myLastY " + mLastY);
 //            Log.i("myLastZ", "myLastZ " + mLastZ);
@@ -1215,9 +1227,9 @@ String ohms;
         Log.i("averageX", "averageX" + averageX);
         Log.i("averageY", "averageY" + averageY);
         Log.i("averageZ", "averageZ" + averageZ);
-        Log.i("varianceX", "varianceX" + varianceX);
-        Log.i("varianceY", "varianceY" + varianceY);
-        Log.i("varianceZ", "varianceZ" + varianceZ);
+//        Log.i("varianceX", "varianceX" + varianceX);
+//        Log.i("varianceY", "varianceY" + varianceY);
+//        Log.i("varianceZ", "varianceZ" + varianceZ);
         sortList(xValuesAccelerometer);
         sortList(yValuesAccelerometer);
         sortList(zValuesAccelerometer);
@@ -1239,34 +1251,29 @@ String ohms;
         double Q1Z = calculateAverageInt(averageZ, minZ);
         double Q3Z = calculateAverageInt(maxZ, averageZ);
 
+        Log.i("Q1Y", "Q1Y" + Q1Y);
+        Log.i("Q3Y", "Q3Y" + Q3Y);
+        Log.i("Q1X", "Q1X" + Q1X);
+        Log.i("Q3X", "Q3X" + Q3X);
+
         double finalY = Q1Y + Q3Y;
+
+        double diffY = Q3Y - Q1Y;
+        double diffX = Q3X - Q3Y;
 
         float accelerometer_bounds = 20;
         float gyrometer = 0;
         float gyrometer_bounds =0;
         float stable_bounds = 0;
-        if(averageX > averageY &&
-                 averageX > 0 && averageY < 0){
-            finalActivity = "walking";
-            Toast.makeText(getApplicationContext(),
-                    "Walking!",
-                    Toast.LENGTH_SHORT)
-                    .show();
+        if(((averageX > Q1Y && averageX < Q3Y) || (averageY > Q1X && averageY < Q3X)) && Q3Y > 5){
+            finalActivity = "maybeRunning";
             Log.i("finalAct", "finalAct" + finalActivity);
-        }else if(finalY < Q1X && finalY > Q3Y){
-            finalActivity = "running";
+        }else if(Q3Y < 5){
+            finalActivity = "maybeWalking";
             Log.i("finalAct", "finalAct" + finalActivity);
-            Toast.makeText(getApplicationContext(),
-                    "Running!",
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }else{
-            finalActivity = "still";
+        }else if (varianceX < 1 && varianceX > -1){
+            finalActivity = "maybeStill";
             Log.i("finalAct", "finalAct" + finalActivity);
-            Toast.makeText(getApplicationContext(),
-                    "Still!",
-                    Toast.LENGTH_SHORT)
-                    .show();
         }
     }
 
@@ -1293,27 +1300,6 @@ String ohms;
     public int minList(ArrayList<Integer> values){
         return Collections.min(values);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

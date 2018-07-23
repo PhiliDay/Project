@@ -125,8 +125,11 @@ public class RunDetails {
     }
 
     public void setWalkingTime(String walkingTime){ this.walkingTime = walkingTime;}
+
     public void setRunningTime(String runningTime){this.runningTime = runningTime;}
+
     public String getWalkingTime(){ return walkingTime;}
+
     public String getRunningTime(){ return runningTime;}
 
     public String getWalkingDist(){

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ActivitiesAdapter extends BaseAdapter {
@@ -43,6 +44,8 @@ public class ActivitiesAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
+
+        DecimalFormat df = new DecimalFormat("#.00");
 
         if(convertView == null){
             LayoutInflater inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

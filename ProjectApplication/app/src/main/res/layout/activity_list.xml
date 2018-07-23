@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:text="@+id/date"
                 android:textColor="@color/headingText"
-                android:textSize="20sp"></TextView>
+                android:textSize="18sp"></TextView>
 
             <TableRow
                 android:layout_width="wrap_content"

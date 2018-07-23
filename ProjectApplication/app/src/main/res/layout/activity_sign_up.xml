@@ -149,7 +149,7 @@
         android:layout_marginLeft="104dp"
         android:layout_marginStart="104dp"
         android:ems="10"
-        android:inputType="textVisiblePassword"
+        android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/sign_up"
         app:layout_constraintStart_toStartOf="parent" />
 

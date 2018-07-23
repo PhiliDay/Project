@@ -100,59 +100,94 @@ public class SummaryActivity extends AppCompatActivity {
 
         Log.i("runningTime", "runningTime" + runMinutes + "mn(s)" + runSeconds + "s");
         Log.i("walkingTime", "walkingTime" + walkMinutes + "mn(s)" + walkSeconds + "s");
-
-        dista = dista.replaceAll("miles","");
+        dista = dista.replaceAll("miles", "");
         walkingDist = walkingDist.replaceAll("miles","");
         ranDist = ranDist.replaceAll("miles","");
    //     overallTime = (String) b.get("overallTime");
+        DecimalFormat df = new DecimalFormat("#.00");
 
-
+        Log.i("dista2", "dista2 " + dista + "!");
         //Only displays the relevant information - maybe make different TextViews to ensure correct positioning?
         if (hours.equals("0.0") && minutes.equals("0.0")) {
-
-            totalPace = Double.toString((Double.parseDouble(seconds)/60)/ Double.parseDouble(dista));
-
+            if(dista == "0 ") {
+                totalPace = Double.toString(0);
+            }else {
+                totalPace = Double.toString((Double.parseDouble(seconds) / 60) / Double.parseDouble(dista));
+            }
             overallPace.setText(totalPace);
             time.setText(seconds + "s");
         } else if (hours.equals("0.0")) {
-
-            totalPace = Double.toString((((Double.parseDouble(minutes)*60) + Double.parseDouble(seconds)) / 60) / (Double.parseDouble(dista)));
-
+            if(dista == "0 ") {
+                totalPace = "0";
+            }else{
+                totalPace = Double.toString((((Double.parseDouble(minutes) * 60) + Double.parseDouble(seconds)) / 60) / (Double.parseDouble(dista)));
+            }
             overallPace.setText(totalPace);
             time.setText(minutes + "mn(s)" + seconds + "s");
         } else {
+            if(dista == "0 ") {
+                totalPace = "0";
+            }else{
+                totalPace = Double.toString((Double.parseDouble(hours) * 60) + ((Double.parseDouble(minutes)) + (Double.parseDouble(seconds) / 60) / (Double.parseDouble(dista))));
+            }
+            overallPace.setText(totalPace);
 
-            totalPace = Double.toString((Double.parseDouble(hours)*60)+ ((Double.parseDouble(minutes)) + (Double.parseDouble(seconds)/60) / (Double.parseDouble(dista))));            overallPace.setText(totalPace);
             time.setText(hours + "h(s), " + minutes + "mn(s) " + seconds + "s");
         }
 
         if (walkHours.equals("0.0") && walkMinutes.equals("0.0")) {
-            walkingPace = Double.toString((Double.parseDouble(walkSeconds)/60)/ Double.parseDouble(walkingDist));
+            if(walkingDist != "0 ") {
+                walkingPace = Double.toString((Double.parseDouble(walkSeconds) / 60) / Double.parseDouble(walkingDist));
+            }else{
+                walkingPace = "0";
+            }
             oWalkingPace.setText(walkingPace);
             walkTime.setText(walkSeconds + "s");
         } else if (walkHours.equals("0.0")) {
+            if(walkingDist != "0 "){
             walkingPace = Double.toString(Double.parseDouble(walkMinutes)+ (Double.parseDouble(walkSeconds)/60) / (Double.parseDouble(walkingDist)));
+            }else{
+            walkingPace = "0";
+            }
             oWalkingPace.setText(walkingPace);
 
             walkTime.setText(walkMinutes + "mn(s)" + walkSeconds + "s");
         } else {
-            walkingPace = Double.toString(Double.parseDouble(walkHours)+Double.parseDouble(walkMinutes)+(Double.parseDouble(walkSeconds)/60) / (Double.parseDouble(walkingDist)));
+            if(walkingDist != "0 "){
+            walkingPace = df.format(Double.toString(Double.parseDouble(walkHours)+Double.parseDouble(walkMinutes)+(Double.parseDouble(walkSeconds)/60) / (Double.parseDouble(walkingDist))));
+
+            }else{
+                walkingPace = "0";
+            }
+
             oWalkingPace.setText(walkingPace);
 
             walkTime.setText(walkHours + "h(s), " + walkMinutes + "mn(s) " + walkSeconds + "s");
         }
 
         if (runHours.equals("0.0") && runMinutes.equals("0.0")) {
-            runningPace = Double.toString((Double.parseDouble(runSeconds)/60)/ Double.parseDouble(ranDist));
+            if(ranDist != "0 ") {
+                runningPace = Double.toString((Double.parseDouble(runSeconds) / 60) / Double.parseDouble(ranDist));
+            }else{
+                runningPace = "0";
+            }
             oRunningPace.setText(runningPace);
             runTime.setText(runSeconds + "s");
         } else if (runHours.equals("0.0")) {
-            runningPace = Double.toString(Double.parseDouble(runMinutes)+ (Double.parseDouble(runSeconds)/60) / (Double.parseDouble(ranDist)));
+            if(ranDist != "0 ") {
+                runningPace = Double.toString(Double.parseDouble(runMinutes) + (Double.parseDouble(runSeconds) / 60) / (Double.parseDouble(ranDist)));
+            }else{
+                ranDist = "0";
+            }
             oRunningPace.setText(runningPace);
 
             runTime.setText(runMinutes + "mn(s)" + runSeconds + "s");
         } else {
-            runningPace = Double.toString(Double.parseDouble(runHours)+Double.parseDouble(runMinutes)+(Double.parseDouble(runSeconds)/60) / (Double.parseDouble(ranDist)));
+            if (ranDist != "0 ") {
+                runningPace = Double.toString(Double.parseDouble(runHours) + Double.parseDouble(runMinutes) + (Double.parseDouble(runSeconds) / 60) / (Double.parseDouble(ranDist)));
+            }else{
+                runningPace = "0";
+            }
             oRunningPace.setText(runningPace);
             runTime.setText(runHours + "h(s), " + runMinutes + "mn(s) " + runSeconds + "s");
         }

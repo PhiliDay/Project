@@ -64,10 +64,8 @@ public class timelineActivity extends AppCompatActivity {
 
         UserDetails userList = db.displayUser(EmailHolder);
 
-        Email.setText(userList.getFirstName());
+        Email.setText("Welcome " + userList.getFirstName() + "!");
        }
-
-
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -95,8 +93,6 @@ public class timelineActivity extends AppCompatActivity {
                         .show();
 
                 Intent login = new Intent(this, LoginActivity.class);
-               // intent.putExtra("Username", EmailHolder);
-              //  Log.i("username", "email"+ EmailHolder);
                 startActivity(login);
                 return true;
             default:
