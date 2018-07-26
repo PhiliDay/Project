@@ -53,7 +53,6 @@ public class timelineActivity extends AppCompatActivity {
         ListView listRun = (ListView) findViewById(R.id.runList);
         Intent intent = getIntent();
 
-
         EmailHolder = intent.getStringExtra("Username");
        // Log.i("mytag", "help" + EmailHolder);
         db = new SQLiteHelper(this);
@@ -112,6 +111,11 @@ public class timelineActivity extends AppCompatActivity {
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
         return username;
+    }
 
+    public void goToCalibration(View view){
+        Intent intent = new Intent(this, CalibrationActivity.class);
+        intent.putExtra("Username", EmailHolder);
+        startActivity(intent);
     }
 }

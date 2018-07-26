@@ -6,14 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-
 public class MainActivity extends AppCompatActivity {
 
     private EditText editText;
 
-
     @Override
-
     //Sets the content of activity main in layouts!
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,3 +30,5 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
+
+

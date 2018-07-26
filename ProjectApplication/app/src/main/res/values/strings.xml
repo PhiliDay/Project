@@ -22,6 +22,9 @@
     <string name="welcome">Welcome </string>
     <string name="distance">Distance </string>
     <string name="distance2">Distance (miles)</string>
+    <string name="run2mins">Run for 2 minutes</string>
+    <string name="walk2mins">Walk for 2 minutes</string>
+    <string name="start">Start</string>
 
     <string name="time">Time </string>
     <string name="day">Date </string>

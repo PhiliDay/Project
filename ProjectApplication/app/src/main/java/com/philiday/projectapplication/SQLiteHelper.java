@@ -61,6 +61,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         database.execSQL(UserDetails.CREATE_TABLE);
 
         database.execSQL(RunDetails.CREATE_TABLE_2);
+
+        database.execSQL(CalibrationDetails.CREATE_TABLE);
+
+        database.execSQL(CalibrationDetails.CREATE_TABLE1);
     }
 
     @Override
@@ -173,6 +177,39 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return runs;
     }
 
+    public CalibrationDetails getCalibration(String userId, String tableName){
+        String selectQuery = ("SELECT * FROM " + tableName + " WHERE " + CalibrationDetails.Table3_Column_UserId + " = " + userId);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if(c != null)
+            c.moveToFirst();
+            CalibrationDetails cal = new CalibrationDetails();
+            cal.setUserId(c.getString(c.getColumnIndex(CalibrationDetails.Table3_Column_UserId)));
+            cal.setAverageX(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column1_averageX)));
+            cal.setAverageY(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column2_averageY)));
+            cal.setAverageZ(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column3_averageZ)));
+            cal.setVarianceX(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column4_varianceX)));
+            cal.setVarianceY(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column5_varianceY)));
+            cal.setVarianceZ(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column6_varianceZ)));
+            cal.setMaxX(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column7_maxX)));
+            cal.setMaxY(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column8_maxY)));
+            cal.setMaxZ(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column9_maxZ)));
+            cal.setMinX(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column10_minX)));
+            cal.setMinY(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column11_minY)));
+            cal.setMinX(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column12_minZ)));
+            cal.setQ1X(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column13_Q1X)));
+            cal.setQ3X(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column14_Q3X)));
+            cal.setQ1Y(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column15_Q1Y)));
+            cal.setQ3Y(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column16_Q3Y)));
+            cal.setQ1z(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column17_Q1Z)));
+            cal.setQ3Z(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column18_Q3Z)));
+
+            return cal;
+
+    }
+
+
     public void closeDb(){
         SQLiteDatabase db = this.getReadableDatabase();
         if(db != null && db.isOpen())
@@ -207,6 +244,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     return userRow;
         // }
     }
+
 
     public List<UserDetails> getAllUsers(){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -312,6 +350,74 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
 
         return userRow;
+    }
+
+    public long createCalibration(CalibrationDetails cal){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cV = new ContentValues();
+        cV.put("userId", cal.getUserId());
+        cV.put("averageX", cal.getAverageX());
+        cV.put("averageY", cal.getAverageY());
+        cV.put("averageZ", cal.getAverageZ());
+        cV.put("varianceX", cal.getVarianceX());
+        cV.put("varianceY", cal.getVarianceY());
+        cV.put("varianceZ", cal.getVarianceZ());
+        cV.put("maxX", cal.getMaxX());
+        cV.put("maxY", cal.getMaxY());
+        cV.put("maxZ", cal.getMaxZ());
+        cV.put("minX", cal.getMinX());
+        cV.put("minY", cal.getMinY());
+        cV.put("minZ", cal.getMinZ());
+        cV.put("Q1X", cal.getQ1X());
+        cV.put("Q3X", cal.getQ3X());
+        cV.put("Q1Y", cal.getQ1Y());
+        cV.put("Q3Y", cal.getQ3Y());
+        cV.put("Q1Z", cal.getQ1Z());
+        cV.put("Q3Z", cal.getQ3Z());
+
+        long calRow = db.insert(CalibrationDetails.TABLE_NAME_3, null, cV);
+
+        if(calRow > 0){
+            Log.i("calRow", "calRowInserted");
+        }
+
+        return calRow;
+
+    }
+
+    public long createRunCalibration(CalibrationDetails cal){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cV = new ContentValues();
+        cV.put("userId", cal.getUserId());
+        cV.put("averageX", cal.getAverageX());
+        cV.put("averageY", cal.getAverageY());
+        cV.put("averageZ", cal.getAverageZ());
+        cV.put("varianceX", cal.getVarianceX());
+        cV.put("varianceY", cal.getVarianceY());
+        cV.put("varianceZ", cal.getVarianceZ());
+        cV.put("maxX", cal.getMaxX());
+        cV.put("maxY", cal.getMaxY());
+        cV.put("maxZ", cal.getMaxZ());
+        cV.put("minX", cal.getMinX());
+        cV.put("minY", cal.getMinY());
+        cV.put("minZ", cal.getMinZ());
+        cV.put("Q1X", cal.getQ1X());
+        cV.put("Q3X", cal.getQ3X());
+        cV.put("Q1Y", cal.getQ1Y());
+        cV.put("Q3Y", cal.getQ3Y());
+        cV.put("Q1Z", cal.getQ1Z());
+        cV.put("Q3Z", cal.getQ3Z());
+
+        long calRow = db.insert(CalibrationDetails.TABLE_NAME_4, null, cV);
+
+        if(calRow > 0){
+            Log.i("calRow", "calRowInserted");
+        }
+
+        return calRow;
+
     }
 
     public void deleteRun(String date){

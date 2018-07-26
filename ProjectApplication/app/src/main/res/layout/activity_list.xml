@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:stretchColumns="*">
-
+<TableRow></TableRow>
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
