@@ -183,7 +183,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(selectQuery, null);
 
         if(c != null)
-            c.moveToFirst();
+            c.moveToLast();
             CalibrationDetails cal = new CalibrationDetails();
             cal.setUserId(c.getString(c.getColumnIndex(CalibrationDetails.Table3_Column_UserId)));
             cal.setAverageX(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column1_averageX)));
@@ -204,10 +204,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             cal.setQ3Y(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column16_Q3Y)));
             cal.setQ1z(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column17_Q1Z)));
             cal.setQ3Z(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column18_Q3Z)));
+            cal.setSpeed(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column19_speed)));
 
             return cal;
 
     }
+
 
 
     public void closeDb(){
@@ -375,6 +377,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         cV.put("Q3Y", cal.getQ3Y());
         cV.put("Q1Z", cal.getQ1Z());
         cV.put("Q3Z", cal.getQ3Z());
+        cV.put("Speed", cal.getSpeed());
 
         long calRow = db.insert(CalibrationDetails.TABLE_NAME_3, null, cV);
 
@@ -409,6 +412,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         cV.put("Q3Y", cal.getQ3Y());
         cV.put("Q1Z", cal.getQ1Z());
         cV.put("Q3Z", cal.getQ3Z());
+        cV.put("Speed", cal.getSpeed());
 
         long calRow = db.insert(CalibrationDetails.TABLE_NAME_4, null, cV);
 

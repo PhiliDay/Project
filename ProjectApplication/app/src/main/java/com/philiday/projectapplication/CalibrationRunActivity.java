@@ -1,24 +1,39 @@
 package com.philiday.projectapplication;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class CalibrationRunActivity extends AppCompatActivity implements SensorEventListener {
+import static com.philiday.projectapplication.RecordingActivity.PERMISSIONS;
+import static com.philiday.projectapplication.RecordingActivity.PERMISSION_ALL;
+
+public class CalibrationRunActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
 
         Button start, save;
         ArrayList<Integer> xValuesAccelerometer = new ArrayList<>();
@@ -49,18 +64,31 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
         double Q3Y;
         double Q1Z;
         double Q3Z;
+        float lat_a;
+        float lon_b;
+    float latitude;
+    float longitude;
+    BroadcastReceiver broadcastReceiver2;
 
-        SQLiteHelper sqLiteHelper;
+
+    SQLiteHelper sqLiteHelper;
         String userId;
         TextView mTextField;
         private SensorManager mSensorManager;
         private Sensor mAccelerometer;
+        LocationManager locationManager;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
 
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_calibration_run);
+
+
+            if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
+                requestPermissions(PERMISSIONS, PERMISSION_ALL);
+            }else {setUpLocation();}
+
             sqLiteHelper = new SQLiteHelper(this);
             mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
             mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -69,6 +97,8 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
             save = (Button) findViewById(R.id.finish);
 
             Intent intent = getIntent();
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
 
             userId = intent.getStringExtra("Username");
             mTextField = (TextView) findViewById(R.id.mTextField);
@@ -93,6 +123,8 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
 
     public void clickStart(){
         //start countdown
+        lat_a = latitude;
+        lon_b = longitude;
         new CountDownTimer(10000, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -109,10 +141,19 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
     }
 
         public void clickSave(){
+
+            double lat_a1 = latitude;
+            double lon_b1 = longitude;
+            double d = RecordingActivity.distance(lat_a, lon_b, lat_a1, lon_b1);
+            Log.i("Distance", "Distance" + d);
+
+            double Speed = getMiles(d) / 20;
+            Log.i("Speed", "Speed" + Speed);
+
             changingActivity();
             sqLiteHelper = new SQLiteHelper(getApplicationContext());
             Log.i("Username", "username 1" + userId);
-            CalibrationDetails calRun = new CalibrationDetails(userId, averageX, averageY, averageZ, varianceX, varianceY, varianceZ, maxX, maxY, maxZ, minX, minY, minZ, Q1X, Q3X, Q1Y, Q3Y, Q1Z, Q3Z);
+            CalibrationDetails calRun = new CalibrationDetails(userId, averageX, averageY, averageZ, varianceX, varianceY, varianceZ, maxX, maxY, maxZ, minX, minY, minZ, Q1X, Q3X, Q1Y, Q3Y, Q1Z, Q3Z, Speed);
             sqLiteHelper.getWritableDatabase();
             long insertingCalibration = sqLiteHelper.createRunCalibration(calRun);
 
@@ -280,6 +321,85 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
             float floatResult = (float)dblResult; // <-- Change to something safe. It may easily overflow.
             return floatResult;
         }
+
+
+    private void setUpLocation() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+            return;
+        }
+
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);
+        criteria.setAltitudeRequired(false);
+        criteria.setSpeedRequired(false);
+
+        //&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        Toast.makeText(getApplicationContext(),
+                "Found location 3",
+                Toast.LENGTH_SHORT)                        .show();
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 15, this);
+
+
+
+    }
+
+
+
+
+    private boolean isLocationEnabled(){
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private boolean isPermissionGranted() {
+        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            Log.v("mylog", "Permission granted");
+            return true;
+        } else {
+            Log.v("mylog", "Permission not granted");
+            return false;
+        }
+    }
+
+    //Location
+    public void onProviderDisabled(String provider) {
+        // Code to do something if location provider is disabled e.g. display error
+    }
+
+    public void onProviderEnabled(String provider) {
+        // Code to do something if location provider becomes available e.g check if it’s a  more useful provider
+    }
+
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // Code to do something if location provider status changes..
+    }
+
+    public void onLocationChanged(Location location){
+
+
+        Toast.makeText(getApplicationContext(),
+                "Found location 4",
+                Toast.LENGTH_SHORT)                        .show();
+
+        latitude = (float) location.getLatitude();
+        longitude = (float) location.getLongitude();
+
+    }
+
+    public double getMiles(double dist){
+        //dist - convert from m to miles.
+        double d = 0;
+        // String unit = "miles";
+
+        d = dist * 0.6214; //Conversion of m to miles
+        Log.i("distance", "d" + d);
+
+        return d;
+    }
 
 
     }

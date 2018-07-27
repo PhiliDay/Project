@@ -8,7 +8,7 @@ public class CalibrationDetails {
     public static final String TABLE_NAME_4 = "CalibrationTableRun";
 
 
-    public static final String Table3_Column_UserId = "userId";
+    public static final String Table3_Column_UserId = "email";
     public static final String Table3_Column1_averageX = "averageX";
     public static final String Table3_Column2_averageY = "averageY";
     public static final String Table3_Column3_averageZ = "averageZ";
@@ -27,6 +27,7 @@ public class CalibrationDetails {
     public static final String Table3_Column16_Q3Y = "Q3Y";
     public static final String Table3_Column17_Q1Z = "Q1Z";
     public static final String Table3_Column18_Q3Z = "Q3Z";
+    public static final String Table3_Column19_speed = "Speed";
 
     String userId;
     Double averageX;
@@ -47,6 +48,7 @@ public class CalibrationDetails {
     Double Q1Y;
     Double Q1Z;
     Double Q3Z;
+    Double Speed;
 
 
     public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME_3 + " ("
@@ -68,6 +70,7 @@ public class CalibrationDetails {
             + Table3_Column15_Q1Y + " REAL, "
             + Table3_Column16_Q3Y + " REAL, "
             + Table3_Column17_Q1Z + " REAL, "
+            + Table3_Column19_speed + " REAL, "
             + Table3_Column18_Q3Z + " REAL, FOREIGN KEY (" + Table3_Column_UserId + ") REFERENCES " + UserDetails.TABLE_NAME + "(" + UserDetails.Table_Column_2_Email + "));";
 
     public static final String CREATE_TABLE1 = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME_4 + " ("
@@ -89,6 +92,7 @@ public class CalibrationDetails {
             + Table3_Column15_Q1Y + " REAL, "
             + Table3_Column16_Q3Y + " REAL, "
             + Table3_Column17_Q1Z + " REAL, "
+            + Table3_Column19_speed + " REAL, "
             + Table3_Column18_Q3Z + " REAL, FOREIGN KEY (" + Table3_Column_UserId + ") REFERENCES " + UserDetails.TABLE_NAME + "(" + UserDetails.Table_Column_2_Email + "));";
 
     public CalibrationDetails() {
@@ -96,7 +100,7 @@ public class CalibrationDetails {
     }
 
     public CalibrationDetails(String userId, Double averageX, Double averageY, Double averageZ, Double varianceX, Double varianceY, Double varianceZ, Double maxX, Double maxY, Double maxZ, Double minX, Double minY, Double minZ
-    , Double Q1X, Double Q3X, Double Q1Y, Double Q3Y, Double Q1Z, Double Q3Z){
+    , Double Q1X, Double Q3X, Double Q1Y, Double Q3Y, Double Q1Z, Double Q3Z, Double Speed){
         this.userId = userId;
         this.averageX = averageX;
         this.averageY = averageY;
@@ -116,6 +120,7 @@ public class CalibrationDetails {
         this.Q3Y = Q3Y;
         this.Q1Z = Q1Z;
         this.Q3Z = Q3Z;
+        this.Speed = Speed;
     }
 
     public String getUserId(){ return userId;}
@@ -174,6 +179,9 @@ public class CalibrationDetails {
 
     public Double getQ3Z(){return Q3Z;}
     public void setQ3Z(Double Q3Z){this.Q3Z = Q3Z;}
+
+    public Double getSpeed(){return Speed;}
+    public void setSpeed(Double Speed){this.Speed = Speed;}
 
 
 

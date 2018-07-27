@@ -49,6 +49,7 @@ import android.widget.Toast;
 
 import com.github.angads25.toggle.LabeledSwitch;
 import com.github.angads25.toggle.interfaces.OnToggledListener;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.ActivityRecognitionClient;
 
 import java.io.ByteArrayOutputStream;
@@ -97,7 +98,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     int count;
     Intent intent;
     private float mLastX, mLastY, mLastZ;
-
+    MarkerOptions mo1;
     double time=0;
     SensorManager _sensorManager;
     TextView _sensorTextView;
@@ -144,6 +145,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     double varianceXRun;
     double varianceYRun;
     double varianceZRun;
+
+    double SpeedWalk;
+    double SpeedRun;
 
     float accelerometer;
     double averageX;
@@ -428,7 +432,16 @@ String ohms;
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        //  mo1 = new MarkerOptions().position(new LatLng(0, 0)).title("Current location");
+
         marker = mMap.addMarker(mo);
+        Toast.makeText(getApplicationContext(),
+                "Map Ready!",
+                Toast.LENGTH_SHORT)
+                .show();
+        //marker = mMap.addMarker(mo1);
+
+
     }
 
 
@@ -436,8 +449,8 @@ String ohms;
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         LatLng myCoordinates = new LatLng(latitude, longitude);
-        redrawLine(); //added
         points.add(myCoordinates); //added
+        redrawLine(); //added
 
             if (location != null) {
 
@@ -456,12 +469,19 @@ String ohms;
                     currentLoc.setText(startLocationString);
                     dist = 0;
                     speed=0;
-                }
 
+                }
+                Toast.makeText(getApplicationContext(),
+                        "Location4!",
+                        Toast.LENGTH_SHORT)
+                        .show();
                 //While the user is still running get the distance
                 //Maybe change this stop.isEnabled()??? - to if toggle = lets go
                 if (stop.isEnabled()) {
-
+                    Toast.makeText(getApplicationContext(),
+                            "Location5!",
+                            Toast.LENGTH_SHORT)
+                            .show();
                     //speed = (double) location.getSpeed();
                    // if(speed > 0) {
                         //Add here also if gyroscope is this then walking
@@ -472,23 +492,27 @@ String ohms;
                         marker.setPosition(myCoordinates);
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, 14));
                         Log.i("mytag", "location: " + location);
+                         long prevTime = latestLocation.getTime();
+                         Log.i("timeLatestLocation ", " timeLatestLocation" + prevTime);
+                         long currentTime = location.getTime();
+                    Log.i("timeLocation ", " timeLocation" + currentTime);
 
+                    // This is exactly what you want
+                          long diffTime = currentTime - prevTime ;
+                          Log.i("timeBetweenLocation", "timeBetweenLocation" + diffTime);
                         double d = distance(location.getLatitude(), location.getLongitude(), latestLocation.getLatitude(), latestLocation.getLongitude());
                         latestLocation = location;
-                        //    Log.i("mytag", "latestLocation: " + latestLocation);
-                        //Is this needed?
-                        //PROPOSED IDEA
-                        //this is 1 second to an hour 0.000277778
+                    comparingActivites();
 
-//                    time++;
-//
-//                    speed = d / time;
-                        //  Log.i("speed", "speed " + speed);
+                    speed = getMiles(d) / diffTime;
+                    Log.i("speed", "speed" + speed);
+                    Log.i("walkSpeed", "walkSpeed" + SpeedWalk);
+                    Log.i("runSpeed", "runSpeed" + SpeedRun);
 
-                        changingActivity();
-                        xValuesAccelerometer.clear();
-                        yValuesAccelerometer.clear();
-                        zValuesAccelerometer.clear();
+                    changingActivity();
+                    xValuesAccelerometer.clear();
+                    yValuesAccelerometer.clear();
+                    zValuesAccelerometer.clear();
                         //decidingActivity();
 
                         if (finalActivity.equals("maybeWalking")) {
@@ -499,6 +523,7 @@ String ohms;
                             //  walkStartTime();
                             getWalkTime();
                             walkTime = walketime - stime;
+
                             Log.i("walktime", "walktime1" + walkTime);
                             wh = TimeUnit.MILLISECONDS.toHours(walkTime);
                             wmn = TimeUnit.MILLISECONDS.toMinutes(walkTime) - wh * 60;
@@ -510,7 +535,8 @@ String ohms;
                                     TimeUnit.MILLISECONDS.toMinutes(walkTime) % TimeUnit.HOURS.toMinutes(1),
                                     TimeUnit.MILLISECONDS.toSeconds(walkTime) % TimeUnit.MINUTES.toSeconds(1));
 
-                            walked += walkingDist + d;
+                        //    walked += walkingDist + d;
+                            walked += d;
                             walkedDist = getDistance(walked);
                             Log.i("walkedDist", "walkedDist" + walkedDist);
                             walkingDis.setText(walkedDist);
@@ -545,7 +571,8 @@ String ohms;
                                     TimeUnit.MILLISECONDS.toSeconds(runTime) % TimeUnit.MINUTES.toSeconds(1));
 
 
-                            ran += runningDist + d;
+                           // ran += runningDist + d;
+                            ran += d;
                             ranDist = getDistance(ran);
                             Log.i("randDist", "ranDist" + ranDist);
                             runningDis.setText(ranDist);
@@ -611,21 +638,16 @@ String ohms;
     // custom method
     private void setUpLocation() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setPowerRequirement(Criteria.POWER_HIGH);
-        criteria.setAltitudeRequired(false);
-        criteria.setSpeedRequired(false);
 
         //&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         Toast.makeText(getApplicationContext(),
                 "Found location 3",
                 Toast.LENGTH_SHORT)                        .show();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 15, this);
 
 
 
@@ -757,6 +779,8 @@ String ohms;
     }
 
 
+
+
     private boolean isLocationEnabled(){
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -774,7 +798,7 @@ String ohms;
         }
     }
 
-    private static double distance(double lat1, double lon1, double lat2, double lon2) {
+    public static double distance(double lat1, double lon1, double lat2, double lon2) {
         //Radius of the earth in km: 6371km
         int earthRadius = 6371; // miles (or 6371.0 kilometers)
         double dLat = deg2rad(lat2-lat1);
@@ -1130,7 +1154,7 @@ String ohms;
                     TimeUnit.MILLISECONDS.toMinutes(dtime) % TimeUnit.HOURS.toMinutes(1),
                     TimeUnit.MILLISECONDS.toSeconds(dtime) % TimeUnit.MINUTES.toSeconds(1));
 
-            double mileage = getMiles(walkingDist);
+            double mileage = getMiles(walked);
             walkPace = (total / mileage)/60;
             // walkPace = walkPace/60;
             Log.e("Result a: ", String.valueOf(dtime));
@@ -1142,10 +1166,10 @@ String ohms;
             walkingPace.setText("" + walkPace);
             //   }
 
-            if(runningDist == 0){
+            if(ran == 0){
                 runningPace.setText("rP");
             }else{
-                runPace = dtime / runningDist;
+                runPace = dtime / ran;
                 runningPace.setText("" + runningPace);
             }
 
@@ -1288,13 +1312,20 @@ String ohms;
         sortList(yValuesAccelerometer);
         sortList(zValuesAccelerometer);
 
-        double maxX = maxList(xValuesAccelerometer);
-        double maxY = maxList(yValuesAccelerometer);
-        double maxZ = maxList(zValuesAccelerometer);
+        double maxX = xValuesAccelerometer.get(0);
+        double minX = xValuesAccelerometer.get(0);
 
-        double minX = minList(xValuesAccelerometer);
-        double minY = minList(yValuesAccelerometer);
-        double minZ = minList(zValuesAccelerometer);
+
+        double minY = yValuesAccelerometer.get(0);
+        double maxY = yValuesAccelerometer.get(0);
+
+        double minZ = zValuesAccelerometer.get(0);
+        double maxZ = zValuesAccelerometer.get(0);
+
+        findMinMax(xValuesAccelerometer, minX, maxX);
+        findMinMax(yValuesAccelerometer, minY, maxY);
+        findMinMax(zValuesAccelerometer, minZ, maxZ);
+
 
         double Q1X = calculateAverageInt(averageX, minX);
         double Q3X = calculateAverageInt(maxX, averageX);
@@ -1320,14 +1351,14 @@ String ohms;
         float gyrometer_bounds = 0;
         float stable_bounds = 0;
 
-        if(((averageX > Q1Y && averageX < Q3Y) || (averageY > Q1X && averageY < Q3X)) && Q3Y > 5) {
+        if (varianceX < 1 && varianceX > -1){
+            finalActivity = "maybeStill";
+            Log.i("finalAct", "finalAct" + finalActivity);
+        }else if(((averageX > Q1Y && averageX < Q3Y) || (averageY > Q1X && averageY < Q3X)) && Q3Y > 5) {
             finalActivity = "maybeRunning";
             Log.i("finalAct", "finalAct" + finalActivity);
-        }else if(Q3Y < 5){
+        }else if(minX > maxY && Q3Y < 5){
             finalActivity = "maybeWalking";
-            Log.i("finalAct", "finalAct" + finalActivity);
-        }else if (varianceX < 1 && varianceX > -1){
-            finalActivity = "maybeStill";
             Log.i("finalAct", "finalAct" + finalActivity);
         }
     }
@@ -1355,12 +1386,12 @@ String ohms;
         Collections.sort(values);
     }
 
-    public int maxList(ArrayList<Integer> values){
-        return Collections.max(values);
+    public void maxList(ArrayList<Integer> values){
+         Collections.max(values);
     }
 
-    public int minList(ArrayList<Integer> values){
-        return Collections.min(values);
+    public void minList(ArrayList<Integer> values){
+         Collections.min(values);
     }
 
     public void comparingActivites() {
@@ -1384,6 +1415,9 @@ String ohms;
         varianceXRun = calRun.getVarianceX();
         varianceYRun = calRun.getVarianceY();
         varianceZRun = calRun.getVarianceZ();
+
+        SpeedWalk = calWalk.getSpeed();
+        SpeedRun = calRun.getSpeed();
     }
 
     public void decidingActivityComparison(){
@@ -1400,6 +1434,13 @@ String ohms;
             Log.i("finalAct", "finalAct" + finalActivity);
         }
 
+    }
+
+    public void findMinMax(ArrayList<Integer> values, double min, double max){
+        for(int i: values){
+            if(i < min) min = i;
+            if(i > max) max = i;
+        }
     }
 
 
