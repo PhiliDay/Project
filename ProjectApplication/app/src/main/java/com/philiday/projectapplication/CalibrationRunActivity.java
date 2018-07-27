@@ -125,7 +125,7 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
         //start countdown
         lat_a = latitude;
         lon_b = longitude;
-        new CountDownTimer(10000, 1000) {
+        new CountDownTimer(20000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
@@ -146,8 +146,9 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
             double lon_b1 = longitude;
             double d = RecordingActivity.distance(lat_a, lon_b, lat_a1, lon_b1);
             Log.i("Distance", "Distance" + d);
+            double differenceTime = (double) 20000/3600000;
 
-            double Speed = getMiles(d) / 20;
+            double Speed = getMiles(d) / differenceTime;
             Log.i("Speed", "Speed" + Speed);
 
             changingActivity();
@@ -337,9 +338,9 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
 
         //&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         Toast.makeText(getApplicationContext(),
-                "Found location 3",
+                "Please wait for GPS",
                 Toast.LENGTH_SHORT)                        .show();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 15, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, this);
 
 
 
@@ -382,7 +383,7 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
 
 
         Toast.makeText(getApplicationContext(),
-                "Found location 4",
+                "GPS Found",
                 Toast.LENGTH_SHORT)                        .show();
 
         latitude = (float) location.getLatitude();

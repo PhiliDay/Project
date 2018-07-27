@@ -8,7 +8,7 @@ public class CalibrationDetails {
     public static final String TABLE_NAME_4 = "CalibrationTableRun";
 
 
-    public static final String Table3_Column_UserId = "email";
+    public static final String Table3_Column_UserId = "userId";
     public static final String Table3_Column1_averageX = "averageX";
     public static final String Table3_Column2_averageY = "averageY";
     public static final String Table3_Column3_averageZ = "averageZ";
@@ -28,6 +28,7 @@ public class CalibrationDetails {
     public static final String Table3_Column17_Q1Z = "Q1Z";
     public static final String Table3_Column18_Q3Z = "Q3Z";
     public static final String Table3_Column19_speed = "Speed";
+    public static final String Table3_Column20_time = "Time";
 
     String userId;
     Double averageX;

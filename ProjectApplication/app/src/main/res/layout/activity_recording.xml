@@ -343,6 +343,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:on="false"
-        app:textOff="@string/pause_run"
-        app:textOn="@string/record_run" />
+        app:textOff="@string/record_run"
+        app:textOn="@string/pause_run" />
 </android.support.constraint.ConstraintLayout>

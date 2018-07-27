@@ -178,7 +178,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public CalibrationDetails getCalibration(String userId, String tableName){
-        String selectQuery = ("SELECT * FROM " + tableName + " WHERE " + CalibrationDetails.Table3_Column_UserId + " = " + userId);
+        String selectQuery = ("SELECT * FROM " + tableName + " WHERE " + CalibrationDetails.Table3_Column_UserId + " = '" + userId + "'");
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
 
@@ -207,6 +207,20 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             cal.setSpeed(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column19_speed)));
 
             return cal;
+
+    }
+
+    public UserDetails getName(String userId){
+        String selectQuery = ("SELECT * FROM " + UserDetails.TABLE_NAME + " WHERE email = '" + userId + "'");
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if(c != null)
+            c.moveToLast();
+        UserDetails user = new UserDetails();
+        user.setFirstName(c.getString(c.getColumnIndex(UserDetails.Table_Column_1_Name)));
+
+        return user;
 
     }
 
@@ -276,7 +290,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public UserDetails displayUser(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = ("SELECT * FROM " + UserDetails.TABLE_NAME + " WHERE email = '" + name +"'");
+        String selectQuery = ("SELECT * FROM " + UserDetails.TABLE_NAME + " WHERE email = '" + name +"' ");
 
         Log.i("query", selectQuery);
 
