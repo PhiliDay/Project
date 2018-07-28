@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/calibration2"
+        style="@style/btn2"
+        android:layout_width="205dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="224dp"
+        android:onClick="goToCalibration"
+        android:text="CALIBRATE"
+        app:layout_constraintBottom_toTopOf="parent"
+        tools:layout_editor_absoluteX="90dp" />
+
+    <Button
+        android:id="@+id/calibration3"
+        style="@style/btn2"
+        android:layout_width="205dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="84dp"
+        android:onClick="goToCalibration"
+        android:text="VIEW RESULTS"
+        app:layout_constraintBottom_toTopOf="parent"
+        tools:layout_editor_absoluteX="90dp" />
+
+    <Button
+        android:id="@+id/save2"
+        style="@style/btn2"
+        android:layout_width="205dp"
+        android:layout_height="60dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/switches"
+        android:layout_marginBottom="154dp"
+        android:onClick="goToSummaryPage"
+        android:text="RECORD ACTIVITY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
