@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <Button
         android:id="@+id/calibration2"
@@ -12,10 +13,12 @@
         android:layout_width="205dp"
         android:layout_height="60dp"
         android:layout_marginBottom="224dp"
+        android:layout_marginLeft="88dp"
+        android:layout_marginStart="88dp"
         android:onClick="goToCalibration"
-        android:text="CALIBRATE"
+        android:text="@string/calibration"
         app:layout_constraintBottom_toTopOf="parent"
-        tools:layout_editor_absoluteX="90dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/calibration3"
@@ -23,10 +26,12 @@
         android:layout_width="205dp"
         android:layout_height="60dp"
         android:layout_marginBottom="84dp"
-        android:onClick="goToCalibration"
-        android:text="VIEW RESULTS"
+        android:layout_marginLeft="88dp"
+        android:layout_marginStart="88dp"
+        android:onClick="goToResults"
+        android:text="@string/results"
         app:layout_constraintBottom_toTopOf="parent"
-        tools:layout_editor_absoluteX="90dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/save2"
@@ -35,11 +40,37 @@
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/switches"
-        android:layout_marginBottom="154dp"
-        android:onClick="goToSummaryPage"
-        android:text="RECORD ACTIVITY"
+        android:layout_marginBottom="152dp"
+        android:layout_marginLeft="88dp"
+        android:layout_marginStart="88dp"
+        android:onClick="goToRecord"
+        android:text="@string/record"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="108dp"
+        android:text="@string/whattodo"
+        android:textSize="24sp"
+        app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="44dp"
+        android:textSize="24sp"
+        app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -51,8 +51,9 @@
     <string name="title_record">Record</string>
     <string name="title_logout">Logout</string>
     <string name="title_bin">Delete</string>
-    <string name="title_login" ><u>Login</u></string>
+    <string name="title_login"><u>Login</u></string>
     <string name="title_signup"><u>Sign Up</u></string>
+    <string name="title_calibrate">Calibrate</string>
 
     <string name="overall">O</string>
     <string name="walkOverall">W</string>
@@ -60,5 +61,12 @@
 
     <string name="alreadyamember">Already a member?</string>
     <string name="notamember">Not a member?</string>
+
+    <string name="whattodo">What would you like to do?</string>
+    <string name="calibration">CALIBRATE</string>
+    <string name="record">RECORD</string>
+    <string name="results">VIEW RESULTS</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="calibrateFirst">Please Calibrate First!</string>
 
 </resources>

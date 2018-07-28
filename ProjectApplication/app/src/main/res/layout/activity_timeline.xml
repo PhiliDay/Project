@@ -59,6 +59,7 @@
         android:layout_marginTop="16dp"
         android:lineSpacingExtra="30sp"
         android:textSize="24sp"
+        android:visibility="invisible"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -140,6 +141,7 @@
         android:layout_marginTop="16dp"
         android:onClick="goToCalibration"
         android:text="CALIBRATION"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

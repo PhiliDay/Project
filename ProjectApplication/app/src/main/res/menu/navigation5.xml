@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    >
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home"
+        android:iconTint="@color/greyText"
+        android:onClick="onOptionsItemSelected"/>
+
+    <item
+        android:id="@+id/navigation_bin"
+        android:icon="@drawable/calibrate"
+        android:iconTint="@color/greyText"
+        android:title="@string/title_calibrate"
+        android:onClick="onOptionsItemSelected"/>
+
+    <item
+        android:id="@+id/navigation_logout"
+        android:icon="@drawable/logout"
+        android:iconTint="@color/greyText"
+        android:title="@string/title_logout"
+        android:onClick="onOptionsItemSelected"
+        />
+
+
+</menu>

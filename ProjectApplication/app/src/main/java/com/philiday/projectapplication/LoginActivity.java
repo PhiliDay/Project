@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 if(EmailHolder.equals(email) && sqLiteHelper.isEmailExists(email)){
                     Toast.makeText(LoginActivity.this,"Login Successfully",Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(LoginActivity.this, timelineActivity.class);
+                    Intent loginIntent = new Intent(LoginActivity.this, WelcomeActivity.class);
 
                     loginIntent.putExtra("Username", EmailHolder);
                     startActivity(loginIntent);

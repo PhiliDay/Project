@@ -858,7 +858,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                         "Correctly Identified Home!",
                         Toast.LENGTH_SHORT)
                         .show();
-                Intent home = new Intent(this, timelineActivity.class);
+                Intent home = new Intent(this, WelcomeActivity.class);
                 home.putExtra("Username", db_username);
                 startActivity(home);
                 return true;
@@ -867,6 +867,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                         "Correctly Identified Record!",
                         Toast.LENGTH_SHORT)
                         .show();
+                Intent calibrate = new Intent(this, CalibrationActivity.class);
+                calibrate.putExtra("Username", db_username);
+                startActivity(calibrate);
                 return true;
             case R.id.navigation_logout:
                 Toast.makeText(getApplicationContext(),

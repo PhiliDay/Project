@@ -21,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -400,6 +401,41 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
         Log.i("distance", "d" + d);
 
         return d;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.navigation_home:
+                Toast.makeText(getApplicationContext(),
+                        "Correctly Identified Home!",
+                        Toast.LENGTH_SHORT)
+                        .show();
+                Intent intent = new Intent(this, WelcomeActivity.class);
+                intent.putExtra("Username", userId);
+                Log.i("username", "email"+ userId);
+                startActivity(intent);
+                return true;
+            case R.id.navigation_record:
+                Toast.makeText(getApplicationContext(),
+                        "Correctly Identified Record!",
+                        Toast.LENGTH_SHORT)
+                        .show();
+                Intent intent2 = new Intent(this, RecordingActivity.class);
+                intent2.putExtra("Username", userId);
+                Log.i("username", "email"+ userId);
+                startActivity(intent2);
+                return true;
+            case R.id.navigation_logout:
+                Toast.makeText(getApplicationContext(),
+                        "Correctly Identified Logout!",
+                        Toast.LENGTH_SHORT)
+                        .show();
+                Intent login = new Intent(this, LoginActivity.class);
+                startActivity(login);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 

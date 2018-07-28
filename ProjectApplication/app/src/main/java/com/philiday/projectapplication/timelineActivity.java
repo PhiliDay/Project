@@ -74,23 +74,26 @@ public class timelineActivity extends AppCompatActivity {
                         "Correctly Identified Home!",
                         Toast.LENGTH_SHORT)
                         .show();
+                Intent intent = new Intent(this, WelcomeActivity.class);
+                intent.putExtra("Username", EmailHolder);
+                Log.i("username", "email"+ EmailHolder);
+                startActivity(intent);
                 return true;
             case R.id.navigation_record:
                 Toast.makeText(getApplicationContext(),
                         "Correctly Identified Record!",
                         Toast.LENGTH_SHORT)
                         .show();
-                Intent intent = new Intent(this, RecordingActivity.class);
-                intent.putExtra("Username", EmailHolder);
+                Intent intent2 = new Intent(this, RecordingActivity.class);
+                intent2.putExtra("Username", EmailHolder);
                 Log.i("username", "email"+ EmailHolder);
-                startActivity(intent);
+                startActivity(intent2);
                 return true;
             case R.id.navigation_logout:
                 Toast.makeText(getApplicationContext(),
                         "Correctly Identified Logout!",
                         Toast.LENGTH_SHORT)
                         .show();
-
                 Intent login = new Intent(this, LoginActivity.class);
                 startActivity(login);
                 return true;

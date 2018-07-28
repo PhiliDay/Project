@@ -183,7 +183,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(selectQuery, null);
 
         if(c != null)
-            c.moveToLast();
+            c.moveToFirst();
             CalibrationDetails cal = new CalibrationDetails();
             cal.setUserId(c.getString(c.getColumnIndex(CalibrationDetails.Table3_Column_UserId)));
             cal.setAverageX(c.getDouble(c.getColumnIndex(CalibrationDetails.Table3_Column1_averageX)));
@@ -330,6 +330,22 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return ud;
 
 
+    }
+
+    public boolean calCheck(String name){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT count(*) FROM " + CalibrationDetails.TABLE_NAME_3;
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        c.moveToFirst();
+
+        int count = c.getInt(0);
+
+        if(count > 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 

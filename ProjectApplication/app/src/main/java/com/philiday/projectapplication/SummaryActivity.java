@@ -202,7 +202,7 @@ public class SummaryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sqLiteHelper.deleteRun(timeOfRun);
-                goToTimeline(v);
+                goToHome(v);
             }
         });
 
@@ -241,8 +241,8 @@ public class SummaryActivity extends AppCompatActivity {
     }
 
     //HERE I NEED TO TAKE THE DISTANCE AND TIME TAKEN FROM THE ACTIVITY RECORDING AND CALCULATE THE PACE OVERALL. USE BUNDLE 2 DO THIS
-    public void goToTimeline(View view) {
-        Intent intent = new Intent(this, timelineActivity.class);
+    public void goToHome(View view) {
+        Intent intent = new Intent(this, WelcomeActivity.class);
         intent.putExtra("Username", userId);
         startActivity(intent);
     }
