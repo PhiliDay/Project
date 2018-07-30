@@ -62,20 +62,14 @@ public class BackgroundDetectedActivitiesService extends Service {
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void result) {
-                Toast.makeText(getApplicationContext(),
-                        "Successfully requested activity updates",
-                        Toast.LENGTH_SHORT)
-                        .show();
+
             }
         });
 
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),
-                        "Requesting activity updates failed to start",
-                        Toast.LENGTH_SHORT)
-                        .show();
+
             }
         });
     }
@@ -86,18 +80,14 @@ public class BackgroundDetectedActivitiesService extends Service {
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void result) {
-                Toast.makeText(getApplicationContext(),
-                        "Removed activity updates successfully!",
-                        Toast.LENGTH_SHORT)
-                        .show();
+
             }
         });
 
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), "Failed to remove activity updates!",
-                        Toast.LENGTH_SHORT).show();
+
             }
         });
     }

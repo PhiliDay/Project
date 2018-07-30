@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="buttonStyle">@style/btn</item>
+
     </style>
 
     <style name="btn" parent="Widget.AppCompat.Button.Colored">
@@ -37,5 +38,12 @@
         <item name="rd_maskType">rectangle</item>
         <item name="rd_cornerRadius">0dp</item>
     </style>
+
+    <style name="NoTitleText">
+        <item name="android:textSize">0sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+
 
 </resources>

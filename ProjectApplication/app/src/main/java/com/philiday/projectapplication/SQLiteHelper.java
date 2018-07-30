@@ -29,17 +29,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 
     public static final String Table_Column_ID="userId";
-    public static final String Table_Column_1_Name="name";
-    public static final String Table_Column_2_Email="email";
-    public static final String Table_Column_3_Password="password";
-
-    public static final String Table1_Column_ID="runId";
-    public static final String Table1_Column_1_date="timeOfRun";
-    public static final String Table1_Column_2_distance="distance";
-    public static final String Table1_Column_3_time="time";
-    public static final String Table1_Column_4_pace="pace";
     public static final String Table1_Column_5_userId="userId";
-    String temp = "NOT_FOUND" ;
 
     // private ContentValues cValues;
     SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -88,7 +78,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         String[] select = {Table_Column_ID};
         Log.i("mytag", "help1" + name);
         SQLiteDatabase database = getWritableDatabase();
-//        Cursor c = sqLiteDatabaseObj.query(SQLiteHelper.TABLE_NAME, select, " " + SQLiteHelper.Table_Column_1_Name + "=?", new String[]{Table_Column_1_Name}, null, null, null);
 
         Cursor c =  database.query(TABLE_NAME, select,
                 Table_Column_ID + " = \"" + name + "\"" ,

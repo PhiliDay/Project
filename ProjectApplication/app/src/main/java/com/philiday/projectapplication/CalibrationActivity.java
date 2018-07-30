@@ -411,11 +411,6 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-       // SQLiteHelper db = new SQLiteHelper(this);
-       // db.getReadableDatabase();
-       // UserDetails user = new UserDetails();
-       // String EmailHolder = user.getEmail();
-
 
         switch (item.getItemId()) {
             case R.id.navigation_home:

@@ -268,10 +268,16 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
         }else {setUpLocation();}
 
+        if (!isLocationEnabled()){
+            Log.v("mytag", "No location");
+            Toast.makeText(getApplicationContext(),
+                    "Please Enable GPS",
+                    Toast.LENGTH_SHORT).show();
+        }
+
         mInitialized = false;
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mGyroscope = mSensorManager.getDefaultSensor(TYPE_GYROSCOPE);
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -284,7 +290,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         list.add("Walking");
         list.add("Running");
         mode = (Spinner) findViewById(R.id.mode);
-
         btn = (Button) findViewById(R.id.runorwalk);
         btn.setBackgroundResource(R.drawable.walk);
         btn.setTextColor(getApplication().getResources().getColor(R.color.colorPrimary));
@@ -301,8 +306,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 android.R.layout.simple_spinner_item, list);
         dataadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mode.setAdapter(dataadapter);
-
-
         mode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             private boolean isSpinnerInitial = true;
 
@@ -321,9 +324,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
         });
 
-
-
-
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mo = new MarkerOptions().position(new LatLng(0, 0)).title("Current location");
 
@@ -333,18 +333,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         Log.i("mytag", "username" + db_username);
         db = new SQLiteHelper(this);
 
-
         stop.setEnabled(false); // stop button is disabled
         save.setEnabled(false);
         save.setVisibility(View.INVISIBLE);
-
-
-        if (!isLocationEnabled()){
-            Log.v("mytag", "No location");
-            Toast.makeText(getApplicationContext(),
-                    "Please Enable GPS",
-                    Toast.LENGTH_SHORT).show();
-        }
 
 
         // Click and start journey
@@ -421,7 +412,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
         startTracking();
 
-
     }
 
     public String getValue(Double value){
@@ -443,7 +433,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
 
     }
-
 
     public void onLocationChanged(Location location) {
         double latitude = location.getLatitude();
@@ -475,19 +464,12 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                     "Location4!",
                     Toast.LENGTH_SHORT)
                     .show();
-            //While the user is still running get the distance
-            //Maybe change this stop.isEnabled()??? - to if toggle = lets go
+
             if (stop.isEnabled()) {
                 Toast.makeText(getApplicationContext(),
                         "Location5!",
                         Toast.LENGTH_SHORT)
                         .show();
-                //speed = (double) location.getSpeed();
-                // if(speed > 0) {
-                //Add here also if gyroscope is this then walking
-              //  Log.i("speed", "speed: " + speed);
-
-                //
                 marker.setPosition(myCoordinates);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, 14));
                 Log.i("mytag", "location: " + location);
@@ -508,6 +490,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 Log.i("speed", "speed" + speed1);
                 Log.i("walkSpeed", "walkSpeed" + SpeedWalk);
                 Log.i("runSpeed", "runSpeed" + SpeedRun);
+
+                //Uses the calibration speeds to check out
                 if(speed1 > SpeedRun-((SpeedRun - SpeedWalk) * 0.5)){
                     finalActivity = "maybeRunning";
                     Log.i("finalAct", "finalAct" + finalActivity);
@@ -521,18 +505,12 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                     finalActivity = "maybeStill";
                     Log.i("finalAct", "finalAct" + finalActivity);
                 }
-             //   changingActivity();
-                xValuesAccelerometer.clear();
-                yValuesAccelerometer.clear();
-                zValuesAccelerometer.clear();
-                //decidingActivity();
+
+                clearArrayList();
 
                 if (finalActivity.equals("maybeWalking")) {
-                    // if (averageSpeed < 2.5) {
                     Log.i("finalActivityWalking", "finalActivityWalking1 " + finalActivity);
 
-                    //  if(db_result.equals("Walking")){
-                    //  walkStartTime();
                     getWalkTime();
                     walkTime = walketime - stime;
 
@@ -546,25 +524,18 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                     whms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(walkTime),
                             TimeUnit.MILLISECONDS.toMinutes(walkTime) % TimeUnit.HOURS.toMinutes(1),
                             TimeUnit.MILLISECONDS.toSeconds(walkTime) % TimeUnit.MINUTES.toSeconds(1));
-
-                    //    walked += walkingDist + d;
                     walked += d;
                     walkedDist = getDistance(walked);
                     Log.i("walkedDist", "walkedDist" + walkedDist);
                     walkingDis.setText(walkedDist);
-                    double walkingSpeed = location.getSpeed();
                     Toast.makeText(getApplicationContext(),
                             "Walking!",
                             Toast.LENGTH_SHORT)
                             .show();
-                    //  }
                 }
                 if (finalActivity.equals("maybeRunning")) {
-                    //if (averageSpeed > 2.5) {
                     Log.i("finalActivityRunning", "finalActivityRunning1 " + finalActivity);
 
-                    //  if(db_result.equals("Running")){
-                    //   runStartTime();
 
                     getRunTime();
                     runTime = runetime - stime;
@@ -582,13 +553,10 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                             TimeUnit.MILLISECONDS.toMinutes(runTime) % TimeUnit.HOURS.toMinutes(1),
                             TimeUnit.MILLISECONDS.toSeconds(runTime) % TimeUnit.MINUTES.toSeconds(1));
 
-
-                    // ran += runningDist + d;
                     ran += d;
                     ranDist = getDistance(ran);
                     Log.i("randDist", "ranDist" + ranDist);
                     runningDis.setText(ranDist);
-                    double runningSpeed = location.getSpeed();
                     Toast.makeText(getApplicationContext(),
                             "Running!",
                             Toast.LENGTH_SHORT)
@@ -596,7 +564,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 }
                 Log.i("maybeRunning", "maybeRunning but not fast speed " + speed);
 
-                //}
                 Log.i("maybeWalking", "maybeWalking but too fast speed " + speed);
 
 
@@ -615,22 +582,14 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 if (totalDistance.equals("null miles")) {
                     totalDistance = "0.0 miles";
                 }
-                // }
-
-//                    // updating the max speed
-//                    double newSpeed = location.getSpeed();
-//                    findSpeed(newSpeed, speed);
-//                    DecimalFormat df = new DecimalFormat("#.##");
-//                    pace.setText(df.format(speed) + " m/s");
-//
-//                    //just the speed
-//                    double currentSpeed = location.getSpeed();
-//                    speed = currentSpeed * 26.8224;
-//                    DecimalFormat df1 = new DecimalFormat("#.##");
-//                    currentPace.setText(df1.format(speed) + "min/mile");
             }
         }
-//
+    }
+
+    private void clearArrayList(){
+        xValuesAccelerometer.clear();
+        yValuesAccelerometer.clear();
+        zValuesAccelerometer.clear();
     }
 
 
@@ -725,11 +684,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     public double getMiles(double dist){
         //dist - convert from m to miles.
         double d = 0;
-        // String unit = "miles";
-
         d = dist * 0.6214; //Conversion of m to miles
         Log.i("distance", "d" + d);
-
         return d;
     }
 
@@ -747,46 +703,34 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         switch (type) {
             case DetectedActivity.RUNNING: {
                 label = getString(R.string.activity_running);
-                //     Log.v("mytag", "activityRun"+ label);
-                //   txtActivity.setText("Type: " + label);
-                //  txtConfidence.setText("Confidence: " + confidence);
+
                 break;
             }
             case DetectedActivity.STILL: {
                 label = getString(R.string.activity_still);
                 conLabel = Integer.toString(confidence);
-                //  Log.v("mytag", "activityStill"+ label);
-                //  txtActivity.setText("Type: " + label);
-                //  txtConfidence.setText("Confidence: " + confidence);
+
                 break;
             }
 
             case DetectedActivity.WALKING: {
                 label = getString(R.string.activity_walking);
-                //   Log.v("mytag", "activityWalk"+ label);
-                //     txtActivity.setText("Type: " + label);
-                //  txtConfidence.setText("Confidence: " + confidence);
+
 
                 break;
             }
             case DetectedActivity.UNKNOWN: {
-                label = getString(R.string.activity_unknown);
-                // Log.v("mytag", "activityUnknown"+ label);
-                //    txtActivity.setText("Type: " + label);
-                //  txtConfidence.setText("Confidence: " + confidence);
+
 
                 break;
             }
         }
 
-        //  Log.e(TAG, "User activity: " + label + ", Confidence: " + confidence);
-
         if (confidence > Constants.CONFIDENCE) {
-            txtActivity.setText(label);
-            //     finalActivity = String.valueOf(label);
-            //    Log.i("finalActivity", "finalActivity3" + finalActivity);
+//            txtActivity.setText(label);
+//            finalActivity = String.valueOf(label);
+//            Log.i("finalActivity", "finalActivity3" + finalActivity);
 //            txtConfidence.setText(confidence);
-            //  finalConfidence = confidence;
         }
     }
 
@@ -822,28 +766,11 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double d = earthRadius * c;
 
-        //without this - returns km
-        double meterConversion = 1609;
-
         return d ;
     }
 
     private static double deg2rad(double deg){
         return deg * (Math.PI/180);
-    }
-
-    private static double findSpeed(double newSpeed, double speed)
-    {
-        if (newSpeed > speed) {
-            speed = newSpeed;
-        }
-        return speed;
-    }
-
-    private void askPermission(){
-        if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()){
-            requestPermissions(PERMISSIONS, PERMISSION_ALL);
-        }
     }
 
     private void startTracking() {
@@ -885,17 +812,23 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     }
 
     public void clickStart() {
-
+        //Change the buttons.
         save.setVisibility(View.INVISIBLE);
-        boolean gpsEnabled = false;
         start.setEnabled(false);
         stop.setEnabled(true);
 
+        //Set the text on the views
+        initStart();
 
+        calendarTime();
+        startTime();
 
-        //Take this away when actually delivering the application
-//                startime.setText("starttime");
-        //     endtime.setText("endtime");
+        startTime = SystemClock.uptimeMillis();
+        startLocation(startLocationString);
+
+    }
+
+    private void initStart(){
         timetaken.setText("timetaken");
         distance.setText("distance");
         startlocation.setText("startlocation");
@@ -907,105 +840,39 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         runningPace.setText("runningPace");
         walkingDis.setText("walkingDis");
         runningDis.setText("runningDis");
-        //  txtActivity.setText("txtActivity");
-        //  txtConfidence.setText("txtConfidence");
-        //Get start time
-        calendarTime();
-        //Other way of doing start time
-        startTime();
-
-        startTime = SystemClock.uptimeMillis();
-
-
-
-
-
-        Log.i("myTag", "startLocationString" + startLocationString);
-        startLocation(startLocationString);
-
     }
-
-    private void takeScreenshot() {
-        Date now = new Date();
-        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
-
-        try {
-            // image naming and path  to include sd card  appending name you choose for file
-            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpg";
-
-            // create bitmap screen capture
-            View v1 = getWindow().getDecorView().getRootView();
-            v1.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-            v1.setDrawingCacheEnabled(false);
-
-            File imageFile = new File(mPath);
-
-            FileOutputStream outputStream = new FileOutputStream(imageFile);
-            int quality = 100;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
-            outputStream.flush();
-            outputStream.close();
-
-            openScreenshot(imageFile);
-        } catch (Throwable e) {
-            // Several error may come out with file handling or DOM
-            e.printStackTrace();
-        }
-    }
-
-    private void openScreenshot(File imageFile) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        Uri uri = Uri.fromFile(imageFile);
-        intent.setDataAndType(uri, "image/*");
-        startActivity(intent);
-    }
-
-    public Bitmap screenShot(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),
-                view.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        return bitmap;
-    }
-
-
 
     private void clickSave(View v){
         intent = new Intent(RecordingActivity.this, SummaryActivity.class);
 
-        final GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
-            @Override
-            public void onSnapshotReady(Bitmap snapshot) {
-                Bitmap image = snapshot;
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-                intent.putExtra("mapPhoto", byteArray);
-            }
-        };
-        String distanc = getValue(dist);
 
+        String distanc = getValue(dist);
         String walkHoursTaken = getValue(wh);
         String walkMinutesTaken = getValue(wmn);
         String walkSecondsTaken = getValue(ws);
+        String hoursTaken = getValue(hh);
+        String minutesTaken = getValue(mn);
+        String secondsTaken = getValue(s);
+        String calendarDate = ymd;
+        String runHoursTaken = getValue(rh);
+        String runMinutesTaken = getValue(rmn);
+        String runSecondsTaken = getValue(rs);
+        String finalDistance = totalDistance;
+
+
         Log.i("dista", "dista" + distanc);
+        Log.v("mytag", "distanc"+ finalDistance);
+        Log.v("mytag", "walkedDist"+ walkedDist);
+        Log.v("mytag", "ranDist"+ ranDist);
 
         if(walkHoursTaken.equals("null")){walkHoursTaken = "0.0";}
         if (walkMinutesTaken.equals("null")) {walkMinutesTaken = "0.0";}
         if(walkHoursTaken.equals("null")){walkHoursTaken = "0.0";}
 
 
-
         intent.putExtra("walkHoursTaken", walkHoursTaken);
         intent.putExtra("walkMinutesTaken", walkMinutesTaken);
         intent.putExtra("walkSecondsTaken", walkSecondsTaken);
-        //  intent.putExtra("walkingTime", whms);
-
-        String runHoursTaken = getValue(rh);
-        String runMinutesTaken = getValue(rmn);
-        String runSecondsTaken = getValue(rs);
 
         if(runSecondsTaken.equals("null")){runSecondsTaken = "0.0";}
         if (runMinutesTaken.equals("null")) {runMinutesTaken = "0.0";}
@@ -1014,39 +881,22 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         intent.putExtra("runHoursTaken", runHoursTaken);
         intent.putExtra("runMinutesTaken", runMinutesTaken);
         intent.putExtra("runSecondsTaken", runSecondsTaken);
-        //   intent.putExtra("runningTime", rhms);
-
-        // String totalTime2 = getValue(totalTime);
-        String hoursTaken = getValue(hh);
-        String minutesTaken = getValue(mn);
-        String secondsTaken = getValue(s);
-        String calendarDate = ymd;
-
-        // if(totalDistance.equals("null")){totalDistance = "0.0 miles"; }
-        String finalDistance = totalDistance;
-
-        // Log.v("mytag", "totalTime"+ totalTime2);
-        Log.v("mytag", "distanc"+ finalDistance);
-        Log.v("mytag", "walkedDist"+ walkedDist);
-        Log.v("mytag", "ranDist"+ ranDist);
 
 
         intent.putExtra("ranDist", ranDist);
         intent.putExtra("walkedDist", walkedDist);
-
         intent.putExtra("distance", totalDistance);
-        //intent.putExtra("time", totalTime2);
         intent.putExtra("timeOfRun", calendarDate);
         intent.putExtra("Username", db_username);
         intent.putExtra("hours", hoursTaken);
         intent.putExtra("minutes", minutesTaken);
         intent.putExtra("seconds", secondsTaken);
-        //   intent.putExtra("overallTime", ohms);
-        //   intent.putExtra("walkedDist", walkedDist);
         intent.putExtra("ranDist", ranDist);
 
         startActivity(intent);
     }
+
+
 
 
     private void startTime(){
@@ -1054,20 +904,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         stime = System.currentTimeMillis();
         duration.setBase(SystemClock.elapsedRealtime());
         duration.start();
-    }
-
-    private void walkStartTime(){
-        Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
-        walkstime = System.currentTimeMillis();
-        duration.setBase(SystemClock.elapsedRealtime());
-        duration.start();
-    }
-
-    private void runStartTime(){
-        //  Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
-        runstime = System.currentTimeMillis();
-        //duration.setBase(SystemClock.elapsedRealtime());
-        // duration.start();
     }
 
     private void stopTime(){
@@ -1113,20 +949,17 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
     private void redrawLine(){
 
-        //mMap.clear();  //clears all Markers and Polylines
-
         PolylineOptions options = new PolylineOptions().width(5).color(Color.GREEN).geodesic(true);
         for (int i = 0; i < points.size(); i++) {
             LatLng point = points.get(i);
             options.add(point);
         }
-        // addMarker(); //add Marker in current position
         line = mMap.addPolyline(options); //add Polyline
     }
 
     private void clickStop(){
+        //Save button only appears once you have recorded something
         save.setVisibility(View.VISIBLE);
-
         stop.setEnabled(false);
         start.setEnabled(true);
         save.setEnabled(true);
@@ -1194,24 +1027,20 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         walkStart = (Chronometer) findViewById(R.id.chronometer);
         runStart = (Chronometer) findViewById(R.id.chronometer);
 
-        //startime = (TextView) findViewById(R.id.startime);
-        distance = (TextView) findViewById(R.id.distance);
         start = (Button) findViewById(R.id.start);
         stop = (Button) findViewById(R.id.stop);
         save = (Button) findViewById(R.id.save);
-        // endtime = (TextView) findViewById(R.id.endtime);
+
+        distance = (TextView) findViewById(R.id.distance);
         timetaken = (TextView) findViewById(R.id.timetaken);
         distance = (TextView) findViewById(R.id.distance);
         startlocation = (TextView) findViewById(R.id.starting);
-        // endlocation = (TextView) findViewById(R.id.endLocation);
-        //
         currentLoc = (TextView) findViewById(R.id.updating);
         pace = (TextView) findViewById(R.id.pace);
         currentPace = (TextView) findViewById(R.id.currentPace);
         tv = (TextView) findViewById(R.id.timer);
         walkingPace = (TextView) findViewById(R.id.walkingPace);
         runningPace = (TextView) findViewById(R.id.runningPace);
-
         walkingDis = (TextView) findViewById(R.id.walkingDis);
         runningDis = (TextView) findViewById(R.id.runningDis);
         username = (TextView) findViewById(R.id.username);
@@ -1229,7 +1058,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        String sensorName = event.sensor.getName();
 
         float x = event.values[0];
         int xVal = (int) x;
@@ -1263,19 +1091,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             xValuesAccelerometer.add(xVal);
             yValuesAccelerometer.add(yVal);
             zValuesAccelerometer.add(zVal);
-
-//            xValuesAccelerometer.add(xDel);
-//            yValuesAccelerometer.add(yDel);
-//            zValuesAccelerometer.add(zDel);
-
-//        Log.i("myLastX", "myLastX " + mLastX);
-//            Log.i("myLastY", "myLastY " + mLastY);
-//            Log.i("myLastZ", "myLastZ " + mLastZ);
-//            Log.i("deltaX", "deltaX " +deltaX);
-//            Log.i("deltaY", "deltaY " + deltaY);
-//            Log.i("deltaZ", "deltaZ " + deltaZ);
-
-
         }
     }
 
@@ -1310,7 +1125,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     }
 
     public void changingActivity() {
-        float accelerometer = getActivityAce(mLastX, mLastY, mLastZ);
         double averageX = calculateAverage(xValuesAccelerometer);
         double averageY = calculateAverage(yValuesAccelerometer);
         double averageZ = calculateAverage(zValuesAccelerometer);
@@ -1320,9 +1134,9 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         Log.i("averageX", "averageX" + averageX);
         Log.i("averageY", "averageY" + averageY);
         Log.i("averageZ", "averageZ" + averageZ);
-//        Log.i("varianceX", "varianceX" + varianceX);
-//        Log.i("varianceY", "varianceY" + varianceY);
-//        Log.i("varianceZ", "varianceZ" + varianceZ);
+        Log.i("varianceX", "varianceX" + varianceX);
+        Log.i("varianceY", "varianceY" + varianceY);
+        Log.i("varianceZ", "varianceZ" + varianceZ);
         sortList(xValuesAccelerometer);
         sortList(yValuesAccelerometer);
         sortList(zValuesAccelerometer);
@@ -1356,36 +1170,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         Log.i("Q1X", "Q1X" + Q1X);
         Log.i("Q3X", "Q3X" + Q3X);
 
-        double finalY = Q1Y + Q3Y;
-
-        double diffY = Q3Y - Q1Y;
-        double diffX = Q3X - Q3Y;
-
-        float accelerometer_bounds = 20;
-        float gyrometer = 0;
-        float gyrometer_bounds = 0;
-        float stable_bounds = 0;
-
-
-//
-//        if (varianceX < 1 && varianceX > -1){
-//            finalActivity = "maybeStill";
-//            Log.i("finalAct", "finalAct" + finalActivity);
-//        }else if(((averageX > Q1Y && averageX < Q3Y) || (averageY > Q1X && averageY < Q3X)) && Q3Y > 5) {
-//            finalActivity = "maybeRunning";
-//            Log.i("finalAct", "finalAct" + finalActivity);
-//        }else if(minX > maxY && Q3Y < 5){
-//            finalActivity = "maybeWalking";
-//            Log.i("finalAct", "finalAct" + finalActivity);
-//        }
     }
-
-    public void decidingActivity(){
-        if(maxY < minX){
-            finalActivity = "maybeWalking";
-        }
-    }
-
 
     public double variance(ArrayList<Integer> values){
         double sumDiffsSquared = 0.0;
@@ -1403,23 +1188,12 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         Collections.sort(values);
     }
 
-    public void maxList(ArrayList<Integer> values){
-        Collections.max(values);
-    }
-
-    public void minList(ArrayList<Integer> values){
-        Collections.min(values);
-    }
 
     public void comparingActivites() {
         db = new SQLiteHelper(this);
-//        UserDetails user = db.getName(db_username);
 
-    //    String emailId = user.getEmail();
-     //   Log.i("emailId", "emailId" + emailId);
         Log.i("db_username", "db_username" + db_username);
         CalibrationDetails calWalk = db.getCalibration(db_username, CalibrationDetails.TABLE_NAME_3);
-
         CalibrationDetails calRun = db.getCalibration(db_username, CalibrationDetails.TABLE_NAME_4);
 
         averageXWalk = calWalk.getAverageX();
@@ -1440,22 +1214,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
         SpeedWalk = calWalk.getSpeed();
         SpeedRun = calRun.getSpeed();
-    }
-
-    public void decidingActivityComparison(){
-        comparingActivites();
-
-        if(((averageX > Q1Y && averageX < Q3Y) || (averageY > Q1X && averageY < Q3X)) && Q3Y > 5){
-            finalActivity = "maybeRunning";
-            Log.i("finalAct", "finalAct" + finalActivity);
-        }else if(Q3Y < 5){
-            finalActivity = "maybeWalking";
-            Log.i("finalAct", "finalAct" + finalActivity);
-        }else if (varianceX < 1 && varianceX > -1){
-            finalActivity = "maybeStill";
-            Log.i("finalAct", "finalAct" + finalActivity);
-        }
-
     }
 
     public void findMinMax(ArrayList<Integer> values, double min, double max){
