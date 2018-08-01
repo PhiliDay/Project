@@ -10,42 +10,39 @@
     <Button
         android:id="@+id/calibration2"
         style="@style/btn2"
-        android:layout_width="205dp"
+        android:layout_width="200dp"
         android:layout_height="60dp"
         android:layout_marginBottom="240dp"
-        android:layout_marginLeft="88dp"
-        android:layout_marginStart="88dp"
         android:onClick="goToCalibration"
         android:text="@string/calibration"
         app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/calibration3"
         style="@style/btn2"
-        android:layout_width="205dp"
+        android:layout_width="200dp"
         android:layout_height="60dp"
         android:layout_marginBottom="80dp"
-        android:layout_marginLeft="88dp"
-        android:layout_marginStart="88dp"
         android:onClick="goToResults"
         android:text="@string/results"
         app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/save2"
         style="@style/btn2"
-        android:layout_width="205dp"
+        android:layout_width="200dp"
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/switches"
         android:layout_marginBottom="160dp"
-        android:layout_marginLeft="88dp"
-        android:layout_marginStart="88dp"
         android:onClick="goToRecord"
         android:text="@string/record"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -64,7 +61,7 @@
         android:id="@+id/welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="90dp"
         android:textSize="24sp"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintEnd_toEndOf="parent"

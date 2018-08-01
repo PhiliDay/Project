@@ -69,4 +69,10 @@
     <string name="title_activity_maps">Map</string>
     <string name="calibrateFirst">Please Calibrate First!</string>
 
+    <string name="hms">hms</string>
+    <string name="distanceUnits">miles</string>
+    <string name="paceUnits">min/mile</string>
+
+
+
 </resources>

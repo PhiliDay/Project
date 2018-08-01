@@ -3,8 +3,9 @@
     >
 
     <solid     android:color="@color/lightPur" />
-        <gradient
-            android:startColor="@color/lightBlue"
-            android:endColor="@color/lightBlue"
-            android:angle="90" />
+    <corners android:radius="20dp"/>
+    <gradient
+        android:startColor="@color/lightBlue"
+        android:endColor="@color/lightBlue"
+        android:angle="90" />
 </shape>

@@ -16,7 +16,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logoout"
-        android:label="@string/pace"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/logoout"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

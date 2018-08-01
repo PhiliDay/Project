@@ -1,29 +1,40 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/popup_1"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="10sp"
-    android:theme="@android:style/Theme.Dialog"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical|center_horizontal"
+    android:maxHeight="300dp"
+    android:maxWidth="300dp"
+    android:minHeight="200dp"
+    android:minWidth="200dp"
+    android:background="@drawable/roundable_borders2"
+
+    android:theme="@android:style/Theme.Dialog">
 
     <TextView
         android:id="@+id/txtView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5sp"
+        android:layout_marginBottom="190dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
         android:text="@string/calibrateFirst"
+        android:textColor="@color/oldsilver"
         android:textSize="24sp"
-        app:fontFamily="@font/raleway_semibold" />
+        app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/close_popup"
         style="@style/btn2"
-        android:layout_width="68dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@android:string/ok" />
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="60dp"
+        android:text="@android:string/ok"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="50dp" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

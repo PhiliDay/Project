@@ -24,13 +24,13 @@
     <Button
         android:id="@+id/button3"
         style="@style/btn2"
-        android:layout_width="253dp"
-        android:layout_height="81dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="80dp"
         android:onClick="startRun"
         android:text="@string/record_run"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -130,19 +130,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.555"></ListView>
-
-    <Button
-        android:id="@+id/calibration"
-        style="@style/btn2"
-        android:layout_width="104dp"
-        android:layout_height="58dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:onClick="goToCalibration"
-        android:text="CALIBRATION"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

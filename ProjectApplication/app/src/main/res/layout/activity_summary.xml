@@ -18,36 +18,33 @@
     <TextView
         android:id="@+id/distance"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginLeft="156dp"
-        android:layout_marginStart="156dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
         android:text="@string/distance"
         app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/distancePlaceholder" />
 
     <TextView
         android:id="@+id/runDistance"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginLeft="156dp"
-        android:layout_marginStart="156dp"
-        android:layout_marginTop="92dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="93dp"
         android:text="@string/distance"
         app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/distancePlaceholder" />
 
     <TextView
         android:id="@+id/walkDistance"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginLeft="156dp"
-        android:layout_marginStart="156dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:text="@string/distance"
         app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/runDistance" />
 
@@ -55,12 +52,11 @@
         android:id="@+id/distancePlaceholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="132dp"
-        android:layout_marginStart="132dp"
-        android:layout_marginTop="156dp"
+        android:layout_marginTop="150dp"
         android:text="@string/distance"
         android:textSize="24sp"
         app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -69,9 +65,9 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="56dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="76dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="25dp"
         android:text="@string/time"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,21 +77,21 @@
         android:id="@+id/runTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="56dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginLeft="76dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="93dp"
         android:text="@string/time"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time" />
+        app:layout_constraintTop_toBottomOf="@+id/timePlaceholder" />
 
     <TextView
         android:id="@+id/overallPace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="264dp"
-        android:layout_marginStart="264dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="274dp"
+        android:layout_marginStart="274dp"
+        android:layout_marginTop="25dp"
         android:text="@string/pace"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"
@@ -105,9 +101,9 @@
         android:id="@+id/oWalkingPace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="268dp"
-        android:layout_marginStart="268dp"
-        android:layout_marginTop="156dp"
+        android:layout_marginLeft="274dp"
+        android:layout_marginStart="274dp"
+        android:layout_marginTop="161dp"
         android:text="@string/pace"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"
@@ -117,9 +113,9 @@
         android:id="@+id/oRunningPace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="264dp"
-        android:layout_marginStart="264dp"
-        android:layout_marginTop="88dp"
+        android:layout_marginLeft="274dp"
+        android:layout_marginStart="274dp"
+        android:layout_marginTop="93dp"
         android:text="@string/pace"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"
@@ -129,9 +125,9 @@
         android:id="@+id/walkTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="56dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginLeft="76dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="48dp"
         android:text="@string/time"
         app:fontFamily="@font/raleway_semibold"
         app:layout_constraintStart_toStartOf="parent"
@@ -149,14 +145,13 @@
         app:layout_constraintTop_toBottomOf="@+id/timePlaceholder" />
 
 
-
     <TextView
         android:id="@+id/timePlaceholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="56dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="156dp"
+        android:layout_marginLeft="66dp"
+        android:layout_marginStart="66dp"
+        android:layout_marginTop="150dp"
         android:text="@string/time"
         android:textSize="24sp"
         app:fontFamily="@font/raleway_semibold"
@@ -167,23 +162,22 @@
         android:id="@+id/pacePlaceholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="244dp"
-        android:layout_marginStart="244dp"
-        android:layout_marginTop="156dp"
+        android:layout_marginEnd="66dp"
+        android:layout_marginRight="66dp"
+        android:layout_marginTop="150dp"
         android:text="@string/pace"
         android:textSize="24sp"
         app:fontFamily="@font/raleway_semibold"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 
     <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="36dp"
-        android:layout_marginStart="36dp"
+        android:layout_marginLeft="55dp"
+        android:layout_marginStart="55dp"
         android:layout_marginTop="112dp"
         android:text="@string/day"
         android:textSize="15sp"
@@ -197,12 +191,11 @@
         android:id="@+id/runsummary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="30dp"
         android:text="@string/overall_run"
         android:textSize="45sp"
         app:fontFamily="@font/raleway_semibold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -234,11 +227,11 @@
 
     <Button
         android:id="@+id/finish"
-        android:layout_width="79dp"
-        android:layout_height="77dp"
-        android:layout_marginBottom="32dp"
-        android:layout_marginLeft="88dp"
-        android:layout_marginStart="88dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/circle_background"
         android:onClick="goToTimeline"
@@ -252,7 +245,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar2"
         android:layout_width="580dp"
-        android:layout_height="133dp"
+        android:layout_height="100dp"
         android:layout_marginTop="241dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
@@ -266,9 +259,9 @@
 
     <ImageView
         android:id="@+id/btn_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="15dp"
         android:layout_marginEnd="80dp"
         android:layout_marginRight="80dp"
         android:background="@drawable/circle_background"
@@ -317,10 +310,10 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="49dp"
+        android:layout_width="46dp"
         android:layout_height="46dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="196dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -328,22 +321,62 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="42dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="268dp"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="264dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/rabbit" />
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="45dp"
+        android:layout_width="44dp"
         android:layout_height="44dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="328dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/turtle" />
+
+    <TextView
+        android:id="@+id/timeUnits"
+        style="@style/GreyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="305dp"
+        android:layout_marginLeft="72dp"
+        android:layout_marginStart="72dp"
+        android:text="@string/hms"
+        app:fontFamily="@font/roboto"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/distanceUnits"
+        style="@style/GreyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="305dp"
+        android:text="@string/distanceUnits"
+        app:fontFamily="@font/roboto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/paceUnits"
+        style="@style/GreyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="305dp"
+        android:layout_marginLeft="274dp"
+        android:layout_marginStart="274dp"
+        android:text="@string/paceUnits"
+        app:fontFamily="@font/roboto"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

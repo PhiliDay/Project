@@ -97,8 +97,8 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void showPopup(final Activity context, Point p) {
-        int popupWidth = 500;
-        int popupHeight = 500;
+        int popupWidth = 600;
+        int popupHeight = 600;
 
         // Inflate the popup_layout.xml
         LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup_1);

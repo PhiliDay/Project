@@ -159,7 +159,7 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
             sqLiteHelper.getWritableDatabase();
             long insertingCalibration = sqLiteHelper.createRunCalibration(calRun);
 
-            Intent intent = new Intent(this, timelineActivity.class);
+            Intent intent = new Intent(this, RecordingActivity.class);
             intent.putExtra("Username", userId);
             startActivity(intent);
         }
