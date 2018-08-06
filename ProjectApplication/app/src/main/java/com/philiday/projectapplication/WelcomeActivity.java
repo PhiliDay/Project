@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -69,6 +70,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     public void goToRecord(View view){
+        Log.i("EmailHolder", "Emailholder" + EmailHolder);
         if(checkCalibrated(EmailHolder)) {
             Intent intent = new Intent(this, RecordingActivity.class);
             intent.putExtra("Username", EmailHolder);
@@ -85,7 +87,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public boolean checkCalibrated(String userId){
         db = new SQLiteHelper(this);
 
-        boolean check = db.calCheck(EmailHolder);
+        boolean check = db.calCheck(userId);
 
         if(check == true){
             return true;
@@ -93,7 +95,7 @@ public class WelcomeActivity extends AppCompatActivity {
             showPopup(WelcomeActivity.this, p);
             return false;
         }
-        return true;
+        return false;
     }
 
     private void showPopup(final Activity context, Point p) {

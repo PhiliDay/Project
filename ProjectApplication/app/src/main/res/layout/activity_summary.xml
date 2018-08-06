@@ -234,7 +234,7 @@
         android:layout_marginStart="80dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/circle_background"
-        android:onClick="goToTimeline"
+        android:onClick="goToHome"
         android:text="@string/finish"
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"

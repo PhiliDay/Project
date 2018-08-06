@@ -29,6 +29,7 @@ import com.rey.material.widget.Button;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class timelineActivity extends AppCompatActivity {
@@ -40,31 +41,28 @@ public class timelineActivity extends AppCompatActivity {
     SQLiteHelper db;
 
     @Override
-    //Creates the activity_timeline layout
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-
-        //Assigns Email to the textview email within activity_timeline (layout)
         Email = (TextView)findViewById(R.id.email);
 
         ListView listRun = (ListView) findViewById(R.id.runList);
         Intent intent = getIntent();
 
         EmailHolder = intent.getStringExtra("Username");
-       // Log.i("mytag", "help" + EmailHolder);
         db = new SQLiteHelper(this);
 
         ArrayList<RunDetails> runList = db.getAllRuns(EmailHolder);
+        Collections.reverse(runList);
         ActivitiesAdapter myAdapter = new ActivitiesAdapter(runList, this);
         listRun.setAdapter(myAdapter);
 
         UserDetails userList = db.displayUser(EmailHolder);
 
         Email.setText("Welcome " + userList.getFirstName() + "!");
-       }
+    }
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -102,14 +100,11 @@ public class timelineActivity extends AppCompatActivity {
         }
     }
 
-
-    //Same done here with a different button
     public void goToMap(View view) {
         Intent intent = new Intent(this, RunActivity.class);
         startActivity(intent);
     }
 
-    //Ignore this
     public String getUsername(){
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");

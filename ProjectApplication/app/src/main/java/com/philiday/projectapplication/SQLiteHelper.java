@@ -323,7 +323,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public boolean calCheck(String name){
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT count(*) FROM " + CalibrationDetails.TABLE_NAME_3;
+        String selectQuery = "SELECT count(*) FROM " + CalibrationDetails.TABLE_NAME_3 + " WHERE " + CalibrationDetails.Table3_Column_UserId + " = '" + name + "'" ;
         Cursor c = db.rawQuery(selectQuery, null);
 
         c.moveToFirst();
@@ -358,10 +358,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         contentValues.put("walkingPace", run.getWalkingPace());
         contentValues.put("runningPace", run.getRunningPace());
         contentValues.put("image", run.getImage());
-
-        Log.i("userId", "userId" + run);
-        Log.i("userId", "userId" + run.getTime());
-        Log.i("userId", "walkingDist" + run.getWalkingDist());
 
         long userRow = db.insert(RunDetails.TABLE_NAME_1, null, contentValues);
 

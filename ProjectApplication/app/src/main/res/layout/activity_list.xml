@@ -32,7 +32,7 @@
 
                 <TextView
                     android:id="@+id/distanceHead"
-                    android:layout_width="wrap_content"
+                    android:layout_width="75dp"
                     android:layout_height="wrap_content"
                     android:text="@string/distance2"
                     android:textColor="@color/headingText"
@@ -41,7 +41,7 @@
 
                 <TextView
                     android:id="@+id/timeHead"
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:text="@string/time"
                     android:textColor="@color/headingText"
@@ -50,7 +50,7 @@
 
                 <TextView
                     android:id="@+id/paceHead"
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:text="@string/pace2"
                     android:textColor="@color/headingText"
@@ -63,16 +63,16 @@
                 android:layout_height="wrap_content">
 
                 <!--<TextView-->
-                    <!--android:id="@+id/overall"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="@string/overall"-->
-                    <!--android:textColor="@color/oldsilver"-->
-                    <!--android:textSize="15sp"></TextView>-->
+                <!--android:id="@+id/overall"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/overall"-->
+                <!--android:textColor="@color/oldsilver"-->
+                <!--android:textSize="15sp"></TextView>-->
 
                 <ImageView
                     android:id="@+id/overallHead"
-                    android:layout_width="fill_parent"
+                    android:layout_width="72dp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/footprint">
 
@@ -105,16 +105,16 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_width="2222dp"
+                android:layout_height="19dp">
 
                 <!--<TextView-->
-                    <!--android:id="@+id/walkingOverall"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="@string/walkOverall"-->
-                    <!--android:textColor="@color/oldsilver"-->
-                    <!--android:textSize="15sp"></TextView>-->
+                <!--android:id="@+id/walkingOverall"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/walkOverall"-->
+                <!--android:textColor="@color/oldsilver"-->
+                <!--android:textSize="15sp"></TextView>-->
                 <ImageView
                     android:id="@+id/walkingOverall"
                     android:layout_width="30dp"

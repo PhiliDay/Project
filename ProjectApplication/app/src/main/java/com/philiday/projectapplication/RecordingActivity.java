@@ -95,11 +95,13 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     Button start, stop, save;
     TextView startime, timetaken, startlocation, endlocation, currentLoc,  pace, endtime, distance, currentPace, tv, walkingPace, username, runningPace, txtActivity, txtConfidence;
     TextView walkingDis, runningDis;
-    int count;
+    int count = 0;
     Intent intent;
+    long timeWhenStopped = 0;
     private float mLastX, mLastY, mLastZ;
     MarkerOptions mo1;
     double time=0;
+    double secondsSave = 0, minutesSave = 0, hoursSave = 0;
     SensorManager _sensorManager;
     TextView _sensorTextView;
     long stime;
@@ -217,8 +219,6 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     String db_result;
     Chronometer runStart;
     Chronometer walkStart;
-    long timeWhenStopped = 0;
-    long timeWhenStoppedRun = 0;
 
     private String TAG = RecordingActivity.class.getSimpleName();
     private Button btn;
@@ -270,12 +270,16 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
         if (!isLocationEnabled()){
             Log.v("mytag", "No location");
+
+
             Toast.makeText(getApplicationContext(),
                     "Please Enable GPS",
                     Toast.LENGTH_SHORT).show();
         }
 
         mInitialized = false;
+
+
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
@@ -789,7 +793,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 home.putExtra("Username", db_username);
                 startActivity(home);
                 return true;
-            case R.id.navigation_record:
+            case R.id.navigation_bin:
                 Toast.makeText(getApplicationContext(),
                         "Correctly Identified Record!",
                         Toast.LENGTH_SHORT)
@@ -816,15 +820,19 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         save.setVisibility(View.INVISIBLE);
         start.setEnabled(false);
         stop.setEnabled(true);
+        if(count == 0) {
+            count++;
 
-        //Set the text on the views
-        initStart();
+            //Set the text on the views
+            initStart();
 
-        calendarTime();
+            calendarTime();
+
+            startLocation(startLocationString);
+        }
         startTime();
-
         startTime = SystemClock.uptimeMillis();
-        startLocation(startLocationString);
+
 
     }
 
@@ -846,18 +854,26 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         intent = new Intent(RecordingActivity.this, SummaryActivity.class);
 
 
+
+        Log.i("Time when stopped", "Time when stopped" + timeWhenStopped);
+        Log.i("Time when stopped", "Seconds when stopped" + secondsSave);
+
         String distanc = getValue(dist);
         String walkHoursTaken = getValue(wh);
         String walkMinutesTaken = getValue(wmn);
         String walkSecondsTaken = getValue(ws);
         String hoursTaken = getValue(hh);
-        String minutesTaken = getValue(mn);
-        String secondsTaken = getValue(s);
+       // String minutesTaken = getValue(mn);
+      //  String secondsTaken = getValue(s);
+        String secondsTaken = getValue(secondsSave);
+        String minutesTaken = getValue(minutesSave);
+
         String calendarDate = ymd;
         String runHoursTaken = getValue(rh);
         String runMinutesTaken = getValue(rmn);
         String runSecondsTaken = getValue(rs);
         String finalDistance = totalDistance;
+
 
 
         Log.i("dista", "dista" + distanc);
@@ -902,14 +918,25 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     private void startTime(){
         Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
         stime = System.currentTimeMillis();
-        duration.setBase(SystemClock.elapsedRealtime());
+        duration.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
         duration.start();
     }
 
     private void stopTime(){
         Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
+        timeWhenStopped = duration.getBase() - SystemClock.elapsedRealtime();
         duration.stop();
     }
+
+    private void saveTime(){
+        Chronometer duration = (Chronometer) findViewById(R.id.chronometer);
+        long saveTime = 0;
+        saveTime = SystemClock.elapsedRealtime() - duration.getBase();
+        secondsSave = (int)(saveTime/1000 % 60);
+        minutesSave = (int)(saveTime/1000 - secondsSave)/60;
+    }
+
+
 
     //Is this being used?
     private void calendarTime(){
@@ -958,6 +985,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
     }
 
     private void clickStop(){
+
+
         //Save button only appears once you have recorded something
         save.setVisibility(View.VISIBLE);
         stop.setEnabled(false);
@@ -1020,6 +1049,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
             runPace = dtime / ran;
             runningPace.setText("" + runningPace);
         }
+
+        saveTime();
 
     }
 
