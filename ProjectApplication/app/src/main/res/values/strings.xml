@@ -36,6 +36,7 @@
     <string name="activity_walking">walking </string>
     <string name="activity_still">still </string>
     <string name="password_display2">Re-enter password:</string>
+    <string name="results2">Results:</string>
 
 
     <string name="title_activity_main2">Main2Activity</string>
@@ -72,6 +73,8 @@
     <string name="hms">hms</string>
     <string name="distanceUnits">miles</string>
     <string name="paceUnits">min/mile</string>
+
+    <string name="next">Next</string>
 
 
 

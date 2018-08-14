@@ -222,7 +222,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
     private String TAG = RecordingActivity.class.getSimpleName();
     private Button btn;
-    String finalActivity = "";
+    String finalActivity = "maybeWalking";
     String finalConfidence;
     // public static final String DETECTED_ACTIVITY = ".DETECTED ACTIVITY";
     //  private ActivityRecognitionClient mActivityRecognitionClient;
@@ -498,16 +498,11 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
                 //Uses the calibration speeds to check out
                 if(speed1 > SpeedRun-((SpeedRun - SpeedWalk) * 0.5)){
                     finalActivity = "maybeRunning";
-                    Log.i("finalAct", "finalAct" + finalActivity);
-
                 }
                 else if(speed1 < SpeedWalk+((SpeedRun-SpeedWalk) * 0.5) && speed1> 0){
                     finalActivity = "maybeWalking";
-                    Log.i("finalAct", "finalAct" + finalActivity);
-
                 } else if(speed1 == 0){
                     finalActivity = "maybeStill";
-                    Log.i("finalAct", "finalAct" + finalActivity);
                 }
 
                 clearArrayList();
@@ -622,7 +617,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         Toast.makeText(getApplicationContext(),
                 "Found location 3",
                 Toast.LENGTH_SHORT)                        .show();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5, this);
 
 
 
@@ -644,8 +639,8 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
         }
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                5000,
-                15,
+                1000,
+                5,
                 this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
@@ -679,7 +674,7 @@ public class RecordingActivity extends AppCompatActivity implements LocationList
 
         d = dist * 0.6214; //Conversion of m to miles
 
-        DecimalFormat df = new DecimalFormat("#.###");
+        DecimalFormat df = new DecimalFormat("#.##");
         finalDistance = df.format(d) + " " + unit;
 
         return finalDistance;

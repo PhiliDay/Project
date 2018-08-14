@@ -19,7 +19,7 @@
     </style>
 
     <style name="GreyText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/oldsilver</item>
+        <item name="android:textColor">@color/headingText</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

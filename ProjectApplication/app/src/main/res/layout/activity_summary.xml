@@ -346,20 +346,20 @@
         style="@style/GreyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="305dp"
-        android:layout_marginLeft="72dp"
-        android:layout_marginStart="72dp"
+        android:layout_marginLeft="76dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="180dp"
         android:text="@string/hms"
         app:fontFamily="@font/roboto"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/distanceUnits"
         style="@style/GreyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="305dp"
+        android:layout_marginBottom="404dp"
         android:text="@string/distanceUnits"
         app:fontFamily="@font/roboto"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -371,12 +371,12 @@
         style="@style/GreyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="305dp"
-        android:layout_marginLeft="274dp"
-        android:layout_marginStart="274dp"
+        android:layout_marginLeft="296dp"
+        android:layout_marginStart="296dp"
+        android:layout_marginTop="180dp"
         android:text="@string/paceUnits"
         app:fontFamily="@font/roboto"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

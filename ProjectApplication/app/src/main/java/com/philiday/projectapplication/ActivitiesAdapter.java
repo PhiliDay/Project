@@ -45,7 +45,7 @@ public class ActivitiesAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
 
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("#.##");
 
         if(convertView == null){
             LayoutInflater inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -75,14 +75,14 @@ public class ActivitiesAdapter extends BaseAdapter {
 
         holder.date.setText(stu.getDate());
         holder.time.setText(stu.getTime());
-        holder.distance.setText(stu.getDistance());
-        holder.walkingDist.setText(stu.getWalkingDist());
-        holder.ranDist.setText(stu.getRanDist());
+        holder.distance.setText(setValues(stu.getDistance()));
+        holder.walkingDist.setText(setValues(stu.getWalkingDist()));
+        holder.ranDist.setText(setValues(stu.getRanDist()));
         holder.walkingTime.setText(stu.getWalkingTime());
         holder.runningTime.setText(stu.getRunningTime());
-        holder.overallPace.setText(stu.getOverallPace());
-        holder.walkingPace.setText(stu.getWalkingPace());
-        holder.runningPace.setText(stu.getRunningPace());
+        holder.overallPace.setText(setValues(stu.getOverallPace()));
+        holder.walkingPace.setText(setValues(stu.getWalkingPace()));
+        holder.runningPace.setText(setValues(stu.getRunningPace()));
         holder.image.setImageBitmap(bmp);
 
         Log.i("date", "date" + stu.getDate());
@@ -92,6 +92,12 @@ public class ActivitiesAdapter extends BaseAdapter {
 
         return convertView;
     }
+
+    private String setValues(String information){
+        double value = Double.parseDouble(information);
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        return df.format(value); }
 
     private static class ViewHolder{
         public TextView date;

@@ -139,7 +139,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public ArrayList<RunDetails> getAllRuns(String name){
         ArrayList<RunDetails> runs = new ArrayList<RunDetails>();
 
-        String selectQuery = ("SELECT * FROM " + RunDetails.TABLE_NAME_1);
+        String selectQuery = ("SELECT * FROM " + RunDetails.TABLE_NAME_1 + " WHERE " + RunDetails.Table1_Column_5_userId + " = '" + name + "'" );
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
