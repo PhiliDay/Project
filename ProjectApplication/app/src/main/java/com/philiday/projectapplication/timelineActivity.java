@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/*Displays the results - gets the list from Activities Adapter class */
 public class timelineActivity extends AppCompatActivity {
 
     String EmailHolder;

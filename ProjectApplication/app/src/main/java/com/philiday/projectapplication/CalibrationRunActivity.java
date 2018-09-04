@@ -34,6 +34,9 @@ import java.util.Collections;
 import static com.philiday.projectapplication.RecordingActivity.PERMISSIONS;
 import static com.philiday.projectapplication.RecordingActivity.PERMISSION_ALL;
 
+/* Implements the activity_calibration_run.xml file.  Records the speed, as well as the accelerometer data and inserts it into the database */
+
+
 public class CalibrationRunActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
 
         Button start, save;
@@ -406,30 +409,16 @@ public class CalibrationRunActivity extends AppCompatActivity implements SensorE
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                Toast.makeText(getApplicationContext(),
-                        "Correctly Identified Home!",
-                        Toast.LENGTH_SHORT)
-                        .show();
                 Intent intent = new Intent(this, WelcomeActivity.class);
                 intent.putExtra("Username", userId);
-                Log.i("username", "email"+ userId);
                 startActivity(intent);
                 return true;
             case R.id.navigation_record:
-                Toast.makeText(getApplicationContext(),
-                        "Correctly Identified Record!",
-                        Toast.LENGTH_SHORT)
-                        .show();
                 Intent intent2 = new Intent(this, RecordingActivity.class);
                 intent2.putExtra("Username", userId);
-                Log.i("username", "email"+ userId);
                 startActivity(intent2);
                 return true;
             case R.id.navigation_logout:
-                Toast.makeText(getApplicationContext(),
-                        "Correctly Identified Logout!",
-                        Toast.LENGTH_SHORT)
-                        .show();
                 Intent login = new Intent(this, LoginActivity.class);
                 startActivity(login);
                 return true;

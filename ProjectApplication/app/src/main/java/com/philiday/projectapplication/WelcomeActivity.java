@@ -27,6 +27,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+/*Class to implement main screen where there are three different options to continue */
 public class WelcomeActivity extends AppCompatActivity {
 
     String EmailHolder, username;

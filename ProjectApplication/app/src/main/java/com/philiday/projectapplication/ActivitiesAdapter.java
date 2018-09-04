@@ -15,6 +15,7 @@ import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+/* This class creates the list for the results.  It is then used in the SummaryActivity */
 
 public class ActivitiesAdapter extends BaseAdapter {
 
@@ -84,11 +85,6 @@ public class ActivitiesAdapter extends BaseAdapter {
         holder.walkingPace.setText(setValues(stu.getWalkingPace()));
         holder.runningPace.setText(setValues(stu.getRunningPace()));
         holder.image.setImageBitmap(bmp);
-
-        Log.i("date", "date" + stu.getDate());
-
-        Log.i("walkingDist", "walkingDist2" + stu.getWalkingDist());
-
 
         return convertView;
     }

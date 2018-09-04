@@ -2,6 +2,8 @@ package com.philiday.projectapplication;
 
 import android.database.sqlite.SQLiteDatabase;
 
+/* Class to create the user table - contains getters and setters */
+
 public class UserDetails {
 
     public static final String TABLE_NAME = "user";

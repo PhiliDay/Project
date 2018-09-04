@@ -2,6 +2,7 @@ package com.philiday.projectapplication;
 
 
 import android.content.Context;
+/* Class to create the running database - contains getters and setters */
 
 public class RunDetails {
 

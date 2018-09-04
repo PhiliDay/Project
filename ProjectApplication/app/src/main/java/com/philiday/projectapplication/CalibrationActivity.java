@@ -31,6 +31,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/* Implements the activity_calibration.xml file.  Records the speed, as well as the accelerometer data and inserts it into the database */
+
 public class CalibrationActivity extends AppCompatActivity implements SensorEventListener, LocationListener{
 
     Button begin, finish;

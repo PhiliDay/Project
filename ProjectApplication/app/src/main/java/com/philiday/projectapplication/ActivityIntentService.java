@@ -16,6 +16,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 //Extend IntentService//
+
+
+/* Was used to implement the Activity Recognition API - not used in final application */
+
 public class ActivityIntentService extends IntentService {
     protected static final String TAG = ActivityIntentService.class.getSimpleName();
     //Call the super IntentService constructor with the name for the worker thread//

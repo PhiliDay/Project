@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/* Implements the login page.  Contains checks on the data inputted and compares with information within the database*/
 
 public class LoginActivity extends AppCompatActivity {
 

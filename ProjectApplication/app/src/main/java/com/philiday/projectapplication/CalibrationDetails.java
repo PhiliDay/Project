@@ -2,6 +2,7 @@ package com.philiday.projectapplication;
 
 import android.content.Context;
 
+/* Class to create the two tables - CalibrationWalk and CalibrationRun, contains getters and setters */
 public class CalibrationDetails {
 
     public static final String TABLE_NAME_3 = "CalibrationTableWalk";

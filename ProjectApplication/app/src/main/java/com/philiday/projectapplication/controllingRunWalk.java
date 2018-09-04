@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+/*Implements the original button used to tell the application whether the user was walking or running.
+Used for the minimal viable product.
+ */
 public class controllingRunWalk extends AppWidgetProvider{
 
 

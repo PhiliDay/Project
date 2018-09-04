@@ -19,6 +19,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+/* Main class used to access the databases. Contains all the queries needed.*/
+
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME="UserDataBase";
